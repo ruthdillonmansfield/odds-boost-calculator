@@ -1,0 +1,86 @@
+body {
+    background-color: #121212;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .container {
+    background: #1e1e1e;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    width: 320px;
+  }
+  
+  h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+  }
+  
+  .input-group {
+    margin-bottom: 16px;
+    text-align: left;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  
+  input {
+    width: 100%; /* Prevent full width, leaving space around */
+    max-width: 300px; /* Ensures it doesn't go too wide */
+    padding: 10px;
+    background: #2a2a2a;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 6px;
+    outline: none;
+    font-size: 16px;
+    display: block;
+    margin: 0 auto; /* Center input fields */
+  }
+  
+  input:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+  }
+  
+  button {
+    width: 100%; /* Keeps button aligned with inputs */
+    padding: 12px;
+    margin-top: 12px;
+    background: #00aaff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    display: block;
+    margin: 30px auto 0; /* Center button */
+  }
+  
+  button:hover {
+    background: #0088cc;
+  }
+  
+  .result-box {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #00d4ff;
+  }
+  
