@@ -1,0 +1,35 @@
+.instructions {
+  padding: 20px;
+}
+
+.use {
+  max-width: 500px;
+  text-align: left;
+  padding: 10px;
+}
+
+.use ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.use ul li {
+  font-size: 16px;
+  color: white;
+  line-height: 1.6;
+  padding: 5px 0;
+}
+
+.use ul li strong {
+  color: #00aaff;
+}
+
+.calculator-instructions {
+  margin-top: 10px;
+  padding: 1px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #ffffff;
+}
