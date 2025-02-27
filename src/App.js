@@ -21,7 +21,7 @@ function App() {
             <Route path="/boost-calculator-advanced" element={<OddsBoostCalculatorAdv />} />
             <Route path="/risk-free-calculator" element={<RiskFreeCalculator />} />
             <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
-            <Route path="*" element={<OddsBoostCalculator />} />
+            <Route path="*" element={<LayStakeCalculator />} />
           </Routes>
         </main>
         <aside className="instructions">

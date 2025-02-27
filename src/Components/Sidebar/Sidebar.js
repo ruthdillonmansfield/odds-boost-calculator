@@ -16,9 +16,6 @@ const Sidebar = () => {
         ☰
       </button>
       <nav className={`nav-links ${menuOpen ? "active" : ""}`}>
-        <NavLink to="/boost-calculator" className="nav-link">
-          Odds Boost Calculator
-        </NavLink>
         <NavLink to="/lay-stake-calculator" className="nav-link">
           Lay Stake Calculator
         </NavLink>
@@ -27,6 +24,9 @@ const Sidebar = () => {
         </NavLink>
         <NavLink to="/boost-calculator-advanced" className="nav-link">
           Lay Stake Odds Boost Calculator        
+        </NavLink>
+        <NavLink to="/boost-calculator" className="nav-link">
+          Odds Boost Calculator
         </NavLink>
         <NavLink to="/fractional-to-decimal" className="nav-link">
           Fractional to Decimal
