@@ -66,7 +66,7 @@ const FractionalToDecimalConverter = () => {
 
   return (
     <div className="container">
-      <h2>Fractional to Decimal Odds Converter</h2>
+      <h2 className="title">Fractional to Decimal Odds Converter</h2>
 
       {/* Single inline row for numerator / denominator */}
       <div className="inline-fields">
@@ -78,7 +78,7 @@ const FractionalToDecimalConverter = () => {
               value={numerator}
               onChange={(e) => setNumerator(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g. 5"
+              placeholder="5"
             />
             <span style={{ fontSize: "20px", color: "white" }}>/</span>
             <input
@@ -86,7 +86,7 @@ const FractionalToDecimalConverter = () => {
               value={denominator}
               onChange={(e) => setDenominator(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g. 2"
+              placeholder="2"
             />
           </div>
         </div>

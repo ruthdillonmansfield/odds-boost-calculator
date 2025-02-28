@@ -46,8 +46,8 @@ const LayStakeCalculator = () => {
 
   /**
    * Master function for lay stake:
-   * - freeBet + stakeReturned => stake
-   * - freeBet + notReturned => ((BackOdds - 1)*stake)/(LayOdds - commissionValue)
+   * - freeBet + stakeReturned => (Stake * BackOdds)/(LayOdds - commissionValue)
+   * - freeBet + stake not returned => ((BackOdds - 1)*Stake)/(LayOdds - commissionValue)
    * - otherwise => regular
    */
   const calculateLayStake = () => {
@@ -56,120 +56,162 @@ const LayStakeCalculator = () => {
     const B = parseFloat(backOdds);
     const LO = parseFloat(layOdds);
 
+    // Free Bet + stake returned => treat as "normal" bet but with total returns = B*S
     if (freeBet && stakeReturned) {
-      return S;
+      const rawLay = (S * B) / (LO - commissionValue);
+      return parseFloat(rawLay.toFixed(2));
     }
+
+    // Free Bet + stake not returned => (B - 1)*S / (LayOdds - commission)
     if (freeBet && !stakeReturned) {
       const rawLay = ((B - 1) * S) / (LO - commissionValue);
       return parseFloat(rawLay.toFixed(2));
     }
+
+    // Otherwise => regular
     return calculateRegularLayStake();
   };
 
+  // Recompute lay stake whenever inputs or toggles change
   useEffect(() => {
     setLayStake(calculateLayStake());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [backOdds, stake, layOdds, commission, freeBet, stakeReturned]);
 
-  // Regular bet profit if Bookie Wins
+  // For a regular bet: Profit if Bookie Wins
   const calculateRegularProfitIfBookieWins = () => {
     if (!isInputValid() || layStake === null) return null;
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
     const LO = parseFloat(layOdds);
+
     const profit = S * (B - 1) - layStake * (LO - 1);
     return parseFloat(profit.toFixed(2));
   };
 
-  // Regular bet profit if Bookie Loses
+  // For a regular bet: Profit if Bookie Loses
   const calculateRegularProfitIfBookieLoses = () => {
     if (!isInputValid() || layStake === null) return null;
     const S = parseFloat(stake);
+
     const profit = layStake * (1 - commissionValue) - S;
     return parseFloat(profit.toFixed(2));
   };
 
-  // Combined profit if Bookie Wins (free bet logic)
+  /**
+   * Profit if Bookie Wins, combining free bet logic:
+   * - stake not returned => (B - 1)*S - (LayOdds - 1)*LayStake
+   * - stake returned => B*S - (LayOdds - 1)*LayStake
+   * - otherwise => normal bet
+   */
   const calculateProfitIfBookieWins = () => {
     if (!isInputValid() || layStake === null) return null;
+
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
     const LO = parseFloat(layOdds);
 
-    // freeBet + stakeReturned => stake*(1 - commission)
+    // free bet + stake returned => B*S - (LO - 1)*LayStake
     if (freeBet && stakeReturned) {
-      return parseFloat((S * (1 - commissionValue)).toFixed(2));
+      const profit = B * S - (LO - 1) * layStake;
+      return parseFloat(profit.toFixed(2));
     }
-    // freeBet + notReturned => (BackOdds-1)*stake - (LayOdds-1)*layStake
+
+    // free bet + notReturned => (B - 1)*S - (LayOdds - 1)*LayStake
     if (freeBet && !stakeReturned) {
       const profit = (B - 1) * S - (LO - 1) * layStake;
       return parseFloat(profit.toFixed(2));
     }
+
     // otherwise => regular
     return calculateRegularProfitIfBookieWins();
   };
 
-  // Combined profit if Bookie Loses (free bet logic)
+  /**
+   * Profit if Bookie Loses, combining free bet logic:
+   * - stake not returned => layStake*(1 - commission)
+   * - stake returned => layStake*(1 - commission)
+   *   (But user wants e.g. +£9.82 if B=10 => 
+   *    => we do layStake*(1-comm). Because user isn't out-of-pocket for stake)
+   */
   const calculateProfitIfBookieLoses = () => {
     if (!isInputValid() || layStake === null) return null;
     const S = parseFloat(stake);
 
-    // freeBet + stakeReturned => stake*(1 - commission)
+    // freeBet + stake returned => layStake*(1 - commission)
+    // yields the user’s ~ +£9.82 scenario if B=10, LO=10, S=10, comm=2%
     if (freeBet && stakeReturned) {
-      return parseFloat((S * (1 - commissionValue)).toFixed(2));
+      const profit = layStake * (1 - commissionValue);
+      return parseFloat(profit.toFixed(2));
     }
+
     // freeBet + notReturned => layStake*(1 - commission)
     if (freeBet && !stakeReturned) {
-      return parseFloat((layStake * (1 - commissionValue)).toFixed(2));
+      const profit = layStake * (1 - commissionValue);
+      return parseFloat(profit.toFixed(2));
     }
+
     // otherwise => regular
     return calculateRegularProfitIfBookieLoses();
   };
 
   // Guaranteed profit => min(win, lose)
   const getGuaranteedProfit = () => {
-    const pw = calculateProfitIfBookieWins();
-    const pl = calculateProfitIfBookieLoses();
-    if (pw === null || pl === null) return "";
-    return Math.min(pw, pl);
+    const pWin = calculateProfitIfBookieWins();
+    const pLose = calculateProfitIfBookieLoses();
+    if (pWin === null || pLose === null) return "";
+    return Math.min(pWin, pLose);
   };
 
-  // Build breakdown
+  /**
+   * Build the breakdown for side-by-side display
+   * - If stake returned => BookieWins => B*S - (LO - 1)*LayStake
+   *                      ExchangeWins => layStake*(1 - commission)
+   * - If stake not returned => same but (B - 1)*S for BookieWins, no backLoss on ExchangeWins
+   */
   const buildBreakdown = () => {
     if (!isInputValid() || layStake === null) return null;
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
     const LO = parseFloat(layOdds);
 
-    // Bookie Wins
+    // Default to normal bet logic
     let backProfit = S * (B - 1);
     let layLoss = layStake * (LO - 1);
-    let netBookie = backProfit - layLoss;
+    let netBookie = parseFloat((backProfit - layLoss).toFixed(2));
 
-    if (freeBet && stakeReturned) {
-      netBookie = parseFloat((S * (1 - commissionValue)).toFixed(2));
-      backProfit = S;
-      layLoss = S * commissionValue;
-    }
-
-    // Exchange Wins
     let backLoss = -S;
-    let layWin = layStake * (1 - commissionValue);
-    let netExchange = backLoss + layWin;
+    let layWin = parseFloat((layStake * (1 - commissionValue)).toFixed(2));
+    let netExchange = parseFloat((backLoss + layWin).toFixed(2));
 
+    // If free bet + stake not returned
     if (freeBet && !stakeReturned) {
-      backLoss = 0;
+      backProfit = (B - 1) * S;
+      layLoss = (LO - 1) * layStake;
+      netBookie = parseFloat((backProfit - layLoss).toFixed(2));
+
+      backLoss = 0; // no actual cost at the bookie
+      layWin = parseFloat((layStake * (1 - commissionValue)).toFixed(2));
       netExchange = layWin;
-    } else if (freeBet && stakeReturned) {
-      netExchange = parseFloat((S * (1 - commissionValue)).toFixed(2));
-      backLoss = 0;
+    }
+    // If free bet + stake returned => 
+    //   BookieWins => B*S - (LO - 1)*LayStake
+    //   ExchangeWins => layStake*(1 - commission)
+    else if (freeBet && stakeReturned) {
+      backProfit = B * S; 
+      layLoss = (LO - 1) * layStake;
+      netBookie = parseFloat((backProfit - layLoss).toFixed(2));
+
+      backLoss = 0; 
+      layWin = parseFloat((layStake * (1 - commissionValue)).toFixed(2));
+      netExchange = layWin;
     }
 
     return {
       bookieOutcome: {
         backProfit,
         layLoss,
-        net: parseFloat(netBookie.toFixed(2))
+        net: netBookie
       },
       exchangeOutcome: {
         backLoss,
@@ -186,7 +228,7 @@ const LayStakeCalculator = () => {
     return val >= 0 ? (
       <span className="positive">£{absVal}</span>
     ) : (
-      <span className="negative">–£{absVal}</span>
+      <span className="negative">-£{absVal}</span>
     );
   };
 
@@ -216,14 +258,14 @@ const LayStakeCalculator = () => {
     }
   };
 
-  // Decide if results are valid
+  // Check if results are valid
   const isValid = isInputValid() && layStake !== null;
   const guaranteedProfit = getGuaranteedProfit();
   const breakdown = buildBreakdown();
 
   return (
     <div className="container">
-      <h2>Lay Stake Calculator</h2>
+      <h2 className="title">Lay Stake Calculator</h2>
 
       {/* Free Bet Toggles */}
       <div className="bet-type-headline">
@@ -264,7 +306,7 @@ const LayStakeCalculator = () => {
             value={backOdds}
             onChange={(e) => setBackOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 10"
+            placeholder="10"
           />
         </div>
 
@@ -285,7 +327,8 @@ const LayStakeCalculator = () => {
         </div>
       </div>
 
-      <div className="inline-fields">
+      {/* Lay Odds & Commission Row */}
+      <div className="inline-fields lay-row">
         {/* Lay Odds => normal input */}
         <div className="input-group-inline">
           <label>Lay Odds:</label>
@@ -295,11 +338,11 @@ const LayStakeCalculator = () => {
             value={layOdds}
             onChange={(e) => setLayOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 10"
+            placeholder="10"
           />
         </div>
 
-        {/* Commission => suffix “%” only */}
+        {/* Exchange Commission => suffix “%” only */}
         <div className="input-group-inline">
           <label>Exchange Commission:</label>
           <div className="input-prefix-suffix only-suffix">
@@ -330,7 +373,7 @@ const LayStakeCalculator = () => {
             marginTop: "20px",
           }}
         >
-          <span>You should lay: {getLayStakeLabel()}</span>
+          <span>You could lay: {getLayStakeLabel()}</span>
           {copied ? (
             <ClipboardCheck size={24} color="#edff00" />
           ) : (
@@ -342,10 +385,17 @@ const LayStakeCalculator = () => {
       {/* Profit Box */}
       {isValid && guaranteedProfit !== "" && (
         <div className="profit-box">
-          Your Profit: {formatValue(guaranteedProfit)}
+          Your Profit: 
+          {guaranteedProfit >= 0 ? (
+            <span className="positive"> £{guaranteedProfit.toFixed(2)}</span>
+          ) : (
+            <span className="negative">-£{Math.abs(guaranteedProfit).toFixed(2)}</span>
+          )}
+
           <div className="profit-details">
-            If bookie wins: {formatValue(calculateProfitIfBookieWins())} <br />
-            If bookie loses: {formatValue(calculateProfitIfBookieLoses())}
+            If bookie wins: {calculateProfitIfBookieWins() !== null && formatValue(calculateProfitIfBookieWins())}
+            <br />
+            If bookie loses: {calculateProfitIfBookieLoses() !== null && formatValue(calculateProfitIfBookieLoses())}
           </div>
         </div>
       )}
@@ -368,8 +418,6 @@ const LayStakeCalculator = () => {
                 {formatValue(-breakdown.bookieOutcome.layLoss)}
               </span>
             </div>
-            {/* Placeholder for alignment */}
-            <div className="outcome-line placeholder"></div>
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">
@@ -395,7 +443,6 @@ const LayStakeCalculator = () => {
                 {formatValue(breakdown.exchangeOutcome.layWin)}
               </span>
             </div>
-            <div className="outcome-line placeholder"></div>
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">

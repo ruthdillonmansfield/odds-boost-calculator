@@ -24,9 +24,7 @@ function App() {
             <Route path="*" element={<LayStakeCalculator />} />
           </Routes>
         </main>
-        <aside className="instructions">
           <Use />
-        </aside>
       </div>
     </Router>
   );

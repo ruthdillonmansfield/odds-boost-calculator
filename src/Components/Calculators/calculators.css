@@ -1,25 +1,42 @@
-/* Container styles */
+/* 
+  This file focuses on your .container 
+  (the calculator box) and the inline 
+  fields for 2-column layouts.
+*/
+
+/* The main calculator container */
 .container {
   background: #1e1e1e;
-  margin-top: 20px;
+  margin: 80px 20px 20px 20px;
   padding: 24px;
   border-radius: 12px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
   text-align: center;
-  min-width: 320px;
-  width: 70%;
-  max-width: 460px;
-  margin-left: auto;
-  margin-right: auto;
+  
+  /* On mobile (default), fill the width => no overflow */
+  width: 100%;
+  max-width: 460px; /* stops it from becoming too wide on large desktops */
 }
 
-/* Headline */
+/* On bigger screens (≥ 768px), give it 75% width for a narrower look. */
+@media (min-width: 768px) {
+  .container {
+    width: 75%;
+  }
+}
+
+.container .title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Headline inside calculators */
 h2 {
   margin-bottom: 20px;
   font-size: 22px;
 }
 
-/* Inline fields for horizontal layout */
+/* Two-column layout (flex) for fields */
 .inline-fields {
   display: flex;
   flex-wrap: wrap;
@@ -27,9 +44,11 @@ h2 {
   margin-bottom: 16px;
 }
 
+/* Each input group is half the container width minus the gap */
 .input-group-inline {
-  flex: 1 1 calc(50% - 16px);
-  min-width: 140px;
+  flex: 1 1 calc(50% - 8px);
+
+  min-width: 140px; /* ensures columns don't get too small on desktop */
   text-align: left;
 }
 
@@ -38,9 +57,10 @@ h2 {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
+  white-space: normal; /* allow wrapping if label text is long */
 }
 
-/* Input fields */
+/* Standard input fields (if not using .input-prefix-suffix) */
 input {
   width: 100%;
   padding: 10px;
@@ -53,13 +73,12 @@ input {
   margin: 0 auto;
   box-sizing: border-box;
 }
-
 input:focus {
   border-color: #00aaff;
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
 
-/* Button styling */
+/* Buttons */
 button {
   width: 100%;
   padding: 12px;
@@ -75,7 +94,6 @@ button {
   display: block;
   margin: 30px auto 0;
 }
-
 button:hover {
   background: #0088cc;
 }
@@ -90,7 +108,6 @@ button:hover {
   font-weight: bold;
   color: #00d4ff;
 }
-
 .result-box.copyable {
   background: rgba(0, 170, 255, 0.1);
   border: 1px solid #00aaff;
@@ -108,7 +125,6 @@ button:hover {
   font-weight: bold;
   color: white;
 }
-
 .profit-details {
   font-size: 16px;
   font-weight: normal;
@@ -120,7 +136,6 @@ button:hover {
 .positive {
   color: #00ff00;
 }
-
 .negative {
   color: #ff5555;
 }
@@ -130,7 +145,7 @@ button:hover {
   box-shadow: 0 0 10px #edff00;
 }
 
-/* Toggle container */
+/* Toggle container (if you have free bet toggles) */
 .bet-type-headline {
   display: flex;
   align-items: center;
@@ -140,13 +155,11 @@ button:hover {
   padding: 1rem;
   border-radius: 8px;
 }
-
 .toggle-inline {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
-
 .toggle-label {
   font-weight: 600;
   color: #fff;
@@ -159,25 +172,19 @@ button:hover {
   width: 50px;
   height: 24px;
 }
-
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
-
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: #888;
   transition: 0.4s;
   border-radius: 24px;
 }
-
 .slider:before {
   position: absolute;
   content: "";
@@ -189,25 +196,21 @@ button:hover {
   transition: 0.4s;
   border-radius: 50%;
 }
-
 .switch input:checked + .slider {
   background-color: #00aaff;
 }
-
 .switch input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* The container for both columns */
+/* Profit breakdown container (two columns) */
 .outcome-container {
   display: flex;
-  gap: 24px; 
+  gap: 24px;
   margin-top: 20px;
   text-align: left;
   justify-content: space-between;
 }
-
-/* Each column (group) */
 .outcome-group {
   flex: 1;
   background: rgba(255, 255, 255, 0.05);
@@ -215,8 +218,6 @@ button:hover {
   border-radius: 6px;
   padding: 16px;
 }
-
-/* The title in each column */
 .group-title {
   margin-top: 0;
   margin-bottom: 12px;
@@ -225,37 +226,81 @@ button:hover {
   border-bottom: 1px solid #555;
   padding-bottom: 6px;
 }
-
-/* Each row in the group */
 .outcome-line {
   display: flex;
   justify-content: space-between;
   margin: 4px 0;
 }
-
-/* The placeholder line is invisible but still takes up vertical space */
-.outcome-line.placeholder {
-  visibility: hidden;
-  min-height: 20px; /* or whatever ensures consistent spacing */
+@media (min-width: 600px) {
+  .outcome-line.placeholder {
+    visibility: hidden;
+    min-height: 20px;
+  }
 }
 
-/* Net Outcome emphasis */
 .net-outcome {
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid #555;
 }
-
-/* Label & value */
 .outcome-label {
   font-weight: 600;
   color: #ccc;
   margin-right: 8px;
 }
-
 .outcome-value {
   font-weight: 600;
-  /* If you rely on .positive/.negative for color, that still applies. */
 }
 
+/* 
+  If you want to keep 2 columns on mobile but smaller gap/min-width:
+*/
+@media (max-width: 600px) {
+  .inline-fields {
+    flex-wrap: wrap;
+    gap: 8px; /* narrower gap so both columns fit more easily */
+  }
+  .input-group-inline {
+    flex: 1 1 calc(50% - 8px); 
+    min-width: 100px; /* smaller min-width on mobile */
+  }
+  .input-group-inline label {
+    font-size: 14px;
+    white-space: normal;
+  }
+}
+@media (max-width: 600px) {
+  .lay-row {
+    /* Stack the two fields vertically */
+    flex-direction: column;
+    gap: 8px;
+  }
 
+  .lay-row .input-group-inline {
+    /* Each field is full width instead of half */
+    flex: 1 1 100%;
+    min-width: auto; /* remove any fixed min-width constraints */
+  }
+
+  /* Optionally add extra spacing between the two fields */
+  .lay-row .input-group-inline:first-child {
+    margin-bottom: 16px;
+  }
+}
+@media (max-width: 600px) {
+  .outcome-container {
+    /* Stack the columns vertically on mobile */
+    flex-direction: column;
+    gap: 8px; /* smaller vertical gap */
+  }
+
+  .outcome-container .outcome-group {
+    flex: 1 1 100%;
+    min-width: 0; /* remove any forced min-width */
+  }
+
+  /* Optional: extra spacing between the two outcome columns */
+  .outcome-container .outcome-group + .outcome-group {
+    margin-top: 16px;
+  }
+}

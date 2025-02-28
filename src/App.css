@@ -1,3 +1,8 @@
+/* ---------------------------
+   Global / Layout Styles
+---------------------------- */
+
+/* Basic reset & background */
 body {
   background-color: #121212;
   color: white;
@@ -5,34 +10,35 @@ body {
   margin: 0;
 }
 
+/* 
+  The main container (if you have a sidebar or other content).
+  Flex-based: 
+  - Left sidebar 
+  - main content 
+  - (and optionally a right section).
+*/
 .app-container {
   display: flex;
   min-height: 100vh;
+  width: 100%; /* ensures no overflow */
 }
 
+/* The main content area inside .app-container */
 .content {
   flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  /* no extra horizontal padding => no risk of overflow */
 }
 
-.instructions {
-  min-width: 220px;
-  width: 20%;
-  background: #1e1e1e;
-  padding: 20px;
-  box-shadow: -1px 0 5px rgba(0, 0, 0, 0.2);
-  text-align: left;
-}
-
+/* Headings */
 h2 {
   font-size: 25px;
   margin-bottom: 10px;
   color: white;
   line-height: 1.6;
 }
-
 h3 {
   font-size: 20px;
   margin-bottom: 10px;
@@ -40,61 +46,14 @@ h3 {
   line-height: 1.6;
 }
 
+/* On smaller screens, stack the .app-container columns */
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;
   }
 }
 
-
-
-
-
-.content {
-  flex-grow: 1;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 20px; /* Optional: Add padding to prevent stretching on larger screens */
-}
-
-
-.container {
-  background: #1e1e1e;
-  margin-top: 20px;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
-  text-align: center;
-  width: 100%;
-  max-width: 460px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-
-
-h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
-}
-/* Remove default spin buttons in Chrome, Safari, Edge */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Remove default spin buttons in Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-
-
-
-
-
-
+/* Example nav styling if you have a top nav somewhere */
 .nav {
   display: flex;
   justify-content: center;
@@ -109,7 +68,6 @@ input[type=number] {
   margin-right: auto;
   padding: 14px 24px;
 }
-
 .nav-link {
   color: white;
   text-decoration: none;
@@ -119,25 +77,22 @@ input[type=number] {
   border-radius: 8px;
   transition: background 0.3s ease, color 0.3s ease;
 }
-
 .nav-link:hover {
   background: #00aaff;
   color: #121212;
 }
-
 .nav-link.active {
   background: #0088cc;
   color: white;
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
 
-
+/* Prefix/suffix container for currency or % inputs */
 .input-prefix-suffix {
   position: relative;
   display: inline-block;
   width: 100%;
 }
-
 /* The prefix (left) */
 .prefix {
   position: absolute;
@@ -148,7 +103,6 @@ input[type=number] {
   pointer-events: none;
   font-size: 16px;
 }
-
 /* The suffix (right) */
 .suffix {
   position: absolute;
@@ -159,8 +113,7 @@ input[type=number] {
   pointer-events: none;
   font-size: 16px;
 }
-
-/* Base styling for the input */
+/* Base styling for the input within prefix/suffix container */
 .input-prefix-suffix input {
   width: 100%;
   padding: 10px;
@@ -172,27 +125,42 @@ input[type=number] {
   font-size: 16px;
   box-sizing: border-box;
 }
-
-/* Focus style */
 .input-prefix-suffix input:focus {
   border-color: #00aaff;
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
-
-/* If there's only a prefix (e.g. £) but no suffix, add left padding only */
+/* If there's only a prefix (e.g. £) */
 .input-prefix-suffix.only-prefix input {
-  padding-left: 36px; /* enough space for the prefix on the left */
-  padding-right: 10px; /* minimal space on the right */
+  padding-left: 36px;
+  padding-right: 10px;
 }
-
-/* If there's only a suffix (e.g. %) but no prefix, add right padding only */
+/* If there's only a suffix (e.g. %) */
 .input-prefix-suffix.only-suffix input {
-  padding-left: 10px; /* minimal space on the left */
-  padding-right: 36px; /* enough space for the suffix on the right */
+  padding-left: 10px;
+  padding-right: 36px;
 }
-
-/* If there's both prefix and suffix, add space on both sides */
+/* If there's both prefix & suffix */
 .input-prefix-suffix.prefix-suffix input {
   padding-left: 36px;
   padding-right: 36px;
+}
+
+/* Remove default spin buttons in Chrome, Safari, Edge */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Remove default spin buttons in Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
+.title {
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  color: #fff;
+  text-transform: uppercase; /* optional for a bold look */
+  letter-spacing: 2px;       /* optional, for style */
 }

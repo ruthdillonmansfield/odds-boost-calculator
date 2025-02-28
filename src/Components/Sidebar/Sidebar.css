@@ -1,3 +1,4 @@
+/* ----- Desktop Styles ----- */
 .sidebar {
   min-width: 220px;
   width: 20%;
@@ -5,8 +6,10 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Left-align items */
+  align-items: flex-start;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: transform 0.3s ease; /* for mobile slide-in */
 }
 
 .site-title {
@@ -15,67 +18,115 @@
   font-weight: bold;
   margin-bottom: 20px;
   text-align: center;
-  line-height: 1.6;
+  width: 100%;
+  text-transform: uppercase; /* optional for a bold look */
+  letter-spacing: 2px;
+  line-height: 1.6;       
 }
 
-  .nav-links {
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+  text-align: center;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: #00aaff;
+  color: black;
+}
+
+/* Hide mobile header & hamburger by default on desktop */
+.mobile-header,
+.hamburger {
+  display: none;
+}
+
+/* ----- Mobile Styles (max-width: 768px) ----- */
+@media (max-width: 768px) {
+  /* 1) The sidebar becomes a full-screen overlay */
+  .sidebar {
+    position: fixed;
+    top: 60px; /* shift below the mobile header (60px) */
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    padding: 20px 0;
+    background: #1e1e1e;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
   }
-  
-  .nav-link {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    padding: 10px;
-    border-radius: 6px;
-    transition: background 0.3s ease;
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Optionally hide the site title on mobile */
+  .site-title {
+    display: none;
+  }
+
+  .nav-links {
+    margin-top: 40px;
+    gap: 20px;
+    width: 100%;
     text-align: center;
   }
-  
-  .nav-link:hover, .nav-link.active {
-    background: #00aaff;
-    color: black;
+
+  .nav-link {
+    font-size: 20px;
+    padding: 15px;
   }
-  
-  /* Mobile Styles */
+
+  /* 2) The mobile header is fixed at top: no flex used */
+  .mobile-header {
+    display: block;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 60px; /* enough for the hamburger */
+    background: #333;
+    z-index: 1100; /* above the sidebar */
+  }
+
+  /* 3) The hamburger is absolutely positioned inside the header */
   .hamburger {
-    display: none;
-    background: none;
+    display: block;
+    position: absolute;
+    top: 10px;     /* 10px from the top of the header */
+    right: 20px;   /* 20px from the right edge */
+    width: 40px;
+    height: 40px;
+    background-color: #333;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #fff;
     border: none;
+    border-radius: 8px;
     font-size: 24px;
-    color: white;
     cursor: pointer;
+    box-shadow: none;
+    transition: background-color 0.2s ease;
   }
-  
-  @media (max-width: 768px) {
-    .sidebar {
-      width: 100%;
-      height: auto;
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-  
-    .hamburger {
-      display: block;
-    }
-  
-    .nav-links {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 60px;
-      left: 0;
-      width: 100%;
-      background: #1e1e1e;
-      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
-    }
-  
-    .nav-links.active {
-      display: flex;
-    }
+
+  .hamburger:hover {
+    background-color: #444;
   }
-  
+  .hamburger:active {
+    background-color: #555;
+  }
+}

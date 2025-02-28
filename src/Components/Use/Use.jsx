@@ -1,80 +1,85 @@
 import { useLocation } from "react-router-dom";
 import "./Use.css";
 import Footer from "../Footer/Footer";
+import { Zap, Rocket } from "lucide-react"; // We'll use "Zap" and "Rocket" icons from lucide-react
 
 const ExplanationComponent = () => {
-    const location = useLocation();
+  const location = useLocation();
 
-// Instructions for converting fractional to decimal odds
-const fractionalToDecimalInstructions = (
-  <div>
-    <p>Enter the bookies' fractional odds (e.g. 5/2).</p>
-    <p>Convert to decimal instantly.</p>
-  </div>
-);
+  // Example instructions...
+  const fractionalToDecimalInstructions = (
+    <div>
+      <p>Enter fractional odds (e.g. 5/2) to instantly see their decimal form.</p>
+    </div>
+  );
+  const boostedOddsInstructions = (
+    <div>
+      <p>Enter decimal odds and a boost percentage to see the improved odds instantly.</p>
+    </div>
+  );
+  const boostedAdvancedInstructions = (
+    <div>
+      <p>Get your optimum lay stake and expected profit from boosted odds bets.</p>
+    </div>
+  );
+  const riskFreeCalculatorInstructions = (
+    <div>
+      <p>Calculate your lay stake and potential profit from risk-free bet offers.</p>
+      <p>Free bet retention is how much of that bet you can lock in if it loses.</p>
+    </div>
+  );
+  const layStakeCalculatorInstructions = (
+    <div>
+      <p>Find the optimum lay stake and profit from your matched bets.</p>
+    </div>
+  );
 
-// Instructions for the basic boost calculator
-const boostedOddsInstructions = (
-  <div>
-    <p>Enter the bookies' original decimal odds (e.g. 2.5).</p>
-    <p>Enter the boost percentage (e.g. 10%).</p>
-    <p>Get the boosted odds instantly.</p>
-  </div>
-);
+  const instructionsMap = {
+    "/fractional-to-decimal": fractionalToDecimalInstructions,
+    "/boost-calculator": boostedOddsInstructions,
+    "/boost-calculator-advanced": boostedAdvancedInstructions,
+    "/risk-free-calculator": riskFreeCalculatorInstructions,
+    "/lay-stake-calculator": layStakeCalculatorInstructions,
+  };
 
-// Instructions for the advanced boost calculator (with free bet options)
-const boostedAdvancedInstructions = (
-  <div>
-    <p>Find the optimum lay stake and expected profit from your matched bets on boosted odds.</p>
-  </div>
-);
+  const calculatorInstructions = instructionsMap[location.pathname] || (
+    <p>Use the calculator above to get started.</p>
+  );
 
-// Instructions for the risk-free bet calculator
-const riskFreeCalculatorInstructions = (
-  <div>
-    <p>Find the optimum lay stake and expected profit from risk free bet offers.</p>
-    <p>Free bet retention is the percentage of your free bet you expect to be able to lock in a profit from if you lose.</p>
-  </div>
-);
+  return (
+    <aside className="use">
+      <div className="use-content">
+        <h3 className="title">Lightning-Fast Odds Calculations</h3>
 
-// Instructions for the lay stake calculator
-const layStakeCalculatorInstructions = (
-  <div>
-    <p>Find the optimum lay stake and expected profit from your matched bets.</p>
-  </div>
-);
+        <ul className="use-list">
+          <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Zap size={18} color="#00aaff" />
+            Matched betting? Quickly lock in profit before odds shift.
+          </li>
+          <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Rocket size={18} color="#ff9900" />
+            Press <strong>"C"</strong> to <strong>copy</strong> instantly.
+          </li>
+        </ul>
 
-
-// Define instructions for each calculator page via a mapping
-const instructionsMap = {
-  "/fractional-to-decimal": fractionalToDecimalInstructions,
-  "/boost-calculator": boostedOddsInstructions,
-  "/boost-calculator-advanced": boostedAdvancedInstructions,
-  "/risk-free-calculator": riskFreeCalculatorInstructions,
-  "/lay-stake-calculator": layStakeCalculatorInstructions,
-};
-
-
-    // Get instructions for the current page, default to a general message
-    const calculatorInstructions = instructionsMap[location.pathname] || "Use the calculator above to get started.";
-
-    return (
-        <div className="use">
-            <h3>Lightning fast odds calculations</h3>
-            <ul>
-                <li>Matched betting? Calculate your odds and lock in your profit before the odds change.</li>
-                <li>🚀 Hit <strong>"C"</strong> to <strong>copy</strong>.</li>
-            </ul>
-
-            {/* Page-Specific Instructions */}
-            <div className="calculator-instructions">
-              <h3>Using this calculator</h3>
-                {calculatorInstructions}
-            </div>
-
-            <Footer />
+        <div className="calculator-instructions">
+          <h3>Using this Calculator</h3>
+          {calculatorInstructions}
         </div>
-    );
+
+        {/* Disclaimer box (similar style to .use-cta) */}
+        <div className="use-cta disclaimer">
+          <p>
+            <strong>Disclaimer:</strong> These calculators are for informational purposes 
+            only. I don't guarantee their accuracy or completeness. Always gamble 
+            responsibly.
+          </p>
+        </div>
+      </div>
+
+      <Footer />
+    </aside>
+  );
 };
 
 export default ExplanationComponent;

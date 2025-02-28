@@ -145,7 +145,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
   return (
     <div className="container">
-      <h2>Risk Free Bet Calculator</h2>
+      <h2 className="title">Risk Free Bet Calculator</h2>
 
       {/* Main Inputs */}
       <div className="inline-fields">
@@ -158,7 +158,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
             value={backOdds}
             onChange={(e) => setBackOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 10"
+            placeholder="10"
           />
         </div>
 
@@ -179,36 +179,35 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
       </div>
 
-      <div className="inline-fields">
-        {/* Lay Odds: no prefix/suffix => normal input */}
-        <div className="input-group-inline">
-          <label>Lay Odds:</label>
-          <input
-            type="number"
-            step="0.01"
-            value={layOdds}
-            onChange={(e) => setLayOdds(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="e.g. 10"
-          />
-        </div>
+      <div className="inline-fields lay-row">
+  <div className="input-group-inline">
+    <label>Lay Odds:</label>
+    <input
+      type="number"
+      step="0.01"
+      value={layOdds}
+      onChange={(e) => setLayOdds(e.target.value)}
+      onKeyDown={handleKeyDown}
+      placeholder="10"
+    />
+  </div>
 
-        {/* Exchange Commission: only suffix => className="input-prefix-suffix only-suffix" */}
-        <div className="input-group-inline">
-          <label>Exchange Commission:</label>
-          <div className="input-prefix-suffix only-suffix">
-            <input
-              type="number"
-              step="0.1"
-              value={commission}
-              onChange={(e) => setCommission(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="0"
-            />
-            <span className="suffix">%</span>
-          </div>
-        </div>
-      </div>
+  <div className="input-group-inline">
+    <label>Exchange Commission:</label>
+    <div className="input-prefix-suffix only-suffix">
+      <input
+        type="number"
+        step="0.1"
+        value={commission}
+        onChange={(e) => setCommission(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="2"
+      />
+      <span className="suffix">%</span>
+    </div>
+  </div>
+</div>
+
 
       <div className="inline-fields">
         {/* Risk Free Bet: only prefix => className="input-prefix-suffix only-prefix" */}
@@ -252,7 +251,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
           title="Click to copy outcome details"
           style={{ cursor: "pointer", display: "flex", justifyContent: "space-between" }}
         >
-          <span>You should lay: {getLayStakeLabel()}</span>
+          <span>You could lay: {getLayStakeLabel()}</span>
           {copied ? (
             <ClipboardCheck size={24} color="#edff00" />
           ) : (

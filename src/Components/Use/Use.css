@@ -1,35 +1,89 @@
-.instructions {
-  padding: 20px;
-}
-
+/* The aside container is a flex column to push footer down */
 .use {
-  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: #1e1e1e;
+  color: #fff;
+  box-sizing: border-box;
+  min-width: 220px;
+  width: 25%;
+  box-shadow: -1px 0 5px rgba(0, 0, 0, 0.2);
   text-align: left;
-  padding: 10px;
 }
 
-.use ul {
+/* The container that holds instructions + CTA */
+.use-content {
+  flex: 1; /* push the footer down */
+  padding: 40px 30px 0 30px; /* top, horizontal, no bottom */
+}
+
+/* Headline with icon next to the text */
+.headline-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  margin-bottom: 12px;
+}
+
+/* The main list with tips */
+.use-list {
   list-style-type: none;
-  padding-left: 0;
-}
-
-.use ul li {
+  margin: 0;
+  padding: 0;
   font-size: 16px;
-  color: white;
   line-height: 1.6;
-  padding: 5px 0;
 }
 
-.use ul li strong {
-  color: #00aaff;
+.use-list li {
+  margin-bottom: 8px;
 }
 
+/* The instructions box inside .use-content */
 .calculator-instructions {
-  margin-top: 10px;
-  padding: 1px 16px;
+  margin: 16px 0 24px 0;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-size: 16px;
   line-height: 1.6;
   color: #ffffff;
+}
+
+/* The optional CTA container */
+.use-cta {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(0, 170, 255, 0.1);
+  border: 1px solid #00aaff;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #fff;
+}
+
+.use-cta a {
+  color: #00ffff; /* or #00aaff if you prefer */
+  text-decoration: underline;
+}
+
+.use-cta p {
+  margin: 0;
+}
+.use-cta a:hover {
+  text-decoration: none;
+}
+
+/* Footer styling remains the same, or can be updated for consistency */
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .use {
+    width: calc(100% - 40px);
+    margin: 0 20px 20px 20px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+  }
+  .use-content {
+    padding: 0; /* override the top padding if you want a different approach */
+  }
 }

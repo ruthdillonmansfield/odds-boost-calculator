@@ -62,7 +62,7 @@ const OddsBoostCalculator = () => {
 
   return (
     <div className="container">
-      <h2>Decimal Odds Boost Calculator</h2>
+      <h2 className="title">Decimal Odds Boost Calculator</h2>
 
       {/* Inline row: Odds & Boost */}
       <div className="inline-fields">
@@ -74,7 +74,7 @@ const OddsBoostCalculator = () => {
             value={odds}
             onChange={(e) => setOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 2.50"
+            placeholder="2.50"
           />
         </div>
         <div className="input-group-inline">
@@ -86,7 +86,7 @@ const OddsBoostCalculator = () => {
               value={boost}
               onChange={(e) => setBoost(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g. 10"
+              placeholder="10"
             />
             <span className="suffix">%</span>
           </div>

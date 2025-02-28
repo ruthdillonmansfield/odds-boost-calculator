@@ -1,20 +1,24 @@
 .footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background: #1e1e1e;
-    padding: 12px;
-    text-align: center;
-    font-size: 14px;
-    color: white;
-  }
-  
-  .footer a {
-    color: #00aaff;
-    text-decoration: none;
-  }
-  
-  .footer a:hover {
-    text-decoration: underline;
-  }
-  
+  /* Spans full width of its parent */
+  width: 100%;
+  /* Add some padding for breathing room */
+  padding: 10px 0;
+  /* Subtle top border to separate from content above */
+  /* Slightly smaller text */
+  font-size: 14px;
+  text-align: center;
+  color: #ccc;
+  /* If .use is a flex column, margin-top: auto ensures footer sits at the bottom */
+  margin-top: auto;
+  /* Semi-transparent background for contrast */
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.footer a {
+  color: #00aaff;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
