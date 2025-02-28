@@ -226,7 +226,7 @@ const AdvancedOddsBoostCalculator = () => {
 
   return (
     <div className="container">
-      <h2 className="title">Advanced Odds Boost Calculator</h2>
+      <h2 className="title">Lay Stake Calculator With Odds Boost</h2>
 
       {/* Free Bet Toggles */}
       <div className="bet-type-headline">

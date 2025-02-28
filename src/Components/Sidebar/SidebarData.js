@@ -1,5 +1,5 @@
 // Example icons from lucide-react
-import { Scale, Zap, Rocket, Percent, Calculator, Star } from "lucide-react";
+import { Scale, Zap, Rocket, Percent, Calculator, Repeat, Star } from "lucide-react";
 
 export const sidebarCategories = [
     {
@@ -41,10 +41,22 @@ export const sidebarCategories = [
         title: "Converters",
         items: [
             {
-                icon: <Percent size={24} color="#fff" />,
+                icon: <Repeat size={24} color="#fff" />,
+                label: "Odds Converter",
+                sub: "",
+                link: "/odds-converter"
+            },
+            {
+                icon: <Repeat size={24} color="#fff" />,
                 label: "Fractional",
                 sub: "to Decimal",
                 link: "/fractional-to-decimal"
+            },
+            {
+                icon: <Repeat size={24} color="#fff" />,
+                label: "Decimal",
+                sub: "to Fractional",
+                link: "/decimal-to-fractional"
             }
         ]
     }
