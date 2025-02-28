@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
+import { sidebarCategories } from "./SidebarData"; // from step #1
 
 const Sidebar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const handleNavClick = () => setMenuOpen(false);
 
@@ -20,23 +20,29 @@ const Sidebar = () => {
       {/* Sidebar overlay (slides in) */}
       <aside className={`sidebar ${menuOpen ? "active" : ""}`}>
         <h1 className="site-title">Matched Betting Calculators</h1>
-        <nav className="nav-links">
-          <NavLink onClick={handleNavClick} to="/lay-stake-calculator" className="nav-link">
-            Lay Stake Calculator
-          </NavLink>
-          <NavLink onClick={handleNavClick} to="/risk-free-calculator" className="nav-link">
-            Risk-Free Bet Calculator
-          </NavLink>
-          <NavLink onClick={handleNavClick} to="/boost-calculator-advanced" className="nav-link">
-            Lay Stake Odds Boost Calculator
-          </NavLink>
-          <NavLink onClick={handleNavClick} to="/boost-calculator" className="nav-link">
-            Odds Boost Calculator
-          </NavLink>
-          <NavLink onClick={handleNavClick} to="/fractional-to-decimal" className="nav-link">
-            Fractional to Decimal
-          </NavLink>
-        </nav>
+
+        {sidebarCategories.map((category, catIdx) => (
+          <div key={catIdx} className="category-section">
+            {/* Optional category heading */}
+            <h2 className="category-title">{category.title}</h2>
+
+            {/* The grid of squares */}
+            <div className="calculator-grid">
+              {category.items.map((item, idx) => (
+                <NavLink
+                  key={idx}
+                  onClick={handleNavClick}
+                  to={item.link}
+                  className="grid-item"
+                >
+                  <div className="icon">{item.icon}</div>
+                  <div className="label">{item.label}</div>
+                  {item.sub && <div className="sub">{item.sub}</div>}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
       </aside>
     </>
   );

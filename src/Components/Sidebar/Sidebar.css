@@ -1,4 +1,6 @@
-/* ----- Desktop Styles ----- */
+/* ------------------------------------------ */
+/* Existing Desktop Styles (Overlay, etc.)    */
+/* ------------------------------------------ */
 .sidebar {
   min-width: 220px;
   width: 20%;
@@ -21,48 +23,85 @@
   width: 100%;
   text-transform: uppercase; /* optional for a bold look */
   letter-spacing: 2px;
-  line-height: 1.6;       
+  line-height: 1.6;
 }
 
-.nav-links {
+/* The new "category section" wrapper */
+.category-section {
+  margin-bottom: 24px; /* space between categories */
+}
+
+/* Category heading styling */
+.category-title {
+  font-size: 18px;
+  color: #ccc;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #444;
+  padding-bottom: 4px;
+}
+
+/* The grid container for squares => 2 columns on desktop */
+.calculator-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columns */
+  gap: 12px; /* space between squares */
+}
+
+/* Each square (NavLink) */
+.grid-item {
+  background: #2a2a2a;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  color: #fff;
+  text-decoration: none; /* remove link underlines */
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  width: 100%;
+  align-items: center;
+  transition: background 0.3s ease, color 0.3s ease;
+  border: 1px solid transparent;
 }
 
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-  padding: 10px;
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-align: center;
-}
-
-.nav-link:hover,
-.nav-link.active {
+.grid-item:hover,
+.grid-item.active {
   background: #00aaff;
-  color: black;
+  color: #121212;
+  border-color: #00aaff; /* optional for a highlight border */
 }
 
-/* Hide mobile header & hamburger by default on desktop */
-.mobile-header,
-.hamburger {
-  display: none;
+/* The icon area at the top */
+.grid-item .icon {
+  margin-bottom: 8px;
 }
 
-/* ----- Mobile Styles (max-width: 768px) ----- */
+/* The main label text */
+.grid-item .label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* The sub-label in smaller text */
+.grid-item .sub {
+  font-size: 12px;
+  color: #ccc;
+}
+
+/* ------------------------------------------ */
+/* Mobile Styles                              */
+/* ------------------------------------------ */
 @media (max-width: 768px) {
-  /* 1) The sidebar becomes a full-screen overlay */
+  /* Sidebar overlay logic, mobile header, etc. remain the same. */
+
   .sidebar {
     position: fixed;
     top: 60px; /* shift below the mobile header (60px) */
     left: 0;
     width: 100%;
     height: calc(100vh - 60px);
-    padding: 20px 0;
+    padding: 20px;
     background: #1e1e1e;
     z-index: 1000;
     transform: translateX(-100%);
@@ -70,59 +109,64 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  .sidebar.active {
-    transform: translateX(0);
+    overflow-y: auto; /* so you can scroll the grid if it’s tall */
   }
 
-  /* Optionally hide the site title on mobile */
+  /* Hide site title if you want */
   .site-title {
     display: none;
   }
 
-  .nav-links {
-    margin-top: 40px;
-    gap: 20px;
-    width: 100%;
+  .category-title {
     text-align: center;
+    margin-top: 16px;
   }
 
-  .nav-link {
-    font-size: 20px;
-    padding: 15px;
+  /* On mobile, you might want 1 column instead of 2 */
+  .calculator-grid {
+    grid-template-columns: 1fr; /* single column on phone */
+    gap: 16px;
+    width: 100%; /* make squares fill the width */
   }
 
-  /* 2) The mobile header is fixed at top: no flex used */
+  .grid-item {
+    /* optionally enlarge the squares or keep them the same */
+    padding: 16px;
+  }
+}
+
+/* Mobile header & hamburger from your existing code */
+.mobile-header,
+.hamburger {
+  display: none;
+}
+
+@media (max-width: 768px) {
   .mobile-header {
     display: block;
     position: fixed;
     top: 0; left: 0;
     width: 100%;
-    height: 60px; /* enough for the hamburger */
+    height: 60px;
     background: #333;
-    z-index: 1100; /* above the sidebar */
+    z-index: 1100;
   }
 
-  /* 3) The hamburger is absolutely positioned inside the header */
   .hamburger {
     display: block;
     position: absolute;
-    top: 10px;     /* 10px from the top of the header */
-    right: 20px;   /* 20px from the right edge */
+    top: 10px;
+    right: 20px;
     width: 40px;
     height: 40px;
     background-color: #333;
-    margin: 0 !important;
-    padding: 0 !important;
     color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 24px;
     cursor: pointer;
-    box-shadow: none;
     transition: background-color 0.2s ease;
   }
-
   .hamburger:hover {
     background-color: #444;
   }
