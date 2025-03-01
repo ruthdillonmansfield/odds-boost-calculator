@@ -1,5 +1,5 @@
 // Example icons from lucide-react
-import { Scale, Zap, Rocket, Percent, Calculator, Repeat, Star } from "lucide-react";
+import { Scale, Zap, Rocket, Percent, Calculator, Repeat, Star, AlertTriangle } from "lucide-react";
 
 export const sidebarCategories = [
     {
@@ -27,14 +27,20 @@ export const sidebarCategories = [
         ]
     },
     {
-      title: "Odds Boost",
+      title: "Advantage",
       items: [
         {
           icon: <Rocket size={24} color="#fff" />,
           label: "Odds Boost",
           sub: "Simple",
           link: "/boost-calculator"
-        }
+        },
+        {
+            icon: <AlertTriangle size={24} color="#fff" />,
+            label: "AP",
+            sub: "Risk-Free",
+            link: "/risk-free-ebo"
+          }
       ]
     },
     {

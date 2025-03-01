@@ -168,10 +168,68 @@ input[type=number] {
 }
 
 
-.title {
-  font-size: 24px;
-  margin: 0 0 20px 0;
-  color: #fff;
-  text-transform: uppercase; /* optional for a bold look */
-  letter-spacing: 2px;       /* optional, for style */
+/* ---------------------------
+   Default Heading Styles
+---------------------------- */
+
+/* For your largest titles (e.g., page headers or calculator names) */
+h1 {
+  font-size: 24px;        /* Large, bold for page-level headers */
+  font-weight: 700;       /* Bold weight for emphasis */
+  margin: 0 0 16px 0;     /* Bottom margin to separate from content */
+  line-height: 1.3;       /* Slightly tighter than normal for headings */
+  color: #ffffff;         /* White text for a dark background */
+  text-transform: uppercase;
+   letter-spacing: 1px;
+}
+
+/* For secondary headers (e.g., major sections) */
+h2 {
+  font-size: 24px;        /* A step down from h1 */
+  font-weight: 600;       /* Still bold, but slightly less than h1 */
+  margin: 24px 0 12px 0;  /* Provide a bit of top margin for spacing from preceding text */
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* For smaller subsection titles (e.g., sub-sections within a calculator) */
+h3 {
+  font-size: 20px;        /* Another step down from h2 */
+  font-weight: 600;       /* Keep consistent boldness across headings */
+  margin: 20px 0 10px 0;
+  line-height: 1.4;
+  color: #ffffff;
+}
+
+/* 
+   OPTIONAL: If you want all headings to be uppercase or 
+   letter-spaced for a “futuristic” or “sportsbook” style, 
+   you could add:
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   But keep it consistent with your brand aesthetic.
+*/
+
+
+@media (max-width: 768px) {
+  /* Let body & html scroll on mobile instead of being locked */
+  html, body {
+    overflow: auto;
+    height: auto;
+  }
+
+  /* Stack the sidebar and content vertically */
+  .app-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible; /* allow full scrolling */
+  }
+
+  /* Make .content and .use naturally expand in height */
+  .content,
+  .use {
+    width: 100%;
+    height: auto;
+    overflow: visible; /* no hidden overflow here */
+  }
 }

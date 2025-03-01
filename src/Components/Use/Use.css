@@ -78,12 +78,85 @@
 @media (max-width: 768px) {
   .use {
     width: calc(100% - 40px);
-    margin: 0 20px 20px 20px;
+    margin: 0;
     padding: 24px;
-    border-radius: 12px;
+    border-radius: 0;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
   }
   .use-content {
     padding: 0; /* override the top padding if you want a different approach */
   }
+}
+
+
+
+
+/* ---------- Overlay Styles ---------- */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.overlay-content {
+  background: #1e1e1e;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  color: #fff;
+  position: relative;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Close button for the overlay */
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ---------- Learn More Button Style ---------- */
+.learn-more-button {
+  background: #00aaff;
+  border: none;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: background 0.3s ease;
+}
+
+.learn-more-button:hover {
+  background: #0088cc;
+}
+
+
+.instructions-plain {
+  margin: 16px 0 24px 0;
+  /* No tinted background or padding, but keep a consistent line-height & spacing */
+  font-size: 16px;
+  line-height: 1.6;
+  color: #ffffff;
+}
+
+.instructions-plain h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  color: #fff;
+  line-height: 1.6;
 }

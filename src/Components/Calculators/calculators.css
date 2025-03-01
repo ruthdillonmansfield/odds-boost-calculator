@@ -393,6 +393,52 @@ button:hover {
   }
 }
 
-/* =======================================================
-   End of Calculators CSS
-========================================================= */
+
+/* --- Risk-Free EBO "Hero" area --- */
+.ebo-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0 16px 0; /* top/bottom margin around the hero */
+}
+
+.ebo-value {
+  font-size: 1.4rem; /* slightly bigger text */
+  font-weight: bold;
+  color: #00d4ff; /* matches your accent color, or pick another */
+}
+
+.ebo-number {
+  font-size: 1.6rem; /* make the EBO stand out */
+}
+
+/* Bet Rating text - color-coded if you like */
+.rating-number {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.rating-number.positive {
+  color: #00ff00; /* green if above 100% */
+}
+.rating-number.negative {
+  color: #ff5555; /* red if below 100% */
+}
+
+/* --- EV Box styling --- */
+.ev-box {
+  margin: 16px auto;
+  display: inline-block; /* or block, as you prefer */
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid #444;
+}
+.ev-label {
+  margin-right: 8px;
+  color: #ccc;
+  font-weight: 600;
+}
+.ev-value {
+  font-weight: bold;
+}
