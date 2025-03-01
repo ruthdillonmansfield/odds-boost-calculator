@@ -1,18 +1,48 @@
-/* ------------------------------------------ */
-/* Existing Desktop Styles (Overlay, etc.)    */
-/* ------------------------------------------ */
+/* =========================
+   DESKTOP STYLES
+========================= */
 .sidebar {
-  min-width: 220px;
+  /* We won't fix it here in base, we'll rely on a desktop media query 
+     so that on wide screens it's pinned with its own scroll. */
   width: 20%;
   background: #1e1e1e;
-  padding: 20px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-  position: relative;
-  transition: transform 0.3s ease; /* for mobile slide-in */
+  position: relative; /* default for mobile overlay */
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
 }
+
+@media (min-width: 769px) {
+  .hamburger,
+  .mobile-header {
+    display: none !important;
+  }
+}
+
+
+/* Desktop sidebar pinned & scrollable, but scrollbar hidden */
+@media (min-width: 769px) {
+  .sidebar {
+    position: sticky; 
+    top: 0;
+    height: 100vh;   
+    overflow-y: scroll; /* still scrollable */
+    
+    /* Hide scrollbar in all browsers */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none;            /* Chrome, Safari, Opera */
+  }
+}
+
+/* ...other existing styles remain unchanged... */
+
 
 .site-title {
   color: white;
@@ -21,17 +51,17 @@
   margin-bottom: 20px;
   text-align: center;
   width: 100%;
-  text-transform: uppercase; /* optional for a bold look */
+  text-transform: uppercase;
   letter-spacing: 2px;
   line-height: 1.6;
 }
 
-/* The new "category section" wrapper */
 .category-section {
-  margin-bottom: 24px; /* space between categories */
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Category heading styling */
 .category-title {
   font-size: 18px;
   color: #ccc;
@@ -42,62 +72,61 @@
   padding-bottom: 4px;
 }
 
-/* The grid container for squares => 2 columns on desktop */
+/* Desktop grid: 2 columns (example) */
 .calculator-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 columns */
-  gap: 12px; /* space between squares */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Each square (NavLink) */
 .grid-item {
   background: #2a2a2a;
   border-radius: 8px;
   padding: 12px;
   text-align: center;
   color: #fff;
-  text-decoration: none; /* remove link underlines */
+  text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: background 0.3s ease, color 0.3s ease;
   border: 1px solid transparent;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .grid-item:hover,
 .grid-item.active {
   background: #00aaff;
   color: #121212;
-  border-color: #00aaff; /* optional for a highlight border */
+  border-color: #00aaff;
 }
 
-/* The icon area at the top */
 .grid-item .icon {
   margin-bottom: 8px;
 }
 
-/* The main label text */
 .grid-item .label {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
-/* The sub-label in smaller text */
 .grid-item .sub {
   font-size: 12px;
   color: #ccc;
 }
 
-/* ------------------------------------------ */
-/* Mobile Styles                              */
-/* ------------------------------------------ */
+/* =========================
+   MOBILE STYLES (max-width: 768px)
+========================= */
 @media (max-width: 768px) {
-  /* Sidebar overlay logic, mobile header, etc. remain the same. */
-
+  /* The sidebar becomes an overlay (slide-in) */
   .sidebar {
     position: fixed;
-    top: 60px; /* shift below the mobile header (60px) */
+    top: 60px; /* below mobile header */
     left: 0;
     width: 100%;
     height: calc(100vh - 60px);
@@ -109,43 +138,50 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto; /* so you can scroll the grid if it’s tall */
+    overflow-y: auto; /* scroll if content is tall */
   }
 
-  /* Hide site title if you want */
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  /* Hide large site title if you want */
   .site-title {
     display: none;
   }
 
-  .category-title {
-    text-align: center;
-    margin-top: 16px;
+  .category-section {
+    margin-bottom: 14px;
   }
 
-  /* On mobile, you might want 1 column instead of 2 */
+  .category-title {
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* Force 3 columns on mobile */
   .calculator-grid {
-    grid-template-columns: 1fr; /* single column on phone */
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
-    width: 100%; /* make squares fill the width */
+    width: 100%;
   }
 
   .grid-item {
-    /* optionally enlarge the squares or keep them the same */
-    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px;
   }
-}
 
-/* Mobile header & hamburger from your existing code */
-.mobile-header,
-.hamburger {
-  display: none;
-}
+  .grid-item .label {
+    font-size: 14px;
+  }
 
-@media (max-width: 768px) {
+  /* Example mobile header/hamburger (if applicable) */
   .mobile-header {
     display: block;
     position: fixed;
-    top: 0; left: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 60px;
     background: #333;
@@ -167,6 +203,7 @@
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
+
   .hamburger:hover {
     background-color: #444;
   }

@@ -41,7 +41,7 @@
 /* The instructions box inside .use-content */
 .calculator-instructions {
   margin: 16px 0 24px 0;
-  padding: 16px;
+  padding: 4px 16px;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   font-size: 16px;
@@ -51,7 +51,7 @@
 
 /* The optional CTA container */
 .use-cta {
-  margin-top: 16px;
+  margin: 16px 0;
   padding: 12px;
   background: rgba(0, 170, 255, 0.1);
   border: 1px solid #00aaff;

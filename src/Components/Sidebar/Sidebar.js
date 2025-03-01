@@ -10,14 +10,14 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Header (always rendered, but we style/hide it on desktop) */}
+      {/* Mobile Header (always rendered, but hidden on desktop via CSS) */}
       <div className="mobile-header">
         <button className="hamburger" onClick={toggleMenu}>
           {menuOpen ? "✖" : "☰"}
         </button>
       </div>
 
-      {/* Sidebar overlay (slides in) */}
+      {/* Sidebar overlay (slides in on mobile) */}
       <aside className={`sidebar ${menuOpen ? "active" : ""}`}>
         <h1 className="site-title">Matched Betting Calculators</h1>
 

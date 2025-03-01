@@ -1,3 +1,7 @@
+/* =======================================================
+   Calculator Container & Layout
+========================================================= */
+
 /* The main calculator container */
 .container {
   background: #1e1e1e;
@@ -23,7 +27,10 @@
   margin-bottom: 20px;
 }
 
-/* Conversion Grid (for conversion type selection) */
+/* =======================================================
+   Conversion Grid (for conversion type selection)
+========================================================= */
+
 .conversion-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -60,7 +67,11 @@
   color: #fff;
 }
 
-/* Two-column layout for fields */
+/* =======================================================
+   Inline Fields & Input Groups
+========================================================= */
+
+/* Two-column layout (flex) for fields */
 .inline-fields {
   display: flex;
   flex-wrap: wrap;
@@ -68,10 +79,10 @@
   margin-bottom: 16px;
 }
 
-/* Each input group styling */
+/* Each input group: half the container width minus a smaller gap */
 .input-group-inline {
   flex: 1 1 calc(50% - 8px);
-  min-width: 140px;
+  min-width: 140px; /* ensures columns don't get too small on desktop */
   text-align: left;
 }
 
@@ -80,10 +91,10 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
-  white-space: normal;
+  white-space: normal; /* allow wrapping if label text is long */
 }
 
-/* Standard input field styling */
+/* Standard input fields styling */
 input {
   width: 100%;
   padding: 10px;
@@ -101,11 +112,58 @@ input:focus {
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
 
-/* Buttons */
+/* =======================================================
+   Input Prefix/Suffix (for £ and %)
+========================================================= */
+
+.input-prefix-suffix {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.input-prefix-suffix .prefix {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+  pointer-events: none;
+  font-size: 16px;
+}
+
+.input-prefix-suffix .suffix {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ccc;
+  pointer-events: none;
+  font-size: 16px;
+}
+
+/* Adjust padding when only prefix or suffix is used */
+.input-prefix-suffix.only-prefix input {
+  padding-left: 36px;
+  padding-right: 10px;
+}
+
+.input-prefix-suffix.only-suffix input {
+  padding-left: 10px;
+  padding-right: 36px;
+}
+
+.input-prefix-suffix.prefix-suffix input {
+  padding-left: 36px;
+  padding-right: 36px;
+}
+
+/* =======================================================
+   Buttons
+========================================================= */
+
 button {
   width: 100%;
-  padding: 12px;
-  margin-top: 12px;
   background: #00aaff;
   border: none;
   color: white;
@@ -115,14 +173,16 @@ button {
   cursor: pointer;
   transition: background 0.3s ease;
   display: block;
-  margin: 30px auto 0;
 }
 
 button:hover {
   background: #0088cc;
 }
 
-/* Result box styling */
+/* =======================================================
+   Result & Profit Box Styling
+========================================================= */
+
 .result-box {
   background: rgba(255, 255, 255, 0.1);
   margin: 24px 0;
@@ -139,12 +199,168 @@ button:hover {
   font-size: 22px;
 }
 
+.profit-box {
+  background: rgba(0, 170, 255, 0.1);
+  border: 1px solid #00aaff;
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+}
+
+.profit-details {
+  font-size: 16px;
+  font-weight: normal;
+  margin-top: 8px;
+  color: #ccc;
+}
+
+/* Positive/Negative outcome coloring */
+.positive {
+  color: #00ff00;
+}
+
+.negative {
+  color: #ff5555;
+}
+
 /* Glow effect for copy feedback */
 .glow {
   box-shadow: 0 0 10px #edff00;
 }
 
-/* Responsive adjustments */
+/* =======================================================
+   Outcome Breakdown Styling
+========================================================= */
+
+.outcome-container {
+  display: flex;
+  gap: 24px;
+  margin-top: 20px;
+  text-align: left;
+  justify-content: space-between;
+}
+
+.outcome-group {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #444;
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.group-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  color: #fff;
+  border-bottom: 1px solid #555;
+  padding-bottom: 6px;
+}
+
+.outcome-line {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0;
+}
+
+.outcome-line.placeholder {
+  visibility: hidden;
+  min-height: 20px;
+}
+
+.net-outcome {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #555;
+}
+
+.outcome-label {
+  font-weight: 600;
+  color: #ccc;
+  margin-right: 8px;
+}
+
+.outcome-value {
+  font-weight: 600;
+}
+
+/* =======================================================
+   Toggle Switch Styles
+========================================================= */
+
+.bet-type-headline {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  background-color: #333;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.toggle-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle-label {
+  font-weight: 600;
+  color: #fff;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #888;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.switch input:checked + .slider {
+  background-color: #00aaff;
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* =======================================================
+   Responsive Adjustments
+========================================================= */
+
 @media (max-width: 600px) {
   .inline-fields {
     gap: 8px;
@@ -155,8 +371,28 @@ button:hover {
   }
   .input-group-inline label {
     font-size: 14px;
+    white-space: normal;
   }
   input {
     font-size: 14px;
   }
 }
+
+/* For specific rows that need to stack on mobile (e.g. Lay Odds & Exchange Commission) */
+@media (max-width: 600px) {
+  .lay-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .lay-row .input-group-inline {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
+  .lay-row .input-group-inline:first-child {
+    margin-bottom: 16px;
+  }
+}
+
+/* =======================================================
+   End of Calculators CSS
+========================================================= */

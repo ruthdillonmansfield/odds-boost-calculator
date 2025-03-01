@@ -2,35 +2,53 @@
    Global / Layout Styles
 ---------------------------- */
 
+/* Make html & body occupy the full viewport height */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* no default scrolling on the entire page */
+}
+
 /* Basic reset & background */
 body {
   background-color: #121212;
   color: white;
   font-family: Arial, sans-serif;
-  margin: 0;
 }
 
 /* 
-  The main container (if you have a sidebar or other content).
-  Flex-based: 
-  - Left sidebar 
-  - main content 
-  - (and optionally a right section).
+  The main container: 
+  - left sidebar
+  - main content
 */
 .app-container {
   display: flex;
-  min-height: 100vh;
-  width: 100%; /* ensures no overflow */
+  width: 100%;
+  height: 100vh; /* fill the viewport */
+  overflow: hidden; /* no scrollbars on the container itself */
+  box-sizing: border-box;
 }
 
-/* The main content area inside .app-container */
+/* Let .content scroll but hide the scrollbar */
 .content {
   flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  /* no extra horizontal padding => no risk of overflow */
+  
+  /* scrolling but no visible scrollbar */
+  overflow-y: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }
+.content::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari, Opera */
+}
+
+/* ...the rest of your .content or global styles remain... */
+
 
 /* Headings */
 h2 {
@@ -44,13 +62,6 @@ h3 {
   margin-bottom: 10px;
   color: white;
   line-height: 1.6;
-}
-
-/* On smaller screens, stack the .app-container columns */
-@media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
-  }
 }
 
 /* Example nav styling if you have a top nav somewhere */
