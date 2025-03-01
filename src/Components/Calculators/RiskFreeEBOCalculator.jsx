@@ -20,8 +20,10 @@ const RiskFreeEBOCalculator = () => {
   const [ebo, setEbo] = useState(0);
   const [rating, setRating] = useState(0);
 
-  // Modal state for "Learn More"
-  const [showLearnMore, setShowLearnMore] = useState(false);
+  // “Compare to locking in profit” fields
+  const [lockInLayOdds, setLockInLayOdds] = useState("");
+  const [lockInCommission, setLockInCommission] = useState("");
+  const [lockInProfit, setLockInProfit] = useState(null);
 
   useEffect(() => {
     const st = parseFloat(stake) || 0;
@@ -29,31 +31,112 @@ const RiskFreeEBOCalculator = () => {
     const ret = parseFloat(retention) || 0;
     const bo = parseFloat(bookieOdds) || 0;
     const to = parseFloat(trueOdds) || 0;
+
     if (st > 0 && rfa > 0 && ret > 0 && bo > 1 && to > 1) {
-      // Calculate effective free bet value
+      // 1) Effective free bet
       const effFreeBet = rfa * (ret / 100);
       setEffectiveFreeBet(effFreeBet);
-      // Maximum loss = stake minus effective free bet value
+
+      // 2) Max Loss = stake minus effective free bet
       const mLoss = st - effFreeBet;
       setMaxLoss(mLoss);
-      // Potential bet profit (if the back bet wins)
+
+      // 3) Potential profit if bet wins
       const potProfit = st * (bo - 1);
       setPotentialProfit(potProfit);
-      // Chance of profit = 1/trueOdds as a percentage
+
+      // 4) Chance of profit = 1 / trueOdds
       setChanceOfProfit((1 / to) * 100);
-      // Expected value
-      const expectedVal = (1 / to * st * (bo - 1)) - ((1 - 1 / to) * mLoss);
+
+      // 5) Expected value
+      const expectedVal =
+        (1 / to) * st * (bo - 1) -
+        (1 - 1 / to) * mLoss;
       setEv(expectedVal);
-      // Profit:Loss ratio
+
+      // 6) Profit:Loss ratio
       setProfitLossRatio(mLoss !== 0 ? potProfit / mLoss : 0);
-      // Calculate Equivalent Boosted Odds (EBO) using the user‐provided formula:
-      // EBO = Bookie odds + ((Potential Profit – (Maximum Loss × (Bookie odds – 1))) / Maximum Loss)
-      const calcEbo = bo + ((potProfit - (mLoss * (bo - 1))) / mLoss);
+
+      // 7) Equivalent Boosted Odds (EBO)
+      //    EBO = BookieOdds + ((potProfit - (mLoss*(bo -1))) / mLoss)
+      const calcEbo =
+        bo + (potProfit - mLoss * (bo - 1)) / mLoss;
       setEbo(calcEbo);
-      // Bet Rating = (EBO / True Odds) * 100
-      setRating(to !== 0 ? (calcEbo / to) * 100 : 0);
+
+      // 8) Bet Rating = (EBO / True Odds) * 100
+      const betRating = to !== 0 ? (calcEbo / to) * 100 : 0;
+      setRating(betRating);
+    } else {
+      // Reset if incomplete
+      setEffectiveFreeBet(0);
+      setMaxLoss(0);
+      setPotentialProfit(0);
+      setChanceOfProfit(0);
+      setEv(0);
+      setProfitLossRatio(0);
+      setEbo(0);
+      setRating(0);
     }
   }, [stake, riskFreeAmount, retention, bookieOdds, trueOdds]);
+
+  // Compare to locking in profit (symmetrical approach)
+  useEffect(() => {
+    const st = parseFloat(stake) || 0;
+    const bo = parseFloat(bookieOdds) || 0;
+    const effFB = effectiveFreeBet; 
+    const layOdds = parseFloat(lockInLayOdds) || 0;
+    const comm = (parseFloat(lockInCommission) || 0) / 100;
+
+    // We'll only attempt lock-in if EBO > 1 and we have valid layOdds
+    if (ebo > 1 && st > 0 && bo > 1 && layOdds > 1) {
+      const potProfit = st * (bo - 1);
+      const realRisk = st - effFB; // your actual money at risk
+      if (realRisk <= 0) {
+        setLockInProfit(null);
+        return;
+      }
+
+      // 1) Lay stake (symmetrical approach) so netIfBookie == netIfExchange
+      //    netIfBookie = potProfit - Lstake*(layOdds-1)
+      //    netIfExchange = Lstake*(1-comm) - realRisk
+      //    => netIfBookie = netIfExchange => solve for Lstake
+      //    potProfit + realRisk = Lstake * ((layOdds - 1) + (1 - comm))
+      //    = Lstake * (layOdds - comm)
+      const denom = layOdds - comm;
+      if (denom <= 1e-9) {
+        setLockInProfit(null);
+        return;
+      }
+      const Lstake = (potProfit + realRisk) / denom;
+
+      // 2) netIfBookie
+      const netIfBookie = potProfit - Lstake * (layOdds - 1);
+
+      // If you want to confirm netIfExchange is the same:
+      // const netIfExchange = Lstake*(1-comm) - realRisk;
+
+      setLockInProfit(netIfBookie);
+    } else {
+      setLockInProfit(null);
+    }
+  }, [ebo, stake, bookieOdds, effectiveFreeBet, lockInLayOdds, lockInCommission]);
+
+  // Helper for color-coded positive/negative
+  const formatEV = (val) => {
+    return (
+      <span style={{ fontWeight: "bold", color: val >= 0 ? "#00ff00" : "#ff5555" }}>
+        £{val.toFixed(2)}
+      </span>
+    );
+  };
+  // Helper for rating color
+  const formatRating = (val) => {
+    return (
+      <span style={{ fontWeight: "bold", color: val >= 100 ? "#00ff00" : "#ff5555" }}>
+        {val.toFixed(0)}%
+      </span>
+    );
+  };
 
   return (
     <div className="container">
@@ -126,57 +209,113 @@ const RiskFreeEBOCalculator = () => {
         </div>
       </div>
 
-      {/* === Top-line results in a "profit-box" style === */}
-      <div className="profit-box" style={{ marginTop: "30px" }}>
-        <div style={{ fontSize: "18px", marginBottom: "12px" }}>
-          <strong>Equivalent Boosted Odds (EBO):</strong>{" "}
-          <span style={{ fontSize: "24px", color: "#00d4ff" }}>
-            {ebo.toFixed(2)}
-          </span>
+      {/* === EBO, Rating, EV in a result-box === */}
+      {ebo > 1 && (
+        <div className="result-box" style={{ textAlign: "left" }}>
+          <div className="outcome-line">
+            <span className="outcome-label">Equivalent Boosted Odds (EBO):</span>
+            <span className="outcome-value">{ebo.toFixed(2)}</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Bet Rating:</span>
+            <span className="outcome-value">{formatRating(rating)}</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Expected Value (EV):</span>
+            <span className="outcome-value">{formatEV(ev)}</span>
+          </div>
         </div>
-        <div style={{ marginBottom: "4px" }}>
-          <strong>Bet Rating:</strong>{" "}
-          <span
-            style={{
-              fontWeight: "bold",
-              color: rating >= 100 ? "#00ff00" : "#ff5555",
-            }}
-          >
-            {rating.toFixed(0)}%
-          </span>
-        </div>
-        <div>
-          <strong>Expected Value (EV):</strong>{" "}
-          <span style={{ fontWeight: "bold", color: ev >= 0 ? "#00ff00" : "#ff5555" }}>
-            £{ev.toFixed(2)}
-          </span>
-        </div>
-      </div>
+      )}
 
-      {/* === Detailed breakdown in a "result-box" style === */}
-      <div className="result-box" style={{ textAlign: "left" }}>
-        <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Breakdown</h3>
-        <div className="outcome-line">
-          <span className="outcome-label">Effective Free Bet Value:</span>
-          <span className="outcome-value">£{effectiveFreeBet.toFixed(2)}</span>
+      {/* === Detailed breakdown in a result-box === */}
+      {(maxLoss > 0 || potentialProfit > 0) && (
+        <div className="result-box" style={{ textAlign: "left" }}>
+          <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Breakdown</h3>
+          <div className="outcome-line">
+            <span className="outcome-label">Effective Free Bet Value:</span>
+            <span className="outcome-value">£{effectiveFreeBet.toFixed(2)}</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Maximum Loss:</span>
+            <span className="outcome-value">£{maxLoss.toFixed(2)}</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Potential Profit:</span>
+            <span className="outcome-value">£{potentialProfit.toFixed(2)}</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Chance of Profit:</span>
+            <span className="outcome-value">
+              {chanceOfProfit.toFixed(0)}%
+            </span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label">Profit : Loss (1 : X):</span>
+            <span className="outcome-value">
+              1 : {profitLossRatio.toFixed(2)}
+            </span>
+          </div>
         </div>
-        <div className="outcome-line">
-          <span className="outcome-label">Maximum Loss:</span>
-          <span className="outcome-value">£{maxLoss.toFixed(2)}</span>
+      )}
+
+      {/* === Compare to locking in profit (only if EBO is valid) === */}
+      {ebo > 1 && (
+        <div className="profit-box" style={{ textAlign: "left" }}>
+          <h3 style={{ marginTop: 0 }}>Compare to Locking In Profit</h3>
+          <p style={{ fontSize: "16px", marginBottom: "12px" }}>
+            Enter the lay odds at which you could lock in profit, 
+            plus the exchange commission.
+          </p>
+
+          <div className="inline-fields">
+            <div className="input-group-inline">
+              <label>Lay Odds (Lock-In):</label>
+              <input
+                type="number"
+                step="0.01"
+                value={lockInLayOdds}
+                onChange={(e) => setLockInLayOdds(e.target.value)}
+                placeholder="e.g. 4"
+              />
+            </div>
+            <div className="input-group-inline">
+              <label>Exchange Commission:</label>
+              <div className="input-prefix-suffix only-suffix">
+                <input
+                  type="number"
+                  step="0.1"
+                  value={lockInCommission}
+                  onChange={(e) => setLockInCommission(e.target.value)}
+                  placeholder="2"
+                />
+                <span className="suffix">%</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Display the lockInProfit if calculated */}
+          {lockInProfit !== null && (
+            <div
+              className="result-box"
+              style={{ marginTop: "12px", textAlign: "left" }}
+            >
+              <div className="outcome-line">
+                <span className="outcome-label">Lock-In Profit:</span>
+                <span
+                  className="outcome-value"
+                  style={{ color: lockInProfit >= 0 ? "#00ff00" : "#ff5555" }}
+                >
+                  £{lockInProfit.toFixed(2)}
+                </span>
+              </div>
+              <p style={{ fontSize: "14px", marginTop: "8px", color: "#ccc" }}>
+                This is how much you'd make if you chose to lock in your 
+                bet at the specified lay odds, regardless of the outcome.
+              </p>
+            </div>
+          )}
         </div>
-        <div className="outcome-line">
-          <span className="outcome-label">Potential Profit:</span>
-          <span className="outcome-value">£{potentialProfit.toFixed(2)}</span>
-        </div>
-        <div className="outcome-line">
-          <span className="outcome-label">Chance of Profit:</span>
-          <span className="outcome-value">{chanceOfProfit.toFixed(0)}%</span>
-        </div>
-        <div className="outcome-line">
-          <span className="outcome-label">Profit : Loss (1 : X):</span>
-          <span className="outcome-value">1 : {profitLossRatio}</span>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

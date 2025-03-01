@@ -145,7 +145,8 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
   return (
     <div className="container">
-      <h2 className="title">Risk Free Bet Calculator</h2>
+      <h2 className="title with-subhead">Risk-Free Bet Calculator</h2>
+      <h4 className="subhead">Lock in profit and find your lay stake</h4>
 
       {/* Main Inputs */}
       <div className="inline-fields">

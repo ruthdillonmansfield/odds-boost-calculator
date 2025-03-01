@@ -14,6 +14,16 @@ const ExplanationComponent = () => {
       <p>Enter fractional odds (e.g. 5/2) to instantly see their decimal form.</p>
     </div>
   );
+  const DecimalToFractionalInstructions = (
+    <div>
+      <p>Enter decimal odds (e.g. 3.5) to instantly see their fractional form.</p>
+    </div>
+  );
+  const OddsCalculatorInstructions = (
+    <div>
+      <p>Convert instantly between decimal, fractional and American odds.</p>
+    </div>
+  );
   const boostedOddsInstructions = (
     <div>
       <p>Enter decimal odds and a boost percentage to see the improved odds instantly.</p>
@@ -57,6 +67,8 @@ const ExplanationComponent = () => {
     "/risk-free-calculator": riskFreeCalculatorInstructions,
     "/risk-free-ebo": riskFreeEBOInstructions,
     "/lay-stake-calculator": layStakeCalculatorInstructions,
+    "/odds-converter": OddsCalculatorInstructions,
+    "/fractional-to-decimal": DecimalToFractionalInstructions
   };
 
   const calculatorInstructions =

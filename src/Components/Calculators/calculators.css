@@ -27,6 +27,15 @@
   margin-bottom: 20px;
 }
 
+.subhead {
+  font-size: 20px;
+  margin: 5px 0 20px;
+  font-weight: normal;
+}
+
+.with-subhead {
+  margin-bottom: 0 !important;
+}
 /* =======================================================
    Conversion Grid (for conversion type selection)
 ========================================================= */
