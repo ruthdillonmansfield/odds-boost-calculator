@@ -22,8 +22,13 @@ export const sidebarCategories = [
                 label: "Risk-Free Bet",
                 sub: "",
                 link: "/risk-free-calculator"
+            },
+            {
+                icon: <Calculator size={24} color="#fff" />,
+                label: "Partial Lay",
+                sub: "",
+                link: "/partial-lay"
             }
-            // Add more if desired...
         ]
     },
     {

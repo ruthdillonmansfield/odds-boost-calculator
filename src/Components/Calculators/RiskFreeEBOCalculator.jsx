@@ -143,7 +143,7 @@ const RiskFreeEBOCalculator = () => {
       <h2 className="title">Risk-Free Advantage Play Calculator</h2>
 
       {/* === Inputs === */}
-      <div className="inline-fields">
+      <div className="inline-fields lay-row">
         <div className="input-group-inline">
           <label>Stake:</label>
           <div className="input-prefix-suffix only-prefix">
@@ -170,7 +170,7 @@ const RiskFreeEBOCalculator = () => {
         </div>
       </div>
 
-      <div className="inline-fields">
+      <div className="inline-fields lay-row">
         <div className="input-group-inline">
           <label>Free Bet Retention Rate:</label>
           <div className="input-prefix-suffix only-suffix">

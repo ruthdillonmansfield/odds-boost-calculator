@@ -5,6 +5,7 @@ import FractionalToDecimalConverter from "./Components/Calculators/FractionalToD
 import DecimalToFractionalConverter from "./Components/Calculators/DecimalToFractionalConverter.jsx";
 import OddsConverter from "./Components/Calculators/OddsConverter.jsx";
 import RiskFreeEBOCalculator from "./Components/Calculators/RiskFreeEBOCalculator.jsx";
+import PartialLayCalculator from "./Components/Calculators/PartialLayCalculator.jsx";
 
 
 import OddsBoostCalculatorAdv from "./Components/Calculators/OddsBoostCalculatorAdv.jsx";
@@ -24,6 +25,7 @@ function App() {
             <Route path="/boost-calculator" element={<OddsBoostCalculator />} />
             <Route path="/fractional-to-decimal" element={<FractionalToDecimalConverter />} />
             <Route path="/decimal-to-fractional" element={<DecimalToFractionalConverter />} />
+            <Route path="/partial-lay" element={<PartialLayCalculator />} />
             <Route path="/risk-free-ebo" element={<RiskFreeEBOCalculator />} />
 
             <Route path="/odds-converter" element={<OddsConverter />} />
