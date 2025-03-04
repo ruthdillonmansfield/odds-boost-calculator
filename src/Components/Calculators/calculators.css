@@ -15,7 +15,7 @@
 }
 
 /* On screens wider than 768px, use 75% width for a narrower look */
-@media (min-width: 768px) {
+@media (min-width: 1050px) {
   .container {
     width: 75%;
   }
@@ -370,7 +370,7 @@ button:hover {
    Responsive Adjustments
 ========================================================= */
 
-@media (max-width: 600px) {
+@media (max-width: 1050px) {
   .inline-fields {
     gap: 8px;
   }
@@ -388,7 +388,7 @@ button:hover {
 }
 
 /* For specific rows that need to stack on mobile (e.g. Lay Odds & Exchange Commission) */
-@media (max-width: 600px) {
+@media (max-width: 1050px) {
   .lay-row {
     flex-direction: column;
     gap: 8px;
@@ -450,4 +450,21 @@ button:hover {
 }
 .ev-value {
   font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  /* For partial lay rows, prevent wrapping so all 3 inputs stay inline */
+  .inline-fields.partial-row {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Make the label a bit smaller or lighter weight than normal */
+.min-profit-row .outcome-label {
+  color: #ccc;         /* keep it legible but subdued */
+  max-width: 70%;
+  text-wrap: auto;
+}
+.min-profit-row {
+  align-items: flex-end;
 }

@@ -3,14 +3,12 @@ import "./calculators.css";
 import { formatNumber, formatMoney } from "../../helpers.js";
 
 const RiskFreeEBOCalculator = () => {
-  // Input states
   const [stake, setStake] = useState("");
   const [riskFreeAmount, setRiskFreeAmount] = useState("");
   const [retention, setRetention] = useState("");
   const [bookieOdds, setBookieOdds] = useState("");
   const [trueOdds, setTrueOdds] = useState("");
 
-  // Calculated output states
   const [effectiveFreeBet, setEffectiveFreeBet] = useState(0);
   const [maxLoss, setMaxLoss] = useState(0);
   const [potentialProfit, setPotentialProfit] = useState(0);
@@ -20,7 +18,6 @@ const RiskFreeEBOCalculator = () => {
   const [ebo, setEbo] = useState(0);
   const [rating, setRating] = useState(0);
 
-  // “Compare to locking in profit” fields
   const [lockInLayOdds, setLockInLayOdds] = useState("");
   const [lockInCommission, setLockInCommission] = useState("");
   const [lockInProfit, setLockInProfit] = useState(null);
@@ -33,41 +30,31 @@ const RiskFreeEBOCalculator = () => {
     const to = parseFloat(trueOdds) || 0;
 
     if (st > 0 && rfa > 0 && ret > 0 && bo > 1 && to > 1) {
-      // 1) Effective free bet
       const effFreeBet = rfa * (ret / 100);
       setEffectiveFreeBet(effFreeBet);
 
-      // 2) Max Loss = stake minus effective free bet
       const mLoss = st - effFreeBet;
       setMaxLoss(mLoss);
 
-      // 3) Potential profit if bet wins
       const potProfit = st * (bo - 1);
       setPotentialProfit(potProfit);
 
-      // 4) Chance of profit = 1 / trueOdds
       setChanceOfProfit((1 / to) * 100);
 
-      // 5) Expected value
       const expectedVal =
         (1 / to) * st * (bo - 1) -
         (1 - 1 / to) * mLoss;
       setEv(expectedVal);
 
-      // 6) Profit:Loss ratio
       setProfitLossRatio(mLoss !== 0 ? potProfit / mLoss : 0);
 
-      // 7) Equivalent Boosted Odds (EBO)
-      //    EBO = BookieOdds + ((potProfit - (mLoss*(bo -1))) / mLoss)
       const calcEbo =
         bo + (potProfit - mLoss * (bo - 1)) / mLoss;
       setEbo(calcEbo);
 
-      // 8) Bet Rating = (EBO / True Odds) * 100
       const betRating = to !== 0 ? (calcEbo / to) * 100 : 0;
       setRating(betRating);
     } else {
-      // Reset if incomplete
       setEffectiveFreeBet(0);
       setMaxLoss(0);
       setPotentialProfit(0);
@@ -79,7 +66,6 @@ const RiskFreeEBOCalculator = () => {
     }
   }, [stake, riskFreeAmount, retention, bookieOdds, trueOdds]);
 
-  // Compare to locking in profit (symmetrical approach)
   useEffect(() => {
     const st = parseFloat(stake) || 0;
     const bo = parseFloat(bookieOdds) || 0;
@@ -87,10 +73,9 @@ const RiskFreeEBOCalculator = () => {
     const layOdds = parseFloat(lockInLayOdds) || 0;
     const comm = (parseFloat(lockInCommission) || 0) / 100;
 
-    // We'll only attempt lock-in if EBO > 1 and we have valid layOdds
     if (ebo > 1 && st > 0 && bo > 1 && layOdds > 1) {
       const potProfit = st * (bo - 1);
-      const realRisk = st - effFB; // your actual money at risk
+      const realRisk = st - effFB;
       if (realRisk <= 0) {
         setLockInProfit(null);
         return;

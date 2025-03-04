@@ -4,7 +4,6 @@ import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 
 const RiskFreeBetCalculator = () => {
-  // Inputs
   const [backOdds, setBackOdds] = useState("");
   const [stake, setStake] = useState("");
   const [layOdds, setLayOdds] = useState("");
@@ -12,21 +11,15 @@ const RiskFreeBetCalculator = () => {
   const [riskFree, setRiskFree] = useState("");
   const [retention, setRetention] = useState(80); // in percent
 
-  // Outputs
   const [layStake, setLayStake] = useState(null);
   const [guaranteedProfit, setGuaranteedProfit] = useState(null);
   const [breakdownData, setBreakdownData] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Helpers: commission and retention as fractions
+  // Helpers
   const commissionValue = (parseFloat(commission) || 0) / 100;
   const retentionRate = (parseFloat(retention) || 0) / 100;
 
-  /**
-   * Calculate lay stake for risk free bet using:
-   *   S * B - (retentionRate * RiskFree) = LayStake * (LayOdds - commissionValue)
-   * => LayStake = (S * B - retentionRate * RiskFree) / (LayOdds - commissionValue)
-   */
   const calculateLayStake = () => {
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
@@ -39,7 +32,6 @@ const RiskFreeBetCalculator = () => {
     return parseFloat(rawLay.toFixed(2));
   };
 
-  // Compute breakdown values for Bookie Wins
   const computeBookieOutcome = (S, B, LOdds, LStake) => {
     const backProfit = S * (B - 1);
     const layLoss = (LOdds - 1) * LStake;
@@ -50,13 +42,12 @@ const RiskFreeBetCalculator = () => {
     };
   };
 
-  // Compute breakdown values for Exchange Wins
   const computeExchangeOutcome = (S, LOdds, LStake, F) => {
     const exchangeWin = LStake * (1 - commissionValue);
     const freeBetRefund = retentionRate * F;
     const net = parseFloat((exchangeWin - S + freeBetRefund).toFixed(2));
     return {
-      exchangeLoss: -S, // negative of the stake
+      exchangeLoss: -S,
       exchangeWin,
       freeBetRefund,
       net
@@ -133,7 +124,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
     return `£${formatMoney(layStake)}`;
   };
 
-  // Helper to format outcomes with a negative sign if needed and color it.
   const formatOutcome = (value) => {
     const formatted = formatMoney(Math.abs(value));
     return (
@@ -148,9 +138,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
       <h2 className="title with-subhead">Risk-Free Bet Calculator</h2>
       <h4 className="subhead">Lock in profit and find your lay stake</h4>
 
-      {/* Main Inputs */}
       <div className="inline-fields">
-        {/* Back Odds: no prefix/suffix => normal input */}
         <div className="input-group-inline">
           <label>Back Odds:</label>
           <input
@@ -163,7 +151,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
           />
         </div>
 
-        {/* Stake: only prefix => className="input-prefix-suffix only-prefix" */}
         <div className="input-group-inline">
           <label>Stake:</label>
           <div className="input-prefix-suffix only-prefix">
@@ -211,7 +198,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
 
       <div className="inline-fields">
-        {/* Risk Free Bet: only prefix => className="input-prefix-suffix only-prefix" */}
         <div className="input-group-inline">
           <label>Risk Free Bet:</label>
           <div className="input-prefix-suffix only-prefix">
@@ -227,7 +213,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
           </div>
         </div>
 
-        {/* Retention Rate: only suffix => className="input-prefix-suffix only-suffix" */}
         <div className="input-group-inline">
           <label>Retention Rate:</label>
           <div className="input-prefix-suffix only-suffix">
@@ -244,7 +229,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
       </div>
 
-      {/* Lay Stake Display (copyable) */}
       {layStake && (
         <div
           className={`result-box copyable ${copied ? "glow" : ""}`}
@@ -261,7 +245,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
       )}
 
-      {/* Guaranteed Profit */}
       {guaranteedProfit !== null && (
         <div className="profit-box">
           Your Profit: {formatOutcome(guaranteedProfit)}
@@ -269,33 +252,23 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
       )}
 
-      {/* Breakdown Data (side-by-side) */}
       {breakdownData && (
         <div className="outcome-container">
-          {/* LEFT COLUMN */}
           <div className="outcome-group">
             <div className="group-title">If Bookie Wins:</div>
-
-            {/* 1. Back Profit */}
             <div className="outcome-line">
               <span className="outcome-label">Back Profit:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.bookieOutcome?.backProfit)}
               </span>
             </div>
-
-            {/* 2. Lay Loss */}
             <div className="outcome-line">
               <span className="outcome-label">Lay Loss:</span>
               <span className="outcome-value">
                 {formatOutcome(-breakdownData.bookieOutcome?.layLoss)}
               </span>
             </div>
-
-            {/* 3. Placeholder line (so both columns have 4 rows) */}
             <div className="outcome-line placeholder"></div>
-
-            {/* 4. Net Outcome */}
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">
@@ -303,28 +276,20 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
               </span>
             </div>
           </div>
-
-          {/* RIGHT COLUMN */}
           <div className="outcome-group">
             <div className="group-title">If Exchange Wins:</div>
-
-            {/* 1. Stake Loss */}
             <div className="outcome-line">
               <span className="outcome-label">Back Loss:</span>
               <span className="outcome-value">
                 {formatOutcome(-parseFloat(stake))}
               </span>
             </div>
-
-            {/* 2. Exchange Win */}
             <div className="outcome-line">
               <span className="outcome-label">Lay Win:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.exchangeOutcome?.exchangeWin)}
               </span>
             </div>
-
-            {/* 3. Free Bet Refund */}
             <div className="outcome-line">
               <span className="outcome-label">Free Bet Refund:</span>
               <span className="outcome-value">
@@ -332,7 +297,6 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
               </span>
             </div>
 
-            {/* 4. Net Outcome */}
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">

@@ -14,9 +14,12 @@
   position: relative; /* default for mobile overlay */
   transition: transform 0.3s ease;
   box-sizing: border-box;
+    min-width: 280px;
+    width: 20%;
+  
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1050px) {
   .hamburger,
   .mobile-header {
     display: none !important;
@@ -25,7 +28,7 @@
 
 
 /* Desktop sidebar pinned & scrollable, but scrollbar hidden */
-@media (min-width: 769px) {
+@media (min-width: 1050px) {
   .sidebar {
     position: sticky; 
     top: 0;
@@ -110,7 +113,7 @@
 /* =========================
    MOBILE STYLES (max-width: 768px)
 ========================= */
-@media (max-width: 768px) {
+@media (max-width: 1050px) {
   /* The sidebar becomes an overlay (slide-in) */
   .sidebar {
     position: fixed;
@@ -133,10 +136,10 @@
     transform: translateX(0);
   }
 
-  /* Hide large site title if you want */
+  /* Hide large site title if you want
   .site-title {
     display: none;
-  }
+  } */
 
   .category-section {
     margin-bottom: 14px;

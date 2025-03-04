@@ -5,7 +5,7 @@
   background-color: #1e1e1e;
   color: #fff;
   box-sizing: border-box;
-  min-width: 220px;
+  min-width: 280px;
   width: 25%;
   box-shadow: -1px 0 5px rgba(0, 0, 0, 0.2);
   text-align: left;
@@ -36,6 +36,10 @@
 
 .use-list li {
   margin-bottom: 8px;
+}
+
+.use-list strong {
+  color: #00aaff;
 }
 
 /* The instructions box inside .use-content */
@@ -75,7 +79,7 @@
 /* Footer styling remains the same, or can be updated for consistency */
 
 /* Mobile adjustments */
-@media (max-width: 768px) {
+@media (max-width: 1050px) {
   .use {
     width: calc(100% - 40px);
     margin: 0;
