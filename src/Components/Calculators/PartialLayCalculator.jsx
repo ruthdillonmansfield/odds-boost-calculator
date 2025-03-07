@@ -5,40 +5,22 @@ import { formatMoney } from "../../helpers.js";
 import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched } from "./calculations.js";
 
 const PartialLayCalculator = () => {
-  // Back bet inputs
   const [backStake, setBackStake] = useState("");
   const [backOdds, setBackOdds] = useState("");
-
-  // Free bet toggles
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);
-
-  // Dynamic array for partial lay entries: each row now has { layOdds, amount, commission, locked }
   const [partials, setPartials] = useState([
     { layOdds: "", amount: "", commission: "0", locked: false },
   ]);
-
-  // Computed summary values
   const [totalMatched, setTotalMatched] = useState(0);
   const [weightedLayOdds, setWeightedLayOdds] = useState(0);
   const [totalLayLiability, setTotalLayLiability] = useState(0);
   const [remainingLiability, setRemainingLiability] = useState(0);
   const [suggestedAdditionalLay, setSuggestedAdditionalLay] = useState(0);
   const [minProfit, setMinProfit] = useState(null);
-
-  // State for copying suggested additional lay value
   const [copiedAdditional, setCopiedAdditional] = useState(false);
-  // New state to indicate that no further partial lays are needed
   const [finishedLaying, setFinishedLaying] = useState(false);
 
-  // Helper: Validate that back bet inputs are valid
-  const isInputValid = () => {
-    const S = parseFloat(backStake);
-    const B = parseFloat(backOdds);
-    return S > 0 && B > 1;
-  };
-
-  // Update computed values whenever inputs or partials change
   useEffect(() => {
     const S = parseFloat(backStake) || 0;
     const B = parseFloat(backOdds) || 0;
@@ -120,14 +102,12 @@ const PartialLayCalculator = () => {
 setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
   }, [backStake, backOdds, partials, freeBet, stakeReturned]);
 
-  // Update a specific partial row
   const handlePartialChange = (index, field, value) => {
     const newPartials = [...partials];
     newPartials[index][field] = value;
     setPartials(newPartials);
   };
 
-  // Add a new partial row and lock the previous one
   const addPartialRow = () => {
     if (suggestedAdditionalLay === 0) {
       setFinishedLaying(true);
@@ -143,7 +123,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
     setFinishedLaying(false);
   };
 
-  // Copy function for Suggested Additional Lay
   const copyAdditionalToClipboard = () => {
     navigator.clipboard.writeText(suggestedAdditionalLay.toFixed(2)).then(() => {
       setCopiedAdditional(true);
@@ -151,19 +130,12 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
     });
   };
 
-  // Keydown handler for copying with "c"
   const handleKeyDown = (e) => {
     if (e.key.toLowerCase() === "c") {
       copyAdditionalToClipboard();
     }
   };
 
-  // Helper to format the total matched as the lay stake label
-  const getLayStakeLabel = () => {
-    return `£${formatMoney(totalMatched)}`;
-  };
-
-  // Format numeric values with sign and color
   const formatValue = (val) => {
     if (val === null || isNaN(val)) return "";
     const absVal = Math.abs(val).toFixed(2);
@@ -177,8 +149,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
   return (
     <div className="container">
       <h2 className="title">Partial Lay Calculator</h2>
-
-      {/* Back Bet Details */}
       <div className="inline-fields">
         <div className="input-group-inline">
           <label>Back Bet Stake:</label>
@@ -206,7 +176,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
         </div>
       </div>
 
-      {/* Free Bet Toggles */}
       <div className="bet-type-headline" style={{ marginBottom: "16px" }}>
         <div className="toggle-inline">
           <label className="toggle-label">Free Bet</label>
@@ -234,7 +203,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
         )}
       </div>
 
-      {/* Partial Lay Entries */}
       <h3 style={{ marginBottom: "8px" }}>Partial Lay Entries</h3>
       {partials.map((row, idx) => (
   <div
@@ -290,7 +258,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
 </button>
 
 
-      {/* Additional Lay Required Box */}
       {!finishedLaying && (
   <div
     className={`result-box copyable ${copiedAdditional ? "glow" : ""}`}
@@ -318,8 +285,6 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
   </div>
 )}
 
-
-      {/* Summary Section */}
       <div className="profit-box" style={{ marginTop: "30px", textAlign: "left" }}>
         <div className="outcome-line">
           <span className="outcome-label">Total layed:</span>
