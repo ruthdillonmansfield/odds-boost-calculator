@@ -121,7 +121,7 @@ const ExplanationComponent = () => {
           <div className="use-cta disclaimer">
             <p>
               <strong>Disclaimer:</strong> This website is a personal project. Calculators displayed are for entertainment purposes only.
-              Their accuracy or completeness is not guaranteed. Always gamble responsibly.
+              Their accuracy is not guaranteed. Always gamble responsibly.
             </p>
           </div>
         </div>
