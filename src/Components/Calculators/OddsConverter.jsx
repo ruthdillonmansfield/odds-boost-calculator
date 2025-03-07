@@ -3,7 +3,6 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber, formatMoney } from "../../helpers.js";
 
-// Define six conversion types
 const conversionTypes = [
   {
     value: "fractionalToDecimal",
@@ -37,7 +36,6 @@ const conversionTypes = [
   },
 ];
 
-// Conversion helper functions
 const fractionalToDecimal = (numStr, denStr) => {
   if (!numStr || !denStr || isNaN(numStr) || isNaN(denStr)) return null;
   const num = parseFloat(numStr);
@@ -80,16 +78,12 @@ const americanToDecimal = (american) => {
 };
 
 const OddsConverter = () => {
-  // For non-fractional conversions
   const [inputOdds, setInputOdds] = useState("");
-  // For fractional conversions only:
   const [numerator, setNumerator] = useState("");
   const [denominator, setDenominator] = useState("");
   const [selectedType, setSelectedType] = useState("fractionalToDecimal");
   const [result, setResult] = useState(null);
   const [copied, setCopied] = useState(false);
-
-  // Perform conversion based on selected type
   const calculateConversion = () => {
     let output = null;
     if (selectedType === "fractionalToDecimal") {
@@ -137,7 +131,6 @@ const OddsConverter = () => {
     <div className="container">
       <h2 className="title">Odds Converter</h2>
 
-      {/* Conversion Type Selection Grid */}
       <div className="conversion-grid">
         {conversionTypes.map((type) => (
           <div
@@ -145,7 +138,6 @@ const OddsConverter = () => {
             className={`conversion-card ${selectedType === type.value ? "active" : ""}`}
             onClick={() => {
               setSelectedType(type.value);
-              // Clear inputs when switching type
               setInputOdds("");
               setNumerator("");
               setDenominator("");
@@ -159,10 +151,8 @@ const OddsConverter = () => {
         ))}
       </div>
 
-      {/* Odds Input Section */}
       <div className="inline-fields">
         {selectedType === "fractionalToDecimal" || selectedType === "fractionalToAmerican" ? (
-          // Two input fields for fractional odds
           <div className="input-group-inline" style={{ flexBasis: "100%" }}>
             <label>Enter Fractional Odds:</label>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -184,7 +174,6 @@ const OddsConverter = () => {
             </div>
           </div>
         ) : (
-          // Single input for the other types
           <div className="input-group-inline">
             <label>Enter Odds:</label>
             <input
@@ -204,7 +193,6 @@ const OddsConverter = () => {
         )}
       </div>
 
-      {/* Result Box */}
       {result !== null && (
         <div
           className={`result-box copyable ${copied ? "glow" : ""}`}

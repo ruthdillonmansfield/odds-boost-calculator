@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { formatNumber } from "../../helpers.js"; // if needed
+import { formatNumber } from "../../helpers.js";
 
-// Convert a decimal number to a simplified fraction string.
-// We assume the decimal is > 1, so fractional odds = decimal - 1.
 const convertDecimalToFraction = (decimal) => {
   if (isNaN(decimal) || decimal <= 1) return "";
   const frac = decimal - 1;
@@ -13,10 +11,10 @@ const convertDecimalToFraction = (decimal) => {
   let k1 = 0, k2 = 1;
   let b = frac;
   while (true) {
-    let a = Math.floor(b);
-    let h = a * h1 + h2;
-    let k = a * k1 + k2;
-    let approx = h / k;
+    const a = Math.floor(b);
+    const h = a * h1 + h2;
+    const k = a * k1 + k2;
+    const approx = h / k;
     if (Math.abs(frac - approx) < tolerance) {
       return `${h}/${k}`;
     }
@@ -33,7 +31,6 @@ const DecimalToFractionalConverter = () => {
   const [fractionalOdds, setFractionalOdds] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // Recalculate whenever the decimalOdds changes
   useEffect(() => {
     const dec = parseFloat(decimalOdds);
     if (!decimalOdds || isNaN(dec) || dec <= 1) {
@@ -43,7 +40,6 @@ const DecimalToFractionalConverter = () => {
     }
   }, [decimalOdds]);
 
-  // Copy result to clipboard
   const copyToClipboard = () => {
     if (fractionalOdds !== "") {
       navigator.clipboard.writeText(fractionalOdds).then(() => {
@@ -54,16 +50,12 @@ const DecimalToFractionalConverter = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key.toLowerCase() === "c") {
-      copyToClipboard();
-    }
+    if (e.key.toLowerCase() === "c") copyToClipboard();
   };
 
   return (
     <div className="container">
       <h2 className="title">Decimal to Fractional Odds Converter</h2>
-
-      {/* Single input row */}
       <div className="inline-fields" style={{ justifyContent: "center" }}>
         <div className="input-group-inline" style={{ flexBasis: "100%" }}>
           <label>Decimal Odds:</label>
@@ -77,8 +69,6 @@ const DecimalToFractionalConverter = () => {
           />
         </div>
       </div>
-
-      {/* Result Box */}
       {fractionalOdds && (
         <div
           className={`result-box copyable ${copied ? "glow" : ""}`}

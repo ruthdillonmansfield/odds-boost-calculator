@@ -3,7 +3,6 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber, formatMoney } from "../../helpers.js";
 
-// Helper to format numeric outcome with sign & color
 const formatValue = (value) => {
   if (value === null) return "";
   const absVal = Math.abs(value).toFixed(2);
@@ -14,7 +13,6 @@ const formatValue = (value) => {
   );
 };
 
-// Helper for breakdown lines
 const formatWithColor = (num) => {
   if (num === null) return "";
   const absVal = Math.abs(num).toFixed(2);
@@ -25,7 +23,6 @@ const formatWithColor = (num) => {
   );
 };
 
-// Validate required fields (Stake, Odds, Lay Odds)
 const isInputValid = (stake, odds, layOdds) => {
   const S = parseFloat(stake);
   const B = parseFloat(odds);
@@ -36,26 +33,20 @@ const isInputValid = (stake, odds, layOdds) => {
 };
 
 const AdvancedOddsBoostCalculator = () => {
-  // Toggles
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);
-
-  // Inputs
   const [odds, setOdds] = useState("");
   const [boost, setBoost] = useState(10);
   const [stake, setStake] = useState("");
   const [layOdds, setLayOdds] = useState("");
-  const [commission, setCommission] = useState(""); // empty -> treated as 0
-
-  // Calculated values
+  const [commission, setCommission] = useState("");
   const [boostedOdds, setBoostedOdds] = useState(null);
   const [layStake, setLayStake] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Commission fraction
   const commissionValue = (parseFloat(commission) || 0) / 100;
 
-  // 1. Calculate boosted odds
+  // Calculate boosted odds based on decimal odds and boost percentage.
   const calculateBoostedOdds = () => {
     const decOdds = parseFloat(odds);
     const boostPct = parseFloat(boost);
@@ -65,30 +56,20 @@ const AdvancedOddsBoostCalculator = () => {
     return parseFloat(newOdds.toFixed(3));
   };
 
-  // 2. Calculate lay stake using boosted odds for all cases.
-  // For free bets, use:
-  //   - Stake Returned: LayStake = (Stake * boostedOdds)/(LayOdds - commission)
-  //   - Not Returned: LayStake = ((boostedOdds - 1) * Stake)/(LayOdds - commission)
-  // Otherwise, regular bet uses: LayStake = (Stake * boostedOdds)/(LayOdds - commission)
+  // Calculate lay stake. For free bets the formula varies depending on whether stake is returned.
   const calculateLayStake = (boostedOddsVal) => {
     if (!isInputValid(stake, odds, layOdds)) return null;
     const S = parseFloat(stake);
     const LO = parseFloat(layOdds);
-
     if (freeBet && stakeReturned) {
-      const rawLay = (S * boostedOddsVal) / (LO - commissionValue);
-      return parseFloat(rawLay.toFixed(2));
+      return parseFloat(((S * boostedOddsVal) / (LO - commissionValue)).toFixed(2));
     }
     if (freeBet && !stakeReturned) {
-      const rawLay = ((boostedOddsVal - 1) * S) / (LO - commissionValue);
-      return parseFloat(rawLay.toFixed(2));
+      return parseFloat((((boostedOddsVal - 1) * S) / (LO - commissionValue)).toFixed(2));
     }
-    // Otherwise, regular bet uses boosted odds as well.
-    const rawLay = (S * boostedOddsVal) / (LO - commissionValue);
-    return parseFloat(rawLay.toFixed(2));
+    return parseFloat(((S * boostedOddsVal) / (LO - commissionValue)).toFixed(2));
   };
 
-  // 3. Recalculate on any input change
   const calculateAll = () => {
     const newBoosted = calculateBoostedOdds();
     setBoostedOdds(newBoosted);
@@ -104,44 +85,31 @@ const AdvancedOddsBoostCalculator = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [odds, boost, stake, layOdds, commission, freeBet, stakeReturned]);
 
-  // 4. Profit if Bookie Wins:
-  // For free bets:
-  //   - Stake Returned: Profit = (boostedOdds * Stake) – ((LayOdds - 1) * LayStake)
-  //   - Not Returned: Profit = ((boostedOdds - 1) * Stake) – ((LayOdds - 1) * LayStake)
-  // Otherwise, regular bet: Profit = ((boostedOdds - 1) * Stake) – ((LayOdds - 1) * LayStake)
+  // Calculate profit if the bookie wins.
   const calculateProfitIfBookieWins = () => {
     if (!isInputValid(stake, odds, layOdds) || layStake === null) return null;
     const S = parseFloat(stake);
     const LO = parseFloat(layOdds);
-
     if (freeBet && stakeReturned) {
-      const profit = boostedOdds * S - (LO - 1) * layStake;
-      return parseFloat(profit.toFixed(2));
+      return parseFloat((boostedOdds * S - (LO - 1) * layStake).toFixed(2));
     }
     if (freeBet && !stakeReturned) {
-      const profit = (boostedOdds - 1) * S - (LO - 1) * layStake;
-      return parseFloat(profit.toFixed(2));
+      return parseFloat(((boostedOdds - 1) * S - (LO - 1) * layStake).toFixed(2));
     }
     if (!boostedOdds) return null;
-    const profit = (boostedOdds - 1) * S - (LO - 1) * layStake;
-    return parseFloat(profit.toFixed(2));
+    return parseFloat(((boostedOdds - 1) * S - (LO - 1) * layStake).toFixed(2));
   };
 
-  // 5. Profit if Bookie Loses (Exchange wins):
-  // For free bets (both cases) => Profit = LayStake * (1 - commission)
-  // Otherwise, regular bet: Profit = (LayStake * (1 - commission)) - Stake
+  // Calculate profit if the exchange wins.
   const calculateProfitIfBookieLoses = () => {
     if (!isInputValid(stake, odds, layOdds) || layStake === null) return null;
     const S = parseFloat(stake);
     if (freeBet) {
-      const profit = layStake * (1 - commissionValue);
-      return parseFloat(profit.toFixed(2));
+      return parseFloat((layStake * (1 - commissionValue)).toFixed(2));
     }
-    const profit = layStake * (1 - commissionValue) - S;
-    return parseFloat(profit.toFixed(2));
+    return parseFloat(((layStake * (1 - commissionValue)) - S).toFixed(2));
   };
 
-  // 6. Guaranteed profit is the minimum of the two outcomes.
   const getGuaranteedProfit = () => {
     const pWin = calculateProfitIfBookieWins();
     const pLose = calculateProfitIfBookieLoses();
@@ -149,16 +117,13 @@ const AdvancedOddsBoostCalculator = () => {
     return Math.min(pWin, pLose);
   };
 
-  // 7. Build breakdown object for side-by-side display.
+  // Build a breakdown object for side-by-side display.
   const buildBreakdown = () => {
     if (!isInputValid(stake, odds, layOdds) || layStake === null) return null;
     const S = parseFloat(stake);
     const LO = parseFloat(layOdds);
-
     let backProfit, layLoss, netBookie, backLoss, layWin, netExchange;
-
     if (freeBet && stakeReturned) {
-      // Use boosted odds for free bet with stake returned.
       backProfit = boostedOdds * S;
       layLoss = (LO - 1) * layStake;
       netBookie = parseFloat((backProfit - layLoss).toFixed(2));
@@ -181,28 +146,18 @@ const AdvancedOddsBoostCalculator = () => {
       netExchange = parseFloat((backLoss + layWin).toFixed(2));
     }
     return {
-      bookieOutcome: {
-        backProfit,
-        layLoss,
-        net: netBookie
-      },
-      exchangeOutcome: {
-        backLoss,
-        layWin,
-        net: parseFloat(netExchange.toFixed(2))
-      }
+      bookieOutcome: { backProfit, layLoss, net: netBookie },
+      exchangeOutcome: { backLoss, layWin, net: parseFloat(netExchange.toFixed(2)) },
     };
   };
 
   const breakdown = buildBreakdown();
 
-  // 8. Format the lay stake for display
   const getLayStakeLabel = () => {
     if (!isInputValid(stake, odds, layOdds) || layStake === null) return "";
     return `£${formatMoney(layStake)}`;
   };
 
-  // Copy to clipboard
   const copyToClipboard = () => {
     if (layStake !== null) {
       navigator.clipboard.writeText(layStake.toString()).then(() => {
@@ -226,9 +181,11 @@ const AdvancedOddsBoostCalculator = () => {
 
   return (
     <div className="container">
-    <h2 className="title with-subhead">Lay Stake Calculator</h2>
-    <h4 className="subhead">Work out how much you could lay when your back bet is boosted</h4>
-      {/* Free Bet Toggles */}
+      <h2 className="title with-subhead">Lay Stake Calculator</h2>
+      <h4 className="subhead">
+        Work out how much you could lay when your back bet is boosted
+      </h4>
+
       <div className="bet-type-headline">
         <div className="toggle-inline">
           <label className="toggle-label">Free Bet</label>
@@ -256,7 +213,6 @@ const AdvancedOddsBoostCalculator = () => {
         )}
       </div>
 
-      {/* Main Inputs */}
       <div className="inline-fields">
         <div className="input-group-inline">
           <label>Odds:</label>
@@ -286,7 +242,10 @@ const AdvancedOddsBoostCalculator = () => {
       </div>
 
       {boostedOdds && (
-        <div className="result-box" style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          className="result-box"
+          style={{ display: "flex", justifyContent: "space-between" }}
+        >
           <span>Boosted Odds:</span>
           <span>{formatNumber(boostedOdds, 3)}</span>
         </div>
@@ -337,7 +296,6 @@ const AdvancedOddsBoostCalculator = () => {
         </div>
       </div>
 
-      {/* Lay Stake Display */}
       {isValid && (
         <div
           className={`result-box copyable ${copied ? "glow" : ""}`}
@@ -348,7 +306,7 @@ const AdvancedOddsBoostCalculator = () => {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: "20px"
+            marginTop: "20px",
           }}
         >
           <span>You could lay: {getLayStakeLabel()}</span>
@@ -360,7 +318,6 @@ const AdvancedOddsBoostCalculator = () => {
         </div>
       )}
 
-      {/* Profit Box */}
       {isValid && guaranteedProfit !== "" && (
         <div className="profit-box">
           Your Profit: {formatValue(guaranteedProfit)}
@@ -371,10 +328,8 @@ const AdvancedOddsBoostCalculator = () => {
         </div>
       )}
 
-      {/* Breakdown */}
       {isValid && breakdown && (
         <div className="outcome-container" style={{ marginTop: "20px" }}>
-          {/* If Bookie Wins */}
           <div className="outcome-group">
             <div className="group-title">If Bookie Wins:</div>
             <div className="outcome-line">
@@ -397,7 +352,6 @@ const AdvancedOddsBoostCalculator = () => {
               </span>
             </div>
           </div>
-          {/* If Exchange Wins */}
           <div className="outcome-group">
             <div className="group-title">If Exchange Wins:</div>
             <div className="outcome-line">

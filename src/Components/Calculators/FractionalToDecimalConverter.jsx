@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { formatNumber } from "../../helpers.js"; // Imported helper
+import { formatNumber } from "../../helpers.js";
 
 const FractionalToDecimalConverter = () => {
   const [numerator, setNumerator] = useState("");
@@ -9,45 +9,24 @@ const FractionalToDecimalConverter = () => {
   const [decimalOdds, setDecimalOdds] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Auto-calculate whenever numerator or denominator changes
   useEffect(() => {
     setDecimalOdds(calculateDecimalOdds(numerator, denominator));
   }, [numerator, denominator]);
 
-  // Helper function to do the fractional -> decimal conversion
   const calculateDecimalOdds = (numStr, denStr) => {
-    // If either field is empty or not numeric, don't calculate anything
-    if (!numStr || !denStr || isNaN(numStr) || isNaN(denStr)) {
-      return null;
-    }
-
+    if (!numStr || !denStr || isNaN(numStr) || isNaN(denStr)) return null;
     const num = parseFloat(numStr);
     const den = parseFloat(denStr);
-
-    if (den <= 0) {
-      return null; // invalid denominator
-    }
-
-    const result = num / den + 1;
-    // Store with up to 3 decimals internally
-    return parseFloat(result.toFixed(3));
+    if (den <= 0) return null;
+    return parseFloat((num / den + 1).toFixed(3));
   };
 
-  // Safely format the decimal odds label using our imported formatter.
   const getDecimalOddsLabel = () => {
-    // If both fields are empty, don't show any message.
-    if (!numerator && !denominator) {
-      return "";
-    }
-    // If the result is null (inputs invalid), don't show any result.
-    if (decimalOdds === null) {
-      return "";
-    }
-    // Otherwise, format the result.
+    if (!numerator && !denominator) return "";
+    if (decimalOdds === null) return "";
     return formatNumber(decimalOdds, 3);
   };
 
-  // Copy to clipboard if valid
   const copyToClipboard = () => {
     if (decimalOdds !== null) {
       navigator.clipboard.writeText(decimalOdds.toString()).then(() => {
@@ -57,18 +36,13 @@ const FractionalToDecimalConverter = () => {
     }
   };
 
-  // Optional: Pressing 'c' copies to clipboard
   const handleKeyDown = (e) => {
-    if (e.key.toLowerCase() === "c") {
-      copyToClipboard();
-    }
+    if (e.key.toLowerCase() === "c") copyToClipboard();
   };
 
   return (
     <div className="container">
       <h2 className="title">Fractional to Decimal Odds Converter</h2>
-
-      {/* Single inline row for numerator / denominator */}
       <div className="inline-fields">
         <div className="input-group-inline" style={{ flexBasis: "40%" }}>
           <label>Fractional Odds:</label>
@@ -91,8 +65,6 @@ const FractionalToDecimalConverter = () => {
           </div>
         </div>
       </div>
-
-      {/* Result Box (click to copy) */}
       {getDecimalOddsLabel() && (
         <div
           className={`result-box copyable ${copied ? "glow" : ""}`}
@@ -109,11 +81,7 @@ const FractionalToDecimalConverter = () => {
           <span className="label">Decimal Odds:</span>
           <span className="value">{getDecimalOddsLabel()}</span>
           {decimalOdds !== null &&
-            (copied ? (
-              <ClipboardCheck size={22} color="#edff00" />
-            ) : (
-              <Clipboard size={22} />
-            ))}
+            (copied ? <ClipboardCheck size={22} color="#edff00" /> : <Clipboard size={22} />)}
         </div>
       )}
     </div>

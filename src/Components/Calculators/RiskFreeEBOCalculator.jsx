@@ -42,14 +42,12 @@ const RiskFreeEBOCalculator = () => {
       setChanceOfProfit((1 / to) * 100);
 
       const expectedVal =
-        (1 / to) * st * (bo - 1) -
-        (1 - 1 / to) * mLoss;
+        (1 / to) * st * (bo - 1) - (1 - 1 / to) * mLoss;
       setEv(expectedVal);
 
       setProfitLossRatio(mLoss !== 0 ? potProfit / mLoss : 0);
 
-      const calcEbo =
-        bo + (potProfit - mLoss * (bo - 1)) / mLoss;
+      const calcEbo = bo + (potProfit - mLoss * (bo - 1)) / mLoss;
       setEbo(calcEbo);
 
       const betRating = to !== 0 ? (calcEbo / to) * 100 : 0;
@@ -69,7 +67,7 @@ const RiskFreeEBOCalculator = () => {
   useEffect(() => {
     const st = parseFloat(stake) || 0;
     const bo = parseFloat(bookieOdds) || 0;
-    const effFB = effectiveFreeBet; 
+    const effFB = effectiveFreeBet;
     const layOdds = parseFloat(lockInLayOdds) || 0;
     const comm = (parseFloat(lockInCommission) || 0) / 100;
 
@@ -81,12 +79,10 @@ const RiskFreeEBOCalculator = () => {
         return;
       }
 
-      // 1) Lay stake (symmetrical approach) so netIfBookie == netIfExchange
-      //    netIfBookie = potProfit - Lstake*(layOdds-1)
-      //    netIfExchange = Lstake*(1-comm) - realRisk
-      //    => netIfBookie = netIfExchange => solve for Lstake
-      //    potProfit + realRisk = Lstake * ((layOdds - 1) + (1 - comm))
-      //    = Lstake * (layOdds - comm)
+      // Calculate lay stake using symmetry:
+      // netIfBookie = potProfit - Lstake*(layOdds-1)
+      // netIfExchange = Lstake*(1-comm) - realRisk
+      // Equate both: potProfit + realRisk = Lstake * (layOdds - comm)
       const denom = layOdds - comm;
       if (denom <= 1e-9) {
         setLockInProfit(null);
@@ -94,40 +90,29 @@ const RiskFreeEBOCalculator = () => {
       }
       const Lstake = (potProfit + realRisk) / denom;
 
-      // 2) netIfBookie
       const netIfBookie = potProfit - Lstake * (layOdds - 1);
-
-      // If you want to confirm netIfExchange is the same:
-      // const netIfExchange = Lstake*(1-comm) - realRisk;
-
       setLockInProfit(netIfBookie);
     } else {
       setLockInProfit(null);
     }
   }, [ebo, stake, bookieOdds, effectiveFreeBet, lockInLayOdds, lockInCommission]);
 
-  // Helper for color-coded positive/negative
-  const formatEV = (val) => {
-    return (
-      <span style={{ fontWeight: "bold", color: val >= 0 ? "#00ff00" : "#ff5555" }}>
-        £{val.toFixed(2)}
-      </span>
-    );
-  };
-  // Helper for rating color
-  const formatRating = (val) => {
-    return (
-      <span style={{ fontWeight: "bold", color: val >= 100 ? "#00ff00" : "#ff5555" }}>
-        {val.toFixed(0)}%
-      </span>
-    );
-  };
+  const formatEV = (val) => (
+    <span style={{ fontWeight: "bold", color: val >= 0 ? "#00ff00" : "#ff5555" }}>
+      £{val.toFixed(2)}
+    </span>
+  );
+
+  const formatRating = (val) => (
+    <span style={{ fontWeight: "bold", color: val >= 100 ? "#00ff00" : "#ff5555" }}>
+      {val.toFixed(0)}%
+    </span>
+  );
 
   return (
     <div className="container">
       <h2 className="title">Risk-Free Advantage Play Calculator</h2>
 
-      {/* === Inputs === */}
       <div className="inline-fields lay-row">
         <div className="input-group-inline">
           <label>Stake:</label>
@@ -194,7 +179,6 @@ const RiskFreeEBOCalculator = () => {
         </div>
       </div>
 
-      {/* === EBO, Rating, EV in a result-box === */}
       {ebo > 1 && (
         <div className="result-box" style={{ textAlign: "left" }}>
           <div className="outcome-line">
@@ -212,7 +196,6 @@ const RiskFreeEBOCalculator = () => {
         </div>
       )}
 
-      {/* === Detailed breakdown in a result-box === */}
       {(maxLoss > 0 || potentialProfit > 0) && (
         <div className="result-box" style={{ textAlign: "left" }}>
           <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Breakdown</h3>
@@ -243,13 +226,11 @@ const RiskFreeEBOCalculator = () => {
         </div>
       )}
 
-      {/* === Compare to locking in profit (only if EBO is valid) === */}
       {ebo > 1 && (
         <div className="profit-box" style={{ textAlign: "left" }}>
           <h3 style={{ marginTop: 0 }}>Compare to Locking In Profit</h3>
           <p style={{ fontSize: "16px", marginBottom: "12px" }}>
-            Enter the lay odds at which you could lock in profit, 
-            plus the exchange commission.
+            Enter the lay odds at which you could lock in profit, plus the exchange commission.
           </p>
 
           <div className="inline-fields">
@@ -278,12 +259,8 @@ const RiskFreeEBOCalculator = () => {
             </div>
           </div>
 
-          {/* Display the lockInProfit if calculated */}
           {lockInProfit !== null && (
-            <div
-              className="result-box"
-              style={{ marginTop: "12px", textAlign: "left" }}
-            >
+            <div className="result-box" style={{ marginTop: "12px", textAlign: "left" }}>
               <div className="outcome-line">
                 <span className="outcome-label">Lock-In Profit:</span>
                 <span
@@ -294,8 +271,7 @@ const RiskFreeEBOCalculator = () => {
                 </span>
               </div>
               <p style={{ fontSize: "14px", marginTop: "8px", color: "#ccc" }}>
-                This is how much you'd make if you chose to lock in your 
-                bet at the specified lay odds, regardless of the outcome.
+                This is how much you'd make if you chose to lock in your bet at the specified lay odds, regardless of the outcome.
               </p>
             </div>
           )}

@@ -58,6 +58,13 @@ const ExplanationComponent = () => {
       </p>
     </div>
   );
+  const partialLayInstructions = (
+    <div>
+      <p>Sometimes we need to lay our back bets at multiple odds, because there's limited lay liquidity.</p>
+      <p>This calculator helps you work out how much more to lay at the available odds.</p>
+    </div>
+  );
+  
 
   // Map instructions
   const instructionsMap = {
@@ -68,7 +75,8 @@ const ExplanationComponent = () => {
     "/risk-free-ebo": riskFreeEBOInstructions,
     "/lay-stake-calculator": layStakeCalculatorInstructions,
     "/odds-converter": OddsCalculatorInstructions,
-    "/fractional-to-decimal": DecimalToFractionalInstructions
+    "/fractional-to-decimal": DecimalToFractionalInstructions,
+    "/partial-lay": partialLayInstructions
   };
 
   const calculatorInstructions =
@@ -104,7 +112,7 @@ const ExplanationComponent = () => {
               </li>
               <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Rocket size={18} color="#ff9900" />
-                Press <strong>"C"</strong> to <strong>copy</strong> instantly.
+                <span>Press <strong>"C"</strong> to <strong>copy</strong> instantly.</span>
               </li>
             </ul>
           </div>
@@ -136,15 +144,15 @@ const ExplanationComponent = () => {
             >
               ✖
             </button>
-            <h2>Reframing Risk-Free Bets: The Equivalent Boosted Odds Method</h2>
+            <h2>The Equivalent Boosted Odds Method</h2>
             <p>
-              When you receive a risk-free bet, you have two choices: lay it for a small 
-              guaranteed profit, or take it as an AP bet and accept some variance.
+              When you have a risk-free bet offer, you have two choices: lay it for a small 
+              guaranteed profit, or take it as an Advantage Play (AP) bet and accept some variance.
             </p>
             <p>
               Instead of just looking at EV, we reframe the bet like a value bet by calculating 
-              the Equivalent Boosted Odds (EBO). For example, with a £10 risk-free bet and 
-              70% retention, your effective free bet value is £7. Your potential profit is £30 
+              the Equivalent Boosted Odds (EBO). For example, with a £10 risk-free bet where you would expect to  
+              retain 70% of the value of your free bet, your effective free bet value is £7. Your potential profit is £30 
               and your maximum loss is £3.
             </p>
             <p>

@@ -1,4 +1,3 @@
-/* The aside container is a flex column to push footer down */
 .use {
   display: flex;
   flex-direction: column;
@@ -9,23 +8,28 @@
   width: 25%;
   box-shadow: -1px 0 5px rgba(0, 0, 0, 0.2);
   text-align: left;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.use::-webkit-scrollbar {
+  display: none;
 }
 
-/* The container that holds instructions + CTA */
 .use-content {
-  flex: 1; /* push the footer down */
-  padding: 40px 30px 0 30px; /* top, horizontal, no bottom */
+  flex: 1;
+  padding: 40px 30px 0 30px;
+  max-width: 460px;
+  margin: 0 auto;
 }
 
-/* Headline with icon next to the text */
 .headline-with-icon {
   display: flex;
   align-items: center;
-  gap: 8px; /* space between icon and text */
+  gap: 8px;
   margin-bottom: 12px;
 }
 
-/* The main list with tips */
 .use-list {
   list-style-type: none;
   margin: 0;
@@ -42,7 +46,6 @@
   color: #00aaff;
 }
 
-/* The instructions box inside .use-content */
 .calculator-instructions {
   margin: 16px 0 24px 0;
   padding: 4px 16px;
@@ -53,7 +56,6 @@
   color: #ffffff;
 }
 
-/* The optional CTA container */
 .use-cta {
   margin: 16px 0;
   padding: 12px;
@@ -65,18 +67,21 @@
 }
 
 .use-cta a {
-  color: #00ffff; /* or #00aaff if you prefer */
+  color: #00ffff;
   text-decoration: underline;
 }
 
 .use-cta p {
   margin: 0;
 }
+
 .use-cta a:hover {
   text-decoration: none;
 }
 
-/* Footer styling remains the same, or can be updated for consistency */
+svg {
+  min-width: 20px;
+}
 
 /* Mobile adjustments */
 @media (max-width: 1050px) {
@@ -88,12 +93,9 @@
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
   }
   .use-content {
-    padding: 0; /* override the top padding if you want a different approach */
+    padding: 0;
   }
 }
-
-
-
 
 /* ---------- Overlay Styles ---------- */
 .overlay {
@@ -120,16 +122,16 @@
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
 }
 
-/* Close button for the overlay */
 .close-button {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: transparent;
+  background: #00aaff;
   border: none;
   color: #fff;
   font-size: 20px;
   cursor: pointer;
+  width: min-content;
 }
 
 /* ---------- Learn More Button Style ---------- */
@@ -149,10 +151,8 @@
   background: #0088cc;
 }
 
-
 .instructions-plain {
   margin: 16px 0 24px 0;
-  /* No tinted background or padding, but keep a consistent line-height & spacing */
   font-size: 16px;
   line-height: 1.6;
   color: #ffffff;

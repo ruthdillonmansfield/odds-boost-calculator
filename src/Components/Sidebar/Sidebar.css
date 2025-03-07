@@ -2,8 +2,6 @@
    DESKTOP STYLES
 ========================= */
 .sidebar {
-  /* We won't fix it here in base, we'll rely on a desktop media query 
-     so that on wide screens it's pinned with its own scroll. */
   width: 20%;
   background: #1e1e1e;
   padding: 30px;
@@ -11,12 +9,11 @@
   flex-direction: column;
   align-items: flex-start;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-  position: relative; /* default for mobile overlay */
+  position: relative;
   transition: transform 0.3s ease;
   box-sizing: border-box;
-    min-width: 280px;
-    width: 20%;
-  
+  min-width: 280px;
+  width: 20%;
 }
 
 @media (min-width: 1050px) {
@@ -26,26 +23,20 @@
   }
 }
 
-
-/* Desktop sidebar pinned & scrollable, but scrollbar hidden */
+/* Pinned & scrollable sidebar */
 @media (min-width: 1050px) {
   .sidebar {
-    position: sticky; 
+    position: sticky;
     top: 0;
-    height: 100vh;   
-    overflow-y: scroll; /* still scrollable */
-    
-    /* Hide scrollbar in all browsers */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;     /* Firefox */
+    height: 100vh;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   .sidebar::-webkit-scrollbar {
-    display: none;            /* Chrome, Safari, Opera */
+    display: none;
   }
 }
-
-/* ...other existing styles remain unchanged... */
-
 
 .category-section {
   margin-bottom: 24px;
@@ -63,7 +54,6 @@
   padding-bottom: 4px;
 }
 
-/* Desktop grid: 2 columns (example) */
 .calculator-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -110,14 +100,19 @@
   color: #ccc;
 }
 
+@media (max-width: 340px) {
+  .calculator-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
 /* =========================
-   MOBILE STYLES (max-width: 768px)
+   MOBILE STYLES (max-width: 1050px)
 ========================= */
 @media (max-width: 1050px) {
-  /* The sidebar becomes an overlay (slide-in) */
   .sidebar {
     position: fixed;
-    top: 60px; /* below mobile header */
+    top: 60px;
     left: 0;
     width: 100%;
     height: calc(100vh - 60px);
@@ -129,17 +124,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto; /* scroll if content is tall */
+    overflow-y: auto;
   }
 
   .sidebar.active {
     transform: translateX(0);
   }
-
-  /* Hide large site title if you want
-  .site-title {
-    display: none;
-  } */
 
   .category-section {
     margin-bottom: 14px;
@@ -150,7 +140,6 @@
     margin-top: 8px;
   }
 
-  /* Force 3 columns on mobile */
   .calculator-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
@@ -167,7 +156,6 @@
     font-size: 14px;
   }
 
-  /* Example mobile header/hamburger (if applicable) */
   .mobile-header {
     display: block;
     position: fixed;
@@ -198,6 +186,7 @@
   .hamburger:hover {
     background-color: #444;
   }
+
   .hamburger:active {
     background-color: #555;
   }

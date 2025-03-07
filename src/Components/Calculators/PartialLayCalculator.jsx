@@ -13,6 +13,7 @@ const PartialLayCalculator = () => {
     { layOdds: "", amount: "", commission: "0", locked: false },
   ]);
   const [totalMatched, setTotalMatched] = useState(0);
+  const [totalLayed, setTotalLayed] = useState(0);
   const [weightedLayOdds, setWeightedLayOdds] = useState(0);
   const [totalLayLiability, setTotalLayLiability] = useState(0);
   const [remainingLiability, setRemainingLiability] = useState(0);
@@ -39,6 +40,7 @@ const PartialLayCalculator = () => {
     let weightedSum = 0;
     let layLiability = 0;
     let totalBackMatched = 0;
+    let totalLayMatched = 0;
     partials.forEach((row, i) => {
       const amt = parseFloat(row.amount) || 0;
       let lOdds = parseFloat(row.layOdds);
@@ -57,6 +59,7 @@ const PartialLayCalculator = () => {
       if (lOdds > 1) {
         layLiability += amt * (lOdds - 1);
       }
+      totalLayMatched += parseFloat(row.amount) || 0;
       totalBackMatched += computeBackMatched(row, backOdds, freeBet, stakeReturned);
     });
 
@@ -66,13 +69,15 @@ const PartialLayCalculator = () => {
       const amt = parseFloat(row.amount) || 0;
       const lOdds = parseFloat(row.layOdds) || 0;
       const comm = parseFloat(row.commission) || 0;
-      const effectiveOdds = lOdds - comm / 100;
+      const effectiveOdds = lOdds + comm / 100;
       totalAmount += amt;
       effectiveOddsSum += amt * effectiveOdds;
     });
-    const wAvg = totalAmount > 0 ? effectiveOddsSum / totalAmount : 0;    const leftoverLiability = Math.max(0, backLiability - layLiability);
+    const wAvg = totalAmount > 0 ? effectiveOddsSum / totalAmount : 0;    
+    const leftoverLiability = Math.max(0, backLiability - layLiability);
 
     setTotalMatched(totalBackMatched);
+    setTotalLayed(totalLayMatched);
     setWeightedLayOdds(wAvg);
     setTotalLayLiability(layLiability);
     setRemainingLiability(leftoverLiability);
@@ -287,12 +292,18 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
 
       <div className="profit-box" style={{ marginTop: "30px", textAlign: "left" }}>
         <div className="outcome-line">
-          <span className="outcome-label">Total layed:</span>
-          <span className="outcome-value">£{totalMatched.toFixed(2)}</span>
+            <span className="outcome-label">Total layed:</span>
+            <span className="outcome-value">£{totalLayed.toFixed(2)}</span>
+        </div>
+        <div className="outcome-line">
+          <span className="outcome-label">Total back bet matched:</span>
+          <span className="outcome-value">
+            £{totalMatched.toFixed(2)} / £{(parseFloat(backStake) || 0).toFixed(2)}
+        </span>
         </div>
         <div className="outcome-line">
           <span className="outcome-label">Avg. lay odds (weighted):</span>
-          <span className="outcome-value">{weightedLayOdds.toFixed(2)}</span>
+          <span className="outcome-value">{parseFloat(weightedLayOdds.toFixed(3))}</span>
         </div>
         <div className="outcome-line">
           <span className="outcome-label">Total lay liability:</span>

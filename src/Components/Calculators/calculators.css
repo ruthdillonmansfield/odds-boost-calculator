@@ -2,7 +2,6 @@
    Calculator Container & Layout
 ========================================================= */
 
-/* The main calculator container */
 .container {
   background: #1e1e1e;
   margin: 80px 20px 20px 20px;
@@ -14,21 +13,19 @@
   max-width: 460px;
 }
 
-/* On screens wider than 768px, use 75% width for a narrower look */
 @media (min-width: 1050px) {
   .container {
     width: 75%;
   }
 }
 
-/* Title styling */
 .title {
   font-size: 24px;
   margin-bottom: 20px;
 }
 
 .subhead {
-  font-size: 20px;
+  font-size: 16px;
   margin: 5px 0 20px;
   font-weight: normal;
 }
@@ -36,8 +33,9 @@
 .with-subhead {
   margin-bottom: 0 !important;
 }
+
 /* =======================================================
-   Conversion Grid (for conversion type selection)
+   Conversion Grid
 ========================================================= */
 
 .conversion-grid {
@@ -80,7 +78,6 @@
    Inline Fields & Input Groups
 ========================================================= */
 
-/* Two-column layout (flex) for fields */
 .inline-fields {
   display: flex;
   flex-wrap: wrap;
@@ -88,7 +85,6 @@
   margin-bottom: 16px;
 }
 
-/* Each input group: half the container width minus a smaller gap */
 .input-group-inline {
   flex: 1 1 calc(50% - 8px);
   text-align: left;
@@ -99,10 +95,9 @@
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 6px;
-  white-space: normal; /* allow wrapping if label text is long */
+  white-space: normal;
 }
 
-/* Standard input fields styling */
 input {
   width: 100%;
   padding: 10px;
@@ -129,7 +124,7 @@ input:focus {
 }
 
 /* =======================================================
-   Input Prefix/Suffix (for £ and %)
+   Input Prefix/Suffix
 ========================================================= */
 
 .input-prefix-suffix {
@@ -158,7 +153,6 @@ input:focus {
   font-size: 16px;
 }
 
-/* Adjust padding when only prefix or suffix is used */
 .input-prefix-suffix.only-prefix input {
   padding-left: 36px;
   padding-right: 10px;
@@ -240,7 +234,6 @@ button:hover {
   color: #ccc;
 }
 
-/* Positive/Negative outcome coloring */
 .positive {
   color: #00ff00;
 }
@@ -249,7 +242,6 @@ button:hover {
   color: #ff5555;
 }
 
-/* Glow effect for copy feedback */
 .glow {
   box-shadow: 0 0 10px #edff00;
 }
@@ -401,7 +393,6 @@ button:hover {
   }
 }
 
-/* For specific rows that need to stack on mobile (e.g. Lay Odds & Exchange Commission) */
 @media (max-width: 1050px) {
   .lay-row {
     flex-direction: column;
@@ -416,42 +407,40 @@ button:hover {
   }
 }
 
-
 /* --- Risk-Free EBO "Hero" area --- */
 .ebo-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  margin: 24px 0 16px 0; /* top/bottom margin around the hero */
+  margin: 24px 0 16px 0;
 }
 
 .ebo-value {
-  font-size: 1.4rem; /* slightly bigger text */
+  font-size: 1.4rem;
   font-weight: bold;
-  color: #00d4ff; /* matches your accent color, or pick another */
+  color: #00d4ff;
 }
 
 .ebo-number {
-  font-size: 1.6rem; /* make the EBO stand out */
+  font-size: 1.6rem;
 }
 
-/* Bet Rating text - color-coded if you like */
 .rating-number {
   font-size: 1.2rem;
   font-weight: bold;
 }
 .rating-number.positive {
-  color: #00ff00; /* green if above 100% */
+  color: #00ff00;
 }
 .rating-number.negative {
-  color: #ff5555; /* red if below 100% */
+  color: #ff5555;
 }
 
 /* --- EV Box styling --- */
 .ev-box {
   margin: 16px auto;
-  display: inline-block; /* or block, as you prefer */
+  display: inline-block;
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 6px;
@@ -467,28 +456,27 @@ button:hover {
 }
 
 @media (min-width: 420px) {
-  /* For partial lay rows, prevent wrapping so all 3 inputs stay inline */
   .inline-fields.partial-row {
     flex-wrap: nowrap;
   }
-
 }
+
 @media (min-width: 420px) {
   .partial-row-trio {
     display: flex;
-    flex-wrap: nowrap; /* ensure all children stay on the same line */
-    gap: 16px; /* optional, adjust the spacing between children as needed */
+    flex-wrap: nowrap;
+    gap: 16px;
   }
   .partial-row-trio > * {
-    flex: 1; /* make children take equal width */
+    flex: 1;
   }
-  .partial-row-trio .input-group-inline{
-    min-width:min-content;
+  .partial-row-trio .input-group-inline {
+    min-width: min-content;
   }
 }
-/* Make the label a bit smaller or lighter weight than normal */
+
 .min-profit-row .outcome-label {
-  color: #ccc;         /* keep it legible but subdued */
+  color: #ccc;
   max-width: 70%;
   text-wrap: auto;
   font-weight: bold;

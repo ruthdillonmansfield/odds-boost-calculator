@@ -27,9 +27,7 @@ function App() {
             <Route path="/decimal-to-fractional" element={<DecimalToFractionalConverter />} />
             <Route path="/partial-lay" element={<PartialLayCalculator />} />
             <Route path="/risk-free-ebo" element={<RiskFreeEBOCalculator />} />
-
             <Route path="/odds-converter" element={<OddsConverter />} />
-
             <Route path="/boost-calculator-advanced" element={<OddsBoostCalculatorAdv />} />
             <Route path="/risk-free-calculator" element={<RiskFreeCalculator />} />
             <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />

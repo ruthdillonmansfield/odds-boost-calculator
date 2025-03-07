@@ -7,16 +7,15 @@ const RiskFreeBetCalculator = () => {
   const [backOdds, setBackOdds] = useState("");
   const [stake, setStake] = useState("");
   const [layOdds, setLayOdds] = useState("");
-  const [commission, setCommission] = useState(""); // empty => 0
+  const [commission, setCommission] = useState("");
   const [riskFree, setRiskFree] = useState("");
-  const [retention, setRetention] = useState(80); // in percent
+  const [retention, setRetention] = useState(80); 
 
   const [layStake, setLayStake] = useState(null);
   const [guaranteedProfit, setGuaranteedProfit] = useState(null);
   const [breakdownData, setBreakdownData] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Helpers
   const commissionValue = (parseFloat(commission) || 0) / 100;
   const retentionRate = (parseFloat(retention) || 0) / 100;
 
