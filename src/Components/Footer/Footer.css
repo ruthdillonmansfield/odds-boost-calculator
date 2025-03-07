@@ -1,16 +1,10 @@
 .footer {
-  /* Spans full width of its parent */
   width: 100%;
-  /* Add some padding for breathing room */
   padding: 10px 0;
-  /* Subtle top border to separate from content above */
-  /* Slightly smaller text */
   font-size: 14px;
   text-align: center;
   color: #ccc;
-  /* If .use is a flex column, margin-top: auto ensures footer sits at the bottom */
   margin-top: auto;
-  /* Semi-transparent background for contrast */
   background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -21,4 +15,11 @@
 
 .footer a:hover {
   text-decoration: underline;
+}
+
+/* Hide footer on screens wider than 1050px */
+@media (min-width: 1050px) {
+  .footer {
+    display: none;
+  }
 }

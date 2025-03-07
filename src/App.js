@@ -13,6 +13,7 @@ import LayStakeCalculator from "./Components/Calculators/LayStakeCalculator.jsx"
 import RiskFreeCalculator from "./Components/Calculators/RiskFreeCalculator.jsx";
 import Use from "./Components/Use/Use.jsx";
 import Sidebar from "./Components/Sidebar/Sidebar.js";
+import Footer from "./Components/Footer/Footer.jsx";
 import "./App.css";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           </Routes>
         </main>
           <Use />
+          <Footer />
       </div>
     </Router>
   );
