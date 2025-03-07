@@ -97,7 +97,7 @@ const ExplanationComponent = () => {
                 onClick={() => setShowOverlay(true)}
                 style={{ marginTop: "12px" }}
               >
-                Learn More
+                Read more about EBO
               </button>
             )}
           </div>
