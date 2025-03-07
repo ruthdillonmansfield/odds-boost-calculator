@@ -250,7 +250,7 @@ const RiskFreeEBOCalculator = () => {
                 step="0.01"
                 value={lockInLayOdds}
                 onChange={(e) => setLockInLayOdds(e.target.value)}
-                placeholder="e.g. 4"
+                placeholder="4"
               />
             </div>
             <div className="input-group-inline">

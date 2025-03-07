@@ -74,7 +74,7 @@ const DecimalToFractionalConverter = () => {
             value={decimalOdds}
             onChange={(e) => setDecimalOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 2.5"
+            placeholder="2.5"
           />
         </div>
       </div>

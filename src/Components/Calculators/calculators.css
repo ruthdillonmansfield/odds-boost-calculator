@@ -80,6 +80,7 @@
 
 .inline-fields {
   display: flex;
+  align-items: flex-end;
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 16px;
@@ -88,6 +89,7 @@
 .input-group-inline {
   flex: 1 1 calc(50% - 8px);
   text-align: left;
+  width: 100%;
 }
 
 .input-group-inline label {
@@ -300,6 +302,7 @@ button:hover {
 
 .outcome-value {
   font-weight: 600;
+  text-align: right;
 }
 
 /* =======================================================
@@ -309,11 +312,14 @@ button:hover {
 .bet-type-headline {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  flex-wrap: wrap;
+  column-gap: 2rem; 
+  row-gap: 0; 
   margin-bottom: 1.5rem;
   background-color: #333;
   padding: 1rem;
   border-radius: 8px;
+  text-align: left;
 }
 
 .toggle-inline {
@@ -378,7 +384,7 @@ button:hover {
 
 @media (max-width: 1050px) {
   .inline-fields {
-    gap: 8px;
+    gap: 16px;
   }
   .input-group-inline {
     flex: 1 1 calc(50% - 8px);
@@ -393,10 +399,11 @@ button:hover {
   }
 }
 
-@media (max-width: 1050px) {
+@media (max-width: 320px) {
   .lay-row {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    align-items: flex-end;
   }
   .lay-row .input-group-inline {
     flex: 1 1 100%;

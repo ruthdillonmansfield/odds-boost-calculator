@@ -85,6 +85,11 @@
   border-color: #00aaff;
 }
 
+.grid-item:hover .sub,
+.grid-item.active .sub {
+  color: #121212;
+}
+
 .grid-item .icon {
   margin-bottom: 8px;
 }

@@ -172,7 +172,7 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
               value={backStake}
               onChange={(e) => setBackStake(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="e.g. 100"
+              placeholder="10"
             />
           </div>
         </div>
@@ -184,7 +184,7 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
             value={backOdds}
             onChange={(e) => setBackOdds(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="e.g. 3.50"
+            placeholder="3.5"
           />
         </div>
       </div>
@@ -230,7 +230,7 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
         value={row.layOdds}
         onChange={(e) => handlePartialChange(idx, "layOdds", e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="e.g. 3.00"
+        placeholder="3.7"
         disabled={row.locked}
       />
     </div>
@@ -244,7 +244,7 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
           value={row.amount}
           onChange={(e) => handlePartialChange(idx, "amount", e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="e.g. 30"
+          placeholder="5"
           disabled={row.locked}
         />
       </div>

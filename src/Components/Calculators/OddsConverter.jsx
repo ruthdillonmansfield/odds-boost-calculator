@@ -191,10 +191,10 @@ const OddsConverter = () => {
               onKeyDown={handleKeyDown}
               placeholder={
                 selectedType === "decimalToFractional"
-                  ? "e.g. 2.50"
+                  ? "2.5"
                   : selectedType === "decimalToAmerican"
-                  ? "e.g. 2.50"
-                  : "e.g. +150"
+                  ? "2.5"
+                  : "+150"
               }
             />
           </div>
