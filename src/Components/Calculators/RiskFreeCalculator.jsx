@@ -206,7 +206,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
       <div className="inline-fields">
         <div className="input-group-inline">
-          <label>Risk Free Bet:</label>
+          <label>Free Bet Amount:</label>
           <div className="input-prefix-suffix only-prefix">
             <span className="prefix">£</span>
             <input
@@ -221,7 +221,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
 
         <div className="input-group-inline">
-          <label>Retention Rate:</label>
+          <label>Free Bet Retention Rate:</label>
           <div className="input-prefix-suffix only-suffix">
             <input
               type="number"

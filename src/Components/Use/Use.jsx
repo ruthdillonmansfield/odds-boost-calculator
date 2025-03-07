@@ -88,7 +88,7 @@ const ExplanationComponent = () => {
         <div className="use-content">
           {/* 1) Plain instructions at the top (new .instructions-plain class) */}
           <div className="instructions-plain">
-            <h3>Using this Calculator</h3>
+            <h3 className="title">Using this Calculator</h3>
             {calculatorInstructions}
 
             {location.pathname === "/risk-free-ebo" && (
@@ -104,7 +104,7 @@ const ExplanationComponent = () => {
 
           {/* 2) Tinted box for bullet points & heading */}
           <div className="calculator-instructions">
-            <h3 className="title">Lightning-Fast Odds Calculations</h3>
+            <h3>Lightning-Fast Odds Calculations</h3>
             <ul className="use-list">
               <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Zap size={18} color="#00aaff" />
