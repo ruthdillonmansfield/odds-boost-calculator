@@ -136,7 +136,27 @@ const RiskFreeEBOCalculator = () => {
           </div>
         </div>
         <div className="input-group-inline">
-          <label>Risk-Free Bet Amount:</label>
+          <label>Odds:</label>
+          <input
+            type="number"
+            step="0.01"
+            value={bookieOdds}
+            onChange={(e) => setBookieOdds(e.target.value)}
+            placeholder="3.5"
+          />
+        </div>
+      </div>
+
+      <div className="inline-fields lay-row">
+        <div className="input-group-inline">
+          <label>Free Bet Amount:
+          <span className="info-icon">
+              i
+              <span className="tooltip-text">
+                What is the value of the free bet you will receive if your back bet loses?
+              </span>
+            </span>
+          </label>
           <div className="input-prefix-suffix only-prefix">
             <span className="prefix">£</span>
             <input
@@ -147,43 +167,44 @@ const RiskFreeEBOCalculator = () => {
             />
           </div>
         </div>
-      </div>
-
-      <div className="inline-fields lay-row">
         <div className="input-group-inline">
-          <label>Free Bet Retention Rate:</label>
+          <label>Free Bet Retention Rate:
+          <span className="info-icon">
+              i
+              <span className="tooltip-text">
+                This is the percentage of your free bet that you expect to secure as profit. Typically, it's around 80%, but might be 70% for particular types of bets such as bet builders. It can vary based on available markets, liquidity, odds quality and more.
+              </span>
+            </span>
+          </label>
           <div className="input-prefix-suffix only-suffix">
             <input
               type="number"
               step="0.1"
               value={retention}
               onChange={(e) => setRetention(e.target.value)}
-              placeholder="70.00"
+              placeholder="70"
             />
             <span className="suffix">%</span>
           </div>
-        </div>
-        <div className="input-group-inline">
-          <label>Bookie Odds:</label>
-          <input
-            type="number"
-            step="0.01"
-            value={bookieOdds}
-            onChange={(e) => setBookieOdds(e.target.value)}
-            placeholder="4.00"
-          />
         </div>
       </div>
 
       <div className="inline-fields">
         <div className="input-group-inline">
-          <label>True Odds:</label>
+          <label>True Odds:
+            <span className="info-icon">
+              i
+              <span className="tooltip-text">
+              Estimate true odds by stripping the bookie’s margin and considering market data. Use a sharp estimate if confident, or a conservative guess if not.
+              </span>
+            </span>
+          </label>
           <input
             type="number"
             step="0.01"
             value={trueOdds}
             onChange={(e) => setTrueOdds(e.target.value)}
-            placeholder="5.00"
+            placeholder="4.5"
           />
         </div>
       </div>
@@ -191,15 +212,21 @@ const RiskFreeEBOCalculator = () => {
       {ebo > 1 && (
         <div className="result-box" style={{ textAlign: "left" }}>
           <div className="outcome-line">
-            <span className="outcome-label">Equivalent Boosted Odds (EBO):</span>
-            <span className="outcome-value">{ebo.toFixed(2)}</span>
+            <span className="outcome-label outcome-primary">Equivalent Boosted Odds (EBO):</span>
+            <span className="outcome-value">{parseFloat(ebo.toFixed(2))}</span>
           </div>
           <div className="outcome-line">
-            <span className="outcome-label">Bet Rating:</span>
+            <span className="outcome-info">This bet is equivalent to punting this outcome at these odds. For more info see the calculator details.</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label outcome-primary">Bet Rating:</span>
             <span className="outcome-value">{formatRating(rating)}</span>
           </div>
           <div className="outcome-line">
-            <span className="outcome-label">Expected Value (EV):</span>
+            <span className="outcome-info">Evaluate as you would a value bet.</span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label outcome-primary">Expected Value (EV):</span>
             <span className="outcome-value">{formatEV(ev)}</span>
           </div>
         </div>
@@ -227,9 +254,15 @@ const RiskFreeEBOCalculator = () => {
             </span>
           </div>
           <div className="outcome-line">
-            <span className="outcome-label">Profit : Loss (1 : X):</span>
+            <span className="outcome-label">Profit : Loss:</span>
             <span className="outcome-value">
-              1 : {profitLossRatio.toFixed(2)}
+              1 : {parseFloat(profitLossRatio.toFixed(2))}
+            </span>
+          </div>
+          <div className="outcome-line">
+            <span className="outcome-label"><em>Or: Implied Odds</em>:</span>
+            <span className="outcome-value">
+              {parseFloat(profitLossRatio.toFixed(2))}
             </span>
           </div>
         </div>
@@ -247,7 +280,7 @@ const RiskFreeEBOCalculator = () => {
               <label>Lay Odds (Lock-In):</label>
               <input
                 type="number"
-                step="0.01"
+                step="0.1"
                 value={lockInLayOdds}
                 onChange={(e) => setLockInLayOdds(e.target.value)}
                 placeholder="4"
@@ -258,7 +291,7 @@ const RiskFreeEBOCalculator = () => {
               <div className="input-prefix-suffix only-suffix">
                 <input
                   type="number"
-                  step="0.1"
+                  step="1"
                   value={lockInCommission}
                   onChange={(e) => setLockInCommission(e.target.value)}
                   placeholder="2"

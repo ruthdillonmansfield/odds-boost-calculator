@@ -48,9 +48,10 @@ const ExplanationComponent = () => {
   const riskFreeEBOInstructions = (
     <div>
       <p>
-        Equivalent Boosted Odds (EBO) reframe risk‐free bets by converting the 
-        available free bet into effective odds that account for both the 
-        potential profit and the maximum loss—giving a true measure for the bet.
+        Equivalent Boosted Odds (EBO) reframes risk‐free bets as value bets by converting the risk-free aspect of the bet into an odds boost.
+      </p>
+      <p>
+        In other words, treating a risk-free bet as Advantage Play is equivalent to punting a bet at greatly improved odds.
       </p>
       <p>
         Use this calculator to decide whether to AP, lay it if possible, or skip. 
@@ -86,7 +87,6 @@ const ExplanationComponent = () => {
     <>
       <aside className="use">
         <div className="use-content">
-          {/* 1) Plain instructions at the top (new .instructions-plain class) */}
           <div className="instructions-plain">
             <h3 className="title">Using this Calculator</h3>
             {calculatorInstructions}
@@ -101,8 +101,6 @@ const ExplanationComponent = () => {
               </button>
             )}
           </div>
-
-          {/* 2) Tinted box for bullet points & heading */}
           <div className="calculator-instructions">
             <h3>Lightning-Fast Odds Calculations</h3>
             <ul className="use-list">
@@ -128,7 +126,6 @@ const ExplanationComponent = () => {
         <Footer />
       </aside>
 
-      {/* Overlay for detailed EBO info (only if /risk-free-ebo) */}
       {showOverlay && (
         <div
           className="overlay"

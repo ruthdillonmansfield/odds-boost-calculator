@@ -64,6 +64,11 @@ h3 {
   line-height: 1.6;
 }
 
+h5 {
+  font-size: 16px;
+  margin: 0;
+}
+
 /* Example nav styling if you have a top nav somewhere */
 .nav {
   display: flex;
@@ -200,16 +205,6 @@ h3 {
   line-height: 1.4;
   color: #ffffff;
 }
-
-/* 
-   OPTIONAL: If you want all headings to be uppercase or 
-   letter-spaced for a “futuristic” or “sportsbook” style, 
-   you could add:
-   text-transform: uppercase;
-   letter-spacing: 1px;
-   But keep it consistent with your brand aesthetic.
-*/
-
 
 @media (max-width: 1050px) {
   /* Let body & html scroll on mobile instead of being locked */

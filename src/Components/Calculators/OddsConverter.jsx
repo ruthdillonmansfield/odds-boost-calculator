@@ -8,32 +8,32 @@ const conversionTypes = [
   {
     value: "fractionalToDecimal",
     label: "Fractional → Decimal",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>5/2 →</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>5/2 → 3.5</span>,
   },
   {
     value: "decimalToFractional",
     label: "Decimal → Fractional",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>2.50 →</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>3.5 → 5/2</span>,
   },
   {
     value: "fractionalToAmerican",
     label: "Fractional → American",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>5/2 → +</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>5/2 → +250</span>,
   },
   {
     value: "americanToFractional",
     label: "American → Fractional",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>+150 →</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>+250 → 5/2</span>,
   },
   {
     value: "decimalToAmerican",
     label: "Decimal → American",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>2.50 →</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>3.5 → +250</span>,
   },
   {
     value: "americanToDecimal",
     label: "American → Decimal",
-    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>+150 →</span>,
+    Icon: () => <span style={{ fontSize: "20px", color: "#00aaff" }}>+250 → 3.5</span>,
   },
 ];
 
@@ -214,8 +214,12 @@ const OddsConverter = () => {
             marginTop: "20px",
           }}
         >
-          <span className="label">Converted Odds:</span>
+        <h5 className="outcome-main">
+        <span className="label">Converted Odds:</span>
+          </h5>
+          <h5 className="outcome-main">
           <span className="value">{result}</span>
+          </h5>
           {copied ? (
             <ClipboardCheck size={22} color="#edff00" />
           ) : (

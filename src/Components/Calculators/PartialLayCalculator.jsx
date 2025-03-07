@@ -285,12 +285,14 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
       marginTop: "20px",
     }}
   >
+    <h5 className="outcome-main">
     <span>
       Suggested Additional Lay: £
       {typeof suggestedAdditionalLay === "number"
         ? suggestedAdditionalLay.toFixed(2)
         : "0.00"}
     </span>
+    </h5>
     {copiedAdditional ? (
       <ClipboardCheck size={24} color="#edff00" />
     ) : (

@@ -255,8 +255,8 @@ const AdvancedOddsBoostCalculator = () => {
           className="result-box"
           style={{ display: "flex", justifyContent: "space-between" }}
         >
-          <span>Boosted Odds:</span>
-          <span>{formatNumber(boostedOdds, 3)}</span>
+          <h5 className="outcome-primary"><span>Boosted Odds:</span></h5>
+          <h5 className="outcome-primary"><span>{formatNumber(boostedOdds, 3)}</span></h5>
         </div>
       )}
 
@@ -318,7 +318,7 @@ const AdvancedOddsBoostCalculator = () => {
             marginTop: "20px",
           }}
         >
-          <span>You could lay: {getLayStakeLabel()}</span>
+          <h5 className="outcome-main"><span>You could lay: {getLayStakeLabel()}</span></h5>
           {copied ? (
             <ClipboardCheck size={24} color="#edff00" />
           ) : (
@@ -329,7 +329,9 @@ const AdvancedOddsBoostCalculator = () => {
 
       {isValid && guaranteedProfit !== "" && (
         <div className="profit-box">
-          Your Profit: {formatValue(guaranteedProfit)}
+          <h5 className="outcome-main">
+            Your Profit: {formatValue(guaranteedProfit)}
+          </h5>
           <div className="profit-details">
             If bookie wins: {formatValue(calculateProfitIfBookieWins())} <br />
             If bookie loses: {formatValue(calculateProfitIfBookieLoses())}
@@ -353,7 +355,6 @@ const AdvancedOddsBoostCalculator = () => {
                 {formatValue(-breakdown.bookieOutcome.layLoss)}
               </span>
             </div>
-            <div className="outcome-line placeholder"></div>
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">
@@ -377,7 +378,6 @@ const AdvancedOddsBoostCalculator = () => {
                 {formatValue(breakdown.exchangeOutcome.layWin)}
               </span>
             </div>
-            <div className="outcome-line placeholder"></div>
             <div className="outcome-line net-outcome">
               <span className="outcome-label">Net Outcome:</span>
               <span className="outcome-value">

@@ -87,8 +87,12 @@ const FractionalToDecimalConverter = () => {
           }}
           title="Click to copy"
         >
+          <h5 className="outcome-main">
           <span className="label">Decimal Odds:</span>
+          </h5>
+          <h5 className="outcome-main">
           <span className="value">{getDecimalOddsLabel()}</span>
+          </h5>
           {decimalOdds !== null &&
             (copied ? <ClipboardCheck size={22} color="#edff00" /> : <Clipboard size={22} />)}
         </div>

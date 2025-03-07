@@ -26,8 +26,10 @@
 
 .subhead {
   font-size: 16px;
+  line-height: 1.6;
   margin: 5px 0 20px;
   font-weight: normal;
+  color: #aaa;
 }
 
 .with-subhead {
@@ -208,9 +210,24 @@ button:hover {
   margin: 24px 0;
   padding: 16px;
   border-radius: 6px;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 16px;
   color: #00d4ff;
+}
+
+.outcome-main {
+  font-weight: 900;
+  font-size: 20px;
+  margin: 0 !important;
+}
+
+@media (max-width: 470px) {
+  .outcome-main {
+    font-size: 18px;
+  }
+}
+
+.outcome-primary {
+  font-weight: 900;
 }
 
 .result-box.copyable {
@@ -271,7 +288,8 @@ button:hover {
 .group-title {
   margin-top: 0;
   margin-bottom: 12px;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 900;
   color: #fff;
   border-bottom: 1px solid #555;
   padding-bottom: 6px;
@@ -297,13 +315,28 @@ button:hover {
 
 .outcome-label {
   color: #ccc;
+  font-size: 14px;
   margin-right: 8px;
+}
+
+.outcome-info {
+  color: #888;
+  font-style: italic;
 }
 
 .outcome-value {
   font-weight: 600;
+  font-size: 14px;
   text-align: right;
+  min-width: 50px;
 }
+
+@media (max-width: 470px) {
+  .outcome-container {
+    flex-direction: column;
+  }
+}
+
 
 /* =======================================================
    Toggle Switch Styles
@@ -325,7 +358,14 @@ button:hover {
 .toggle-inline {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .toggle-inline {
+    width: 100%;
+  }
 }
 
 .toggle-label {
@@ -490,4 +530,58 @@ button:hover {
 }
 .min-profit-row {
   align-items: flex-end;
+}
+
+
+/* --- Info Icon --- */
+
+
+.info-icon {
+  display: inline-block;
+  position: relative;
+  color: #00aaff;
+  margin-left: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 1px solid #00aaff;
+  border-radius: 50%;
+  width: 13px;
+  height: 13px;
+  text-align: center;
+  line-height: 14px;
+  font-size: 12px;
+}
+
+.info-icon .tooltip-text {
+  visibility: hidden;
+  width: 220px;
+  background-color: #0079b6;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+}
+
+.info-icon .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #00aaff transparent transparent transparent;
+}
+
+.info-icon:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }

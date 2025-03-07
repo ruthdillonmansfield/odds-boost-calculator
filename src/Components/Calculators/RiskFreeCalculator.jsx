@@ -206,7 +206,14 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
       <div className="inline-fields">
         <div className="input-group-inline">
-          <label>Free Bet Amount:</label>
+        <label>Free Bet Amount:
+          <span className="info-icon">
+              i
+              <span className="tooltip-text">
+                What is the value of the free bet you will receive if your back bet loses?
+              </span>
+            </span>
+          </label>
           <div className="input-prefix-suffix only-prefix">
             <span className="prefix">£</span>
             <input
@@ -221,7 +228,15 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
 
         <div className="input-group-inline">
-          <label>Free Bet Retention Rate:</label>
+          <label>
+            Free Bet Retention Rate:
+            <span className="info-icon">
+              i
+              <span className="tooltip-text">
+                This is the percentage of your free bet that you expect to secure as profit. Typically, it's around 80%, but might be 70% for particular types of bets such as bet builders. It can vary based on available markets, liquidity, odds quality and more.
+              </span>
+            </span>
+          </label>
           <div className="input-prefix-suffix only-suffix">
             <input
               type="number"
@@ -234,6 +249,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
             <span className="suffix">%</span>
           </div>
         </div>
+
       </div>
 
       {layStake && (
@@ -243,7 +259,9 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
           title="Click to copy outcome details"
           style={{ cursor: "pointer", display: "flex", justifyContent: "space-between" }}
         >
-          <span>You could lay: {getLayStakeLabel()}</span>
+          <h5 className="outcome-main">
+            <span>You could lay: {getLayStakeLabel()}</span>
+          </h5>
           {copied ? (
             <ClipboardCheck size={24} color="#edff00" />
           ) : (
@@ -254,7 +272,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
 
       {guaranteedProfit !== null && (
         <div className="profit-box">
-          Your Profit: {formatOutcome(guaranteedProfit)}
+          <h5 className="outcome-main"> Your Profit: {formatOutcome(guaranteedProfit)}</h5>
           <div className="profit-details">This is your worst-case outcome.</div>
         </div>
       )}
@@ -264,7 +282,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
           <div className="outcome-group">
             <div className="group-title">If Bookie Wins:</div>
             <div className="outcome-line">
-              <span className="outcome-label">Back Profit:</span>
+              <span className="outcome-label">Back Win:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.bookieOutcome?.backProfit)}
               </span>
@@ -277,7 +295,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
             </div>
             <div className="outcome-line placeholder"></div>
             <div className="outcome-line net-outcome">
-              <span className="outcome-label">Net Outcome:</span>
+              <span className="outcome-label">Net Profit:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.bookieOutcome?.net)}
               </span>
@@ -298,14 +316,14 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
               </span>
             </div>
             <div className="outcome-line">
-              <span className="outcome-label">Free Bet Refund:</span>
+              <span className="outcome-label">Free Bet:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.exchangeOutcome?.freeBetRefund)}
               </span>
             </div>
 
             <div className="outcome-line net-outcome">
-              <span className="outcome-label">Net Outcome:</span>
+              <span className="outcome-label">Net Profit:</span>
               <span className="outcome-value">
                 {formatOutcome(breakdownData.exchangeOutcome?.net)}
               </span>

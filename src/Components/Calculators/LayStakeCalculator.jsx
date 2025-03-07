@@ -269,7 +269,7 @@ const LayStakeCalculator = () => {
             marginTop: "20px"
           }}
         >
-          <span>You could lay: {getLayStakeLabel()}</span>
+          <h5 className="outcome-main"><span>You could lay: {getLayStakeLabel()}</span></h5>
           {copied ? (
             <ClipboardCheck size={24} color="#edff00" />
           ) : (
@@ -280,16 +280,17 @@ const LayStakeCalculator = () => {
 
       {isValid && guaranteedProfit !== "" && (
         <div className="profit-box">
-          Your Profit:{" "}
+          <h5 className="outcome-primary">Your Profit:{" "}
           {guaranteedProfit >= 0 ? (
             <span className="positive"> £{guaranteedProfit.toFixed(2)}</span>
           ) : (
             <span className="negative">-£{Math.abs(guaranteedProfit).toFixed(2)}</span>
           )}
+          </h5>
           <div className="profit-details">
             If bookie wins: {calculateProfitIfBookieWins() !== null && formatValue(calculateProfitIfBookieWins())}
             <br />
-            If bookie loses: {calculateProfitIfBookieLoses() !== null && formatValue(calculateProfitIfBookieLoses())}
+            If exchange wins: {calculateProfitIfBookieLoses() !== null && formatValue(calculateProfitIfBookieLoses())}
           </div>
         </div>
       )}

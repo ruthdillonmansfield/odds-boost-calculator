@@ -96,8 +96,12 @@ const OddsBoostCalculator = () => {
             marginTop: "20px"
           }}
         >
-          <span className="label">Boosted Odds:</span>
-          <span className="value">{getBoostedOddsLabel()}</span>
+          <h5 className="outcome-main">
+            <span className="label">Boosted Odds:</span>
+          </h5>
+          <h5 className="outcome-main">
+            <span className="value">{getBoostedOddsLabel()}</span>
+          </h5>
           {boostedOdds !== null &&
             (copied ? <ClipboardCheck size={22} color="#edff00" /> : <Clipboard size={22} />)}
         </div>

@@ -91,8 +91,14 @@ const DecimalToFractionalConverter = () => {
             marginTop: "20px"
           }}
         >
-          <span className="label">Fractional Odds:</span>
-          <span className="value">{fractionalOdds}</span>
+          <h5 className="outcome-main">
+            <span className="label">Fractional Odds:</span>
+          </h5>
+          <h5 className="outcome-main">
+            <span className="value">{fractionalOdds}</span>
+          </h5>
+          
+          
           {fractionalOdds &&
             (copied ? (
               <ClipboardCheck size={22} color="#edff00" />
