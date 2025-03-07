@@ -120,8 +120,8 @@ const ExplanationComponent = () => {
           {/* 3) Disclaimer remains in .use-cta */}
           <div className="use-cta disclaimer">
             <p>
-              <strong>Disclaimer:</strong> These calculators are for informational purposes only.
-              I don't guarantee their accuracy or completeness. Always gamble responsibly.
+              <strong>Disclaimer:</strong> This website is a personal project. Calculators displayed are for entertainment purposes only.
+              Their accuracy or completeness is not guaranteed. Always gamble responsibly.
             </p>
           </div>
         </div>
