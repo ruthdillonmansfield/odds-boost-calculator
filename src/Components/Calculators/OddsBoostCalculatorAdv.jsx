@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber, formatMoney } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const formatValue = (value) => {
   if (value === null) return "";
@@ -33,6 +35,8 @@ const isInputValid = (stake, odds, layOdds) => {
 };
 
 const AdvancedOddsBoostCalculator = () => {
+  const meta = seoConfig["AdvancedOddsBoostCalculator"] || {};
+
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);
   const [odds, setOdds] = useState("");
@@ -180,6 +184,11 @@ const AdvancedOddsBoostCalculator = () => {
   const guaranteedProfit = getGuaranteedProfit();
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title with-subhead">Lay Stake Calculator</h2>
       <h4 className="subhead">
@@ -379,6 +388,7 @@ const AdvancedOddsBoostCalculator = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { formatNumber, formatMoney } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const conversionTypes = [
   {
@@ -78,6 +79,8 @@ const americanToDecimal = (american) => {
 };
 
 const OddsConverter = () => {
+    const meta = seoConfig["OddsConverter"] || {};
+
   const [inputOdds, setInputOdds] = useState("");
   const [numerator, setNumerator] = useState("");
   const [denominator, setDenominator] = useState("");
@@ -128,6 +131,11 @@ const OddsConverter = () => {
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title">Odds Converter</h2>
 
@@ -216,6 +224,7 @@ const OddsConverter = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

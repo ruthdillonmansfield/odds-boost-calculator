@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./calculators.css";
-import { formatNumber, formatMoney } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const RiskFreeEBOCalculator = () => {
+  const meta = seoConfig["RiskFreeEBOCalculator"] || {};
+
   const [stake, setStake] = useState("");
   const [riskFreeAmount, setRiskFreeAmount] = useState("");
   const [retention, setRetention] = useState("");
@@ -110,6 +113,12 @@ const RiskFreeEBOCalculator = () => {
   );
 
   return (
+  <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
+    
     <div className="container">
       <h2 className="title">Risk-Free Advantage Play Calculator</h2>
 
@@ -278,6 +287,7 @@ const RiskFreeEBOCalculator = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

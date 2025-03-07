@@ -2,8 +2,11 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
-
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 const RiskFreeBetCalculator = () => {
+  const meta = seoConfig["RiskFreeBetCalculator"] || {};
+
   const [backOdds, setBackOdds] = useState("");
   const [stake, setStake] = useState("");
   const [layOdds, setLayOdds] = useState("");
@@ -133,6 +136,11 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title with-subhead">Risk-Free Bet Calculator</h2>
       <h4 className="subhead">Lock in profit and find your lay stake</h4>
@@ -306,6 +314,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
         </div>
       )}
     </div>
+    </>
   );
 };
 

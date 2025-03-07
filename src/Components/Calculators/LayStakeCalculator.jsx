@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const LayStakeCalculator = () => {
+  const meta = seoConfig["LayStakeCalculator"] || {};
+
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);
   const [backOdds, setBackOdds] = useState("");
@@ -168,6 +172,11 @@ const LayStakeCalculator = () => {
   const breakdown = buildBreakdown();
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title with-subhead">Lay Stake Calculator</h2>
       <h4 className="subhead">Work out how much you could lay</h4>
@@ -324,6 +333,7 @@ const LayStakeCalculator = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

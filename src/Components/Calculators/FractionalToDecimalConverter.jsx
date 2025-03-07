@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const FractionalToDecimalConverter = () => {
+  const meta = seoConfig["FractionalToDecimalConverter"] || {};
+
   const [numerator, setNumerator] = useState("");
   const [denominator, setDenominator] = useState("");
   const [decimalOdds, setDecimalOdds] = useState(null);
@@ -41,6 +45,11 @@ const FractionalToDecimalConverter = () => {
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title">Fractional to Decimal Odds Converter</h2>
       <div className="inline-fields">
@@ -85,6 +94,7 @@ const FractionalToDecimalConverter = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

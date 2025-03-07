@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { formatNumber } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const convertDecimalToFraction = (decimal) => {
+
   if (isNaN(decimal) || decimal <= 1) return "";
   const frac = decimal - 1;
   const tolerance = 1.0e-6;
@@ -27,6 +29,8 @@ const convertDecimalToFraction = (decimal) => {
 };
 
 const DecimalToFractionalConverter = () => {
+    const meta = seoConfig["DecimalToFractionalConverter"] || {};
+
   const [decimalOdds, setDecimalOdds] = useState("");
   const [fractionalOdds, setFractionalOdds] = useState("");
   const [copied, setCopied] = useState(false);
@@ -54,6 +58,11 @@ const DecimalToFractionalConverter = () => {
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title">Decimal to Fractional Odds Converter</h2>
       <div className="inline-fields" style={{ justifyContent: "center" }}>
@@ -93,6 +102,7 @@ const DecimalToFractionalConverter = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

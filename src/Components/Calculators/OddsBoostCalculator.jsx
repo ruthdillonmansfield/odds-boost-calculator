@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber } from "../../helpers.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const OddsBoostCalculator = () => {
+  const meta = seoConfig["OddsBoostCalculator"] || {};
+
   const [odds, setOdds] = useState("");
   const [boost, setBoost] = useState(10);
   const [boostedOdds, setBoostedOdds] = useState(null);
@@ -45,6 +49,11 @@ const OddsBoostCalculator = () => {
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title">Decimal Odds Boost Calculator</h2>
       <div className="inline-fields">
@@ -94,6 +103,7 @@ const OddsBoostCalculator = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { formatMoney } from "../../helpers.js";
 import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched } from "./calculations.js";
+import Seo from "../Seo.jsx";
+import seoConfig from "../../config/seoConfig.js";
 
 const PartialLayCalculator = () => {
+  const meta = seoConfig["RiskFreeEBOCalculator"] || {};
+
   const [backStake, setBackStake] = useState("");
   const [backOdds, setBackOdds] = useState("");
   const [freeBet, setFreeBet] = useState(false);
@@ -152,6 +155,11 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
   };
 
   return (
+    <>
+    <Seo 
+        title={meta.title} 
+        description={meta.description} 
+      />
     <div className="container">
       <h2 className="title">Partial Lay Calculator</h2>
       <div className="inline-fields">
@@ -323,6 +331,7 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
         </div>
       </div>
     </div>
+    </>
   );
 };
 
