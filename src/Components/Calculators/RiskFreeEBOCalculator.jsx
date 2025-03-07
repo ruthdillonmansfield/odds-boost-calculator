@@ -120,8 +120,8 @@ const RiskFreeEBOCalculator = () => {
       />
     
     <div className="container">
-      <h2 className="title">Risk-Free Advantage Play Calculator</h2>
-
+      <h2 className="title with-subhead">Risk-Free Advantage Play Calculator</h2>
+      <h4 className="subhead">For help deciding whether to AP, lock-in or decline a risk-free bet.</h4>
       <div className="inline-fields lay-row">
         <div className="input-group-inline">
           <label>Stake:</label>

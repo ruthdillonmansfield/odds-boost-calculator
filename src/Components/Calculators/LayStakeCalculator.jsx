@@ -179,7 +179,7 @@ const LayStakeCalculator = () => {
       />
     <div className="container">
       <h2 className="title with-subhead">Lay Stake Calculator</h2>
-      <h4 className="subhead">Work out how much you could lay</h4>
+      <h4 className="subhead">Work out how much you could lay.</h4>
 
       <div className="bet-type-headline">
         <div className="toggle-inline">

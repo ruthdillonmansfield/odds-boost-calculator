@@ -192,7 +192,7 @@ const AdvancedOddsBoostCalculator = () => {
     <div className="container">
       <h2 className="title with-subhead">Lay Stake Calculator</h2>
       <h4 className="subhead">
-        Work out how much you could lay when your back bet is boosted
+        Work out how much you could lay when your back bet is boosted.
       </h4>
 
       <div className="bet-type-headline">

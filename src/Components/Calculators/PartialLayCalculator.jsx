@@ -161,7 +161,8 @@ setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
         description={meta.description} 
       />
     <div className="container">
-      <h2 className="title">Partial Lay Calculator</h2>
+      <h2 className="title with-subhead">Partial Lay Calculator</h2>
+      <h4 className="subhead">Lock in profit when you'll need to lay partially at multiple odds.</h4>
       <div className="inline-fields">
         <div className="input-group-inline">
           <label>Back Bet Stake:</label>
