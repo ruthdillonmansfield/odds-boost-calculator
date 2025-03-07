@@ -91,7 +91,6 @@
 /* Each input group: half the container width minus a smaller gap */
 .input-group-inline {
   flex: 1 1 calc(50% - 8px);
-  min-width: 140px; /* ensures columns don't get too small on desktop */
   text-align: left;
 }
 
@@ -119,6 +118,14 @@ input {
 input:focus {
   border-color: #00aaff;
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
+}
+
+.locked input {
+  background: #001722;
+}
+.partial-row.locked input,
+.partial-row.locked .input-prefix-suffix input {
+  background-color: #001722 !important;
 }
 
 /* =======================================================
@@ -188,6 +195,14 @@ button:hover {
   background: #0088cc;
 }
 
+.frozen {
+  background: #888;
+}
+.frozen:hover {
+  background: #888;
+  cursor: not-allowed;
+}
+
 /* =======================================================
    Result & Profit Box Styling
 ========================================================= */
@@ -214,8 +229,7 @@ button:hover {
   border-radius: 6px;
   padding: 16px;
   margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
+  font-size: 18px;
   color: white;
 }
 
@@ -272,6 +286,7 @@ button:hover {
 .outcome-line {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 4px 0;
 }
 
@@ -287,7 +302,6 @@ button:hover {
 }
 
 .outcome-label {
-  font-weight: 600;
   color: #ccc;
   margin-right: 8px;
 }
@@ -452,18 +466,32 @@ button:hover {
   font-weight: bold;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 420px) {
   /* For partial lay rows, prevent wrapping so all 3 inputs stay inline */
   .inline-fields.partial-row {
     flex-wrap: nowrap;
   }
-}
 
+}
+@media (min-width: 420px) {
+  .partial-row-trio {
+    display: flex;
+    flex-wrap: nowrap; /* ensure all children stay on the same line */
+    gap: 16px; /* optional, adjust the spacing between children as needed */
+  }
+  .partial-row-trio > * {
+    flex: 1; /* make children take equal width */
+  }
+  .partial-row-trio .input-group-inline{
+    min-width:min-content;
+  }
+}
 /* Make the label a bit smaller or lighter weight than normal */
 .min-profit-row .outcome-label {
   color: #ccc;         /* keep it legible but subdued */
   max-width: 70%;
   text-wrap: auto;
+  font-weight: bold;
 }
 .min-profit-row {
   align-items: flex-end;

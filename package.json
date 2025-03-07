@@ -1,6 +1,7 @@
 {
   "name": "odds-boost-calculator",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -17,7 +18,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "mocha \"src/components/calculators/**/*.test.js\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,6 +41,8 @@
   },
   "devDependencies": {
     "autoprefixer": "^10.4.20",
+    "chai": "^5.2.0",
+    "mocha": "^11.1.0",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.9"
   }

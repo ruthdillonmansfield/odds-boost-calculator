@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import "./Use.css";
-import Footer from "../Footer/Footer";
+import Footer from "../Footer/Footer.jsx";
 import { Zap, Rocket } from "lucide-react";
 
 const ExplanationComponent = () => {

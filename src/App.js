@@ -11,8 +11,8 @@ import PartialLayCalculator from "./Components/Calculators/PartialLayCalculator.
 import OddsBoostCalculatorAdv from "./Components/Calculators/OddsBoostCalculatorAdv.jsx";
 import LayStakeCalculator from "./Components/Calculators/LayStakeCalculator.jsx";
 import RiskFreeCalculator from "./Components/Calculators/RiskFreeCalculator.jsx";
-import Use from "./Components/Use/Use";
-import Sidebar from "./Components/Sidebar/Sidebar";
+import Use from "./Components/Use/Use.jsx";
+import Sidebar from "./Components/Sidebar/Sidebar.js";
 import "./App.css";
 
 function App() {

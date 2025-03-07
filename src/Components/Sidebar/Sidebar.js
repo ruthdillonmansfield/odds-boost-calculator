@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
-import { sidebarCategories } from "./SidebarData"; // from step #1
+import { sidebarCategories } from "./SidebarData.js"; // from step #1
 
 const Sidebar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
