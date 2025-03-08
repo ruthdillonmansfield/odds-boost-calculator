@@ -1,5 +1,5 @@
 // Example icons from lucide-react
-import { Scale, Zap, Rocket, Percent, Calculator, Repeat, Star, AlertTriangle } from "lucide-react";
+import { Scale, Zap, Rocket, ChevronsUp, Calculator, Repeat, Star, AlertTriangle } from "lucide-react";
 
 export const sidebarCategories = [
     {
@@ -45,7 +45,14 @@ export const sidebarCategories = [
             label: "AP",
             sub: "Risk-Free",
             link: "/risk-free-ebo"
-          }
+          },
+{
+          icon: <ChevronsUp size={24} color="#fff" />,
+          label: "Enhanced Odds",
+          sub: "",
+          link: "/enhanced-odds"
+        },
+         
       ]
     },
     {

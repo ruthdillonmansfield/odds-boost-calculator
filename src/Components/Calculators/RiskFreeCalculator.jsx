@@ -233,7 +233,7 @@ Guaranteed Profit: £${guaranteedProfit.toFixed(2)}
             <span className="info-icon">
               i
               <span className="tooltip-text">
-                This is the percentage of your free bet that you expect to secure as profit. Typically, it's around 80%, but might be 70% for particular types of bets such as bet builders. It can vary based on available markets, liquidity, odds quality and more.
+              This is the percentage of your free bet that you expect to secure as profit.
               </span>
             </span>
           </label>

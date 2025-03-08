@@ -65,6 +65,12 @@ const ExplanationComponent = () => {
       <p>This calculator helps you work out how much more to lay at the available odds.</p>
     </div>
   );
+  const enhancedOddsInstructions = (
+    <div>
+      <p>When bookies offer enhanced winnings, sometimes they don't tell you the new odds.</p>
+      <p>Use this calculator to work out the original odds.</p>
+    </div>
+  );
   
 
   // Map instructions
@@ -77,7 +83,8 @@ const ExplanationComponent = () => {
     "/lay-stake-calculator": layStakeCalculatorInstructions,
     "/odds-converter": OddsCalculatorInstructions,
     "/fractional-to-decimal": DecimalToFractionalInstructions,
-    "/partial-lay": partialLayInstructions
+    "/partial-lay": partialLayInstructions,
+    "/enhanced-odds": enhancedOddsInstructions
   };
 
   const calculatorInstructions =

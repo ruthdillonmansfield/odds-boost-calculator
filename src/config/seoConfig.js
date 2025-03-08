@@ -44,6 +44,11 @@ const seoConfig = {
     description:
       'Find the optimum lay stake and potential profit for your matched bets. Free online matched betting calculators for locking in profit.',
   },
+  'EnhancedOddsCalculator': {
+    title: 'Enhanced Odds Calculator | Matched Betting Calculators',
+    description:
+      'Use this calculator to work out the original odds when bookies offer enhanced winnings. Free online matched betting calculators for locking in profit.',
+  },
   '*': {
     title: 'Lay Stake Calculator | Matched Betting Calculators',
     description:
