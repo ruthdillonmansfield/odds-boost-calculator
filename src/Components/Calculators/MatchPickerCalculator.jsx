@@ -74,8 +74,8 @@ const MatchPickerCalculator = () => {
     <>
       <Seo title={meta.title} description={meta.description} />
       <div className="container">
-        <h2 className="title with-subhead">Match Picker Calculator</h2>
-        <h4 className="subhead">Compare match options for qualifying bets</h4>
+        <h2 className="title with-subhead">Match Picker</h2>
+        <h4 className="subhead">Compare lay options when you don't have a matcher tool.</h4>
 
         <div className="inline-fields">
           <div className="input-group-inline">
@@ -137,7 +137,7 @@ const MatchPickerCalculator = () => {
                     type="text"
                     value={entry.match}
                     onChange={(e) => updateEntry(i, "match", e.target.value)}
-                    placeholder="Event e.g. Arsenal v Chelsea"
+                    placeholder="Event Outcome"
                   />
                 </div>
                 <div className="profit-box profit-box-inline" style={{ marginTop: 0 }}>
