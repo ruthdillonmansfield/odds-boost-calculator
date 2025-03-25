@@ -51,7 +51,7 @@ const EnhancedOddsCalculator = () => {
         <h2 className="title">Enhanced Odds Calculator</h2>
         <div className="inline-fields">
           <div className="input-group-inline" style={{ flexBasis: "40%" }}>
-            <label>Stake (£):</label>
+            <label>Stake:</label>
             <div className="input-prefix-suffix only-prefix">
               <span className="prefix">£</span>
               <input
@@ -65,7 +65,7 @@ const EnhancedOddsCalculator = () => {
             </div>
           </div>
           <div className="input-group-inline" style={{ flexBasis: "40%" }}>
-            <label>Total Return (£):</label>
+            <label>Total Return:</label>
             <div className="input-prefix-suffix only-prefix">
               <span className="prefix">£</span>
               <input

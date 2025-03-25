@@ -246,6 +246,21 @@ button:hover {
   color: white;
 }
 
+.profit-box.profit-box-inline {
+  background: rgba(0, 170, 255, 0.1);
+  border: 1px solid #00aaff;
+  border-radius: 6px;
+  padding: 10px;
+  min-width: 60px;
+  margin-top: 20px;
+  font-size: 15px;
+  color: white;
+}
+
+.profit-box-inline .outcome-main {
+  font-size: 18px;
+}
+
 .profit-details {
   font-size: 16px;
   font-weight: normal;
@@ -584,4 +599,12 @@ button:hover {
 .info-icon:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mb-32 {
+  margin-bottom: 32px;
 }

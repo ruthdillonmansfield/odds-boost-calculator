@@ -72,6 +72,12 @@ const ExplanationComponent = () => {
     </div>
   );
   
+  const MatchPickerCalculator = (
+    <div>
+      <p>Compare lay options quickly when you don't have a matcher available.</p>
+    </div>
+  );
+  
 
   // Map instructions
   const instructionsMap = {
@@ -84,7 +90,8 @@ const ExplanationComponent = () => {
     "/odds-converter": OddsCalculatorInstructions,
     "/fractional-to-decimal": DecimalToFractionalInstructions,
     "/partial-lay": partialLayInstructions,
-    "/enhanced-odds": enhancedOddsInstructions
+    "/enhanced-odds": enhancedOddsInstructions,
+    "/match-picker": MatchPickerCalculator
   };
 
   const calculatorInstructions =

@@ -7,6 +7,7 @@ import OddsConverter from "./Components/Calculators/OddsConverter.jsx";
 import RiskFreeEBOCalculator from "./Components/Calculators/RiskFreeEBOCalculator.jsx";
 import PartialLayCalculator from "./Components/Calculators/PartialLayCalculator.jsx";
 import EnhancedOddsCalculator from "./Components/Calculators/EnhancedOddsCalculator.jsx";
+import MatchPickerCalculator from "./Components/Calculators/MatchPickerCalculator.jsx";
 
 
 import OddsBoostCalculatorAdv from "./Components/Calculators/OddsBoostCalculatorAdv.jsx";
@@ -35,6 +36,9 @@ function App() {
             <Route path="/boost-calculator-advanced" element={<OddsBoostCalculatorAdv />} />
             <Route path="/risk-free-calculator" element={<RiskFreeCalculator />} />
             <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
+
+            <Route path="/match-picker" element={<MatchPickerCalculator />} />
+            
             <Route path="*" element={<LayStakeCalculator />} />
           </Routes>
         </main>

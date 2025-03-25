@@ -28,6 +28,12 @@ export const sidebarCategories = [
                 label: "Partial Lay",
                 sub: "",
                 link: "/partial-lay"
+            },
+            {
+                icon: <Calculator size={24} color="#fff" />,
+                label: "Match Picker",
+                sub: "",
+                link: "/match-picker"
             }
         ]
     },
