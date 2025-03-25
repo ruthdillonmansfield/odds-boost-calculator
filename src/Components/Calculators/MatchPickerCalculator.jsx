@@ -56,7 +56,7 @@ const MatchPickerCalculator = () => {
   const formatOutcome = (value) => {
     const formatted = formatMoney(Math.abs(value));
     return (
-      <span className={value >= 0 ? "positive" : "negative"}>
+      <span className={value >= 0 ? "positive" : ""}>
         {value < 0 ? "–" : ""}£{formatted}
       </span>
     );
@@ -169,7 +169,7 @@ const MatchPickerCalculator = () => {
               <span className="info-icon">
                 i
                 <span className="tooltip-text">
-                  How many entries (options) do you want to highlight?
+                  Optional. How many options do you want to highlight?
                 </span>
               </span>
             </label>
@@ -187,7 +187,7 @@ const MatchPickerCalculator = () => {
               <span className="info-icon">
                 i
                 <span className="tooltip-text">
-                  For when you need a combination, such as laying an acca.
+                Optional. For when you need a combination, such as laying an acca. The tool will find the most profitable combination.
                 </span>
               </span>
             </label>
@@ -238,6 +238,7 @@ const MatchPickerCalculator = () => {
               >
                 <div className="input-group-inline">
                   <input
+                    className={`${highlightedEntries.includes(i) ? "green-bottom" : entry.match ? "blue-bottom" : ""}`}
                     type="text"
                     value={entry.match}
                     onChange={(e) =>
