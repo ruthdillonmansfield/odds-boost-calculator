@@ -248,7 +248,11 @@ const MatchPickerCalculator = () => {
                 </div>
                 <div className={`profit-box profit-box-inline ${highlightedEntries.includes(i) ? "highlighted" : ""}`} style={{ marginTop: 0 }}>
                   <h5 className="outcome-main">
-                    {formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))}
+                    {entry.lay && formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))}
+                    {!entry.lay && (<span>
+                      –
+                    </span>)}
+                    
                   </h5>
                 </div>
               </div>
