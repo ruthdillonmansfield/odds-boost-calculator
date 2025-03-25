@@ -16,7 +16,8 @@ const MatchPickerCalculator = () => {
     { match: "", back: "", lay: "" },
     { match: "", back: "", lay: "" },
   ]);
-  const [top, setTop] = useState(1); // Track how many top profit boxes to highlight
+  const [top, setTop] = useState(1); // How many entries should be highlighted (i.e. the size of the combination)
+  const [minOdds, setMinOdds] = useState(1); // New input for min odds
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
@@ -71,26 +72,71 @@ const MatchPickerCalculator = () => {
     setEntries([...entries, { match: "", back: "", lay: "" }]);
   };
 
-  // Calculate the top N profits and apply a class to the corresponding profit boxes
-  const getHighlightedProfits = () => {
-    const profits = entries.map((entry) => getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)));
-    const sortedProfits = [...profits].sort((a, b) => b - a); // Sort profits in descending order
-    const topValue = sortedProfits[top - 1]; // The value of the Nth highest profit
-    const highlightedIndexes = profits
+  // When minOdds is provided, find the best combination of exactly 'top' entries
+  // that meets the product odds >= minOdds and has the highest total worst-case profit.
+  const getHighlightedEntries = () => {
+    const n = entries.length;
+    const minOddsVal = parseFloat(minOdds);
+    let bestCombo = null;
+
+    // Helper function to generate combinations of indices of fixed size (top)
+    const combine = (start, combo) => {
+      if (combo.length === top) {
+        let productOdds = 1;
+        let totalProfit = 0;
+        // Evaluate this combination
+        for (const i of combo) {
+          const entry = entries[i];
+          const back = parseFloat(entry.back);
+          const lay = parseFloat(entry.lay);
+          if (isNaN(back) || isNaN(lay)) return; // Skip invalid entries
+          productOdds *= back;
+          totalProfit += getWorstCaseProfit(back, lay);
+        }
+        if (productOdds >= minOddsVal) {
+          if (bestCombo === null || totalProfit > bestCombo.totalProfit) {
+            bestCombo = { indices: [...combo], totalProfit, productOdds };
+          }
+        }
+        return;
+      }
+      for (let i = start; i < n; i++) {
+        combo.push(i);
+        combine(i + 1, combo);
+        combo.pop();
+      }
+    };
+
+    combine(0, []);
+
+    return bestCombo ? bestCombo.indices : [];
+  };
+
+  // When no minOdds is provided, fall back to highlighting based on individual worst-case profit
+  const getDefaultHighlightedEntries = () => {
+    const profits = entries.map((entry) =>
+      getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay))
+    );
+    const sortedProfits = [...profits].sort((a, b) => b - a);
+    const topValue = sortedProfits[top - 1];
+    return profits
       .map((profit, index) => (profit >= topValue ? index : -1))
       .filter((index) => index !== -1);
-
-    return highlightedIndexes;
   };
+
+  // Use the appropriate highlighting logic
+  const highlightedEntries = minOdds ? getHighlightedEntries() : getDefaultHighlightedEntries();
 
   return (
     <>
       <Seo title={meta.title} description={meta.description} />
       <div className="container">
         <h2 className="title with-subhead">Match Picker</h2>
-        <h4 className="subhead">Compare lay options when you don't have a matcher tool.</h4>
+        <h4 className="subhead">
+          Compare lay options when you don't have a matcher tool.
+        </h4>
 
-        <div className="inline-fields partial-row-trio">
+        <div className="inline-fields">
           <div className="input-group-inline">
             <label>Stake:</label>
             <div className="input-prefix-suffix only-prefix">
@@ -115,19 +161,41 @@ const MatchPickerCalculator = () => {
               <span className="suffix">%</span>
             </div>
           </div>
+        </div>
+        <div className="inline-fields">
           <div className="input-group-inline">
-            <label>Highlight:
-            <span className="info-icon">
-              i
-              <span className="tooltip-text">
-                How many results do you want to highlight?
+            <label>
+              Highlight (Top N):
+              <span className="info-icon">
+                i
+                <span className="tooltip-text">
+                  How many entries (options) do you want to highlight?
+                </span>
               </span>
-            </span>
             </label>
             <input
               type="number"
               value={top}
-              onChange={(e) => setTop(Math.max(1, parseInt(e.target.value)))}
+              onChange={(e) =>
+                setTop(Math.max(1, parseInt(e.target.value)))
+              }
+            />
+          </div>
+          <div className="input-group-inline">
+            <label>
+              Min Odds:
+              <span className="info-icon">
+                i
+                <span className="tooltip-text">
+                  For when you need a combination, such as laying an acca.
+                </span>
+              </span>
+            </label>
+            <input
+              type="number"
+              step="0.01"
+              value={minOdds}
+              onChange={(e) => setMinOdds(e.target.value)}
             />
           </div>
         </div>
@@ -136,7 +204,11 @@ const MatchPickerCalculator = () => {
           <div className="toggle-inline">
             <label className="toggle-label">Free Bet</label>
             <label className="switch">
-              <input type="checkbox" checked={freeBet} onChange={() => setFreeBet(!freeBet)} />
+              <input
+                type="checkbox"
+                checked={freeBet}
+                onChange={() => setFreeBet(!freeBet)}
+              />
               <span className="slider"></span>
             </label>
           </div>
@@ -156,16 +228,26 @@ const MatchPickerCalculator = () => {
         </div>
 
         {entries.map((entry, i) => {
-          const worstCase = getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay));
-          const highlighted = getHighlightedProfits().includes(i) ? "highlighted" : ""; // Apply class if needed
+          const worstCase = getWorstCaseProfit(
+            parseFloat(entry.back),
+            parseFloat(entry.lay)
+          );
+          const highlighted = highlightedEntries.includes(i)
+            ? "highlighted"
+            : "";
           return (
             <div key={i} className="entry-box">
-              <div className="inline-fields" style={{ alignItems: 'flex-end' }}>
+              <div
+                className="inline-fields"
+                style={{ alignItems: "flex-end" }}
+              >
                 <div className="input-group-inline">
                   <input
                     type="text"
                     value={entry.match}
-                    onChange={(e) => updateEntry(i, "match", e.target.value)}
+                    onChange={(e) =>
+                      updateEntry(i, "match", e.target.value)
+                    }
                     placeholder="Event Outcome"
                   />
                 </div>
@@ -182,7 +264,9 @@ const MatchPickerCalculator = () => {
                     type="number"
                     step="0.01"
                     value={entry.back}
-                    onChange={(e) => updateEntry(i, "back", e.target.value)}
+                    onChange={(e) =>
+                      updateEntry(i, "back", e.target.value)
+                    }
                   />
                 </div>
                 <div className="input-group-inline">
@@ -191,7 +275,9 @@ const MatchPickerCalculator = () => {
                     type="number"
                     step="0.01"
                     value={entry.lay}
-                    onChange={(e) => updateEntry(i, "lay", e.target.value)}
+                    onChange={(e) =>
+                      updateEntry(i, "lay", e.target.value)
+                    }
                   />
                 </div>
               </div>
@@ -199,7 +285,11 @@ const MatchPickerCalculator = () => {
           );
         })}
 
-        <button className="add-entry-btn" style={{ padding: "12px" }} onClick={addEntry}>
+        <button
+          className="add-entry-btn"
+          style={{ padding: "12px" }}
+          onClick={addEntry}
+        >
           + Add Entry
         </button>
       </div>
