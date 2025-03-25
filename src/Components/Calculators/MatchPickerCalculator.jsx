@@ -165,7 +165,7 @@ const MatchPickerCalculator = () => {
         <div className="inline-fields">
           <div className="input-group-inline">
             <label>
-              Highlight (Top N):
+              Highlight:
               <span className="info-icon">
                 i
                 <span className="tooltip-text">
@@ -227,16 +227,11 @@ const MatchPickerCalculator = () => {
           )}
         </div>
 
-        {entries.map((entry, i) => {
-          const worstCase = getWorstCaseProfit(
-            parseFloat(entry.back),
-            parseFloat(entry.lay)
-          );
-          const highlighted = highlightedEntries.includes(i)
-            ? "highlighted"
-            : "";
-          return (
-            <div key={i} className="entry-box">
+        <div className="divider" />
+        {entries.map((entry, i) => (
+          <div key={i}>
+            {i !== 0 && <div className="divider" />}
+            <div className="entry-box">
               <div
                 className="inline-fields"
                 style={{ alignItems: "flex-end" }}
@@ -251,13 +246,13 @@ const MatchPickerCalculator = () => {
                     placeholder="Event Outcome"
                   />
                 </div>
-                <div className={`profit-box profit-box-inline ${highlighted}`} style={{ marginTop: 0 }}>
+                <div className={`profit-box profit-box-inline ${highlightedEntries.includes(i) ? "highlighted" : ""}`} style={{ marginTop: 0 }}>
                   <h5 className="outcome-main">
-                    {formatOutcome(worstCase)}
+                    {formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))}
                   </h5>
                 </div>
               </div>
-              <div className="inline-fields mb-32">
+              <div className="inline-fields mb-16">
                 <div className="input-group-inline">
                   <label>Back Odds:</label>
                   <input
@@ -282,8 +277,8 @@ const MatchPickerCalculator = () => {
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
 
         <button
           className="add-entry-btn"

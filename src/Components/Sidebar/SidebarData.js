@@ -1,5 +1,5 @@
 // Example icons from lucide-react
-import { Scale, Zap, Rocket, ChevronsUp, Calculator, Repeat, Star, AlertTriangle } from "lucide-react";
+import { Scale, Zap, Rocket, ChevronsUp, Calculator, Repeat, Star, AlertTriangle, ZoomIn } from "lucide-react";
 
 export const sidebarCategories = [
     {
@@ -30,7 +30,7 @@ export const sidebarCategories = [
                 link: "/partial-lay"
             },
             {
-                icon: <Calculator size={24} color="#fff" />,
+                icon: <ZoomIn size={24} color="#fff" />,
                 label: "Match Picker",
                 sub: "",
                 link: "/match-picker"

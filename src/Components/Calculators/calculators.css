@@ -503,6 +503,12 @@ button:hover {
   border: 1px solid #00ff00 !important;
 }
 
+.divider {
+  border-bottom: 1px solid #ddd;
+  margin: 20px 0;
+}
+
+
 /* --- EV Box styling --- */
 .ev-box {
   margin: 16px auto;
