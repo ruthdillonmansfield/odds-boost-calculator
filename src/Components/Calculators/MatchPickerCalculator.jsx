@@ -16,6 +16,7 @@ const MatchPickerCalculator = () => {
     { match: "", back: "", lay: "" },
     { match: "", back: "", lay: "" },
   ]);
+  const [top, setTop] = useState(1); // Track how many top profit boxes to highlight
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
@@ -70,6 +71,18 @@ const MatchPickerCalculator = () => {
     setEntries([...entries, { match: "", back: "", lay: "" }]);
   };
 
+  // Calculate the top N profits and apply a class to the corresponding profit boxes
+  const getHighlightedProfits = () => {
+    const profits = entries.map((entry) => getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)));
+    const sortedProfits = [...profits].sort((a, b) => b - a); // Sort profits in descending order
+    const topValue = sortedProfits[top - 1]; // The value of the Nth highest profit
+    const highlightedIndexes = profits
+      .map((profit, index) => (profit >= topValue ? index : -1))
+      .filter((index) => index !== -1);
+
+    return highlightedIndexes;
+  };
+
   return (
     <>
       <Seo title={meta.title} description={meta.description} />
@@ -77,7 +90,7 @@ const MatchPickerCalculator = () => {
         <h2 className="title with-subhead">Match Picker</h2>
         <h4 className="subhead">Compare lay options when you don't have a matcher tool.</h4>
 
-        <div className="inline-fields">
+        <div className="inline-fields partial-row-trio">
           <div className="input-group-inline">
             <label>Stake:</label>
             <div className="input-prefix-suffix only-prefix">
@@ -101,6 +114,21 @@ const MatchPickerCalculator = () => {
               />
               <span className="suffix">%</span>
             </div>
+          </div>
+          <div className="input-group-inline">
+            <label>Highlight:
+            <span className="info-icon">
+              i
+              <span className="tooltip-text">
+                How many results do you want to highlight?
+              </span>
+            </span>
+            </label>
+            <input
+              type="number"
+              value={top}
+              onChange={(e) => setTop(Math.max(1, parseInt(e.target.value)))}
+            />
           </div>
         </div>
 
@@ -129,6 +157,7 @@ const MatchPickerCalculator = () => {
 
         {entries.map((entry, i) => {
           const worstCase = getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay));
+          const highlighted = getHighlightedProfits().includes(i) ? "highlighted" : ""; // Apply class if needed
           return (
             <div key={i} className="entry-box">
               <div className="inline-fields" style={{ alignItems: 'flex-end' }}>
@@ -140,7 +169,7 @@ const MatchPickerCalculator = () => {
                     placeholder="Event Outcome"
                   />
                 </div>
-                <div className="profit-box profit-box-inline" style={{ marginTop: 0 }}>
+                <div className={`profit-box profit-box-inline ${highlighted}`} style={{ marginTop: 0 }}>
                   <h5 className="outcome-main">
                     {formatOutcome(worstCase)}
                   </h5>

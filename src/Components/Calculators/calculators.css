@@ -499,6 +499,10 @@ button:hover {
   color: #ff5555;
 }
 
+.highlighted {
+  border: 1px solid #00ff00 !important;
+}
+
 /* --- EV Box styling --- */
 .ev-box {
   margin: 16px auto;
