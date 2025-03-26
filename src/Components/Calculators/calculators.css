@@ -626,3 +626,45 @@ button:hover {
 .mb-32 {
   margin-bottom: 32px;
 }
+
+
+.event-pair-container {
+  background: transparent;        /* no background so it contrasts the inputs */
+  border: 1px dashed #888;       /* dashed border for clarity */
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 20px;           /* space before the next single or event */
+}
+
+
+.event-pair-label {
+  position: absolute;
+  top: -10px;
+  left: 16px;
+  background: #1e1e1e;          /* same color as main container or slightly different */
+  color: #00aaff;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid #00aaff;
+  font-weight: bold;
+}
+
+/* Only applies to the second entry within the same .event-pair-container */
+.event-pair-container .entry-box + .entry-box {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px dashed #444;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;          /* space between the buttons */
+  margin-top: 24px;   /* some vertical space before the buttons */
+  justify-content: center; /* optional: center them horizontally */
+}
+
+.button-group button {
+  flex: 1;            /* each button takes up equal width if you want */
+  max-width: 200px;   /* optional limit so they don't get too wide */
+}
