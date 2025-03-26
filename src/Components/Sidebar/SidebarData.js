@@ -1,5 +1,5 @@
 // Example icons from lucide-react
-import { Scale, Zap, Rocket, ChevronsUp, Calculator, Repeat, Star, AlertTriangle, ZoomIn } from "lucide-react";
+import { Scale, Zap, Rocket, ChevronsUp, Calculator, Repeat, Star, AlertTriangle, ZoomIn, Combine } from "lucide-react";
 
 export const sidebarCategories = [
     {
@@ -34,6 +34,12 @@ export const sidebarCategories = [
                 label: "Match Picker",
                 sub: "",
                 link: "/match-picker"
+            },
+            {
+                icon: <Combine size={24} color="#fff" />,
+                label: "Acca Picker",
+                sub: "",
+                link: "/acca-picker"
             }
         ]
     },

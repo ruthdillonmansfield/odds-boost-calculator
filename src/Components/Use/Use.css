@@ -12,6 +12,7 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .use::-webkit-scrollbar {
   display: none;
 }
@@ -23,19 +24,12 @@
   margin: 0 auto;
 }
 
-/* Sticky footer inside the .use container */
 .use-footer {
-  position: sticky;
-  bottom: 0;
+  bottom: 0; 
+  width: 100%;
   background-color: #1e1e1e;
   z-index: 1;
   border-top: 1px solid #222;
-}
-
-@media (max-width: 1050px) {
-  .use-footer {
-    display: none;
-  }
 }
 
 .headline-with-icon {
@@ -100,7 +94,7 @@ svg {
 
 @media (min-width: 1050px) {
   .use {
-    max-width: 350px;
+    max-width: 450px;
   }
 }
 
@@ -181,4 +175,33 @@ svg {
   font-size: 20px;
   color: #fff;
   line-height: 1.6;
+}
+
+.lg-footer {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 14px;
+  text-align: center;
+  color: #ccc;
+  margin-top: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.lg-footer p {
+  color: #fff;
+}
+
+.lg-footer a {
+  color: #00aaff;
+  text-decoration: none;
+}
+
+.lg-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1050px) {
+  .lg-footer {
+    display: none;
+  }
 }

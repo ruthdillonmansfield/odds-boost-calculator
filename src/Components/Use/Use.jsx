@@ -74,7 +74,15 @@ const ExplanationComponent = () => {
   
   const MatchPickerCalculator = (
     <div>
-      <p>Compare lay options quickly when you don't have a matcher available.</p>
+      <p>Compare lay options quickly when you don't have a matcher available. The picker will highlight the best match available.</p>
+    </div>
+  );
+  const AccaPickerCalculator = (
+    <div>
+      <p>Find the best combination for matched betting accas quickly. The picker will highlight the best combo available that meets the minimum odds requirements.</p>
+      <p>Add single outcomes (ideal for golf or horses), 2-way events (like tennis), or 3-way events (such as football).
+      </p>
+      <p>The picker will only select <strong>one outcome per event</strong> so you can find valid accas.</p>
     </div>
   );
   
@@ -91,7 +99,8 @@ const ExplanationComponent = () => {
     "/fractional-to-decimal": DecimalToFractionalInstructions,
     "/partial-lay": partialLayInstructions,
     "/enhanced-odds": enhancedOddsInstructions,
-    "/match-picker": MatchPickerCalculator
+    "/match-picker": MatchPickerCalculator,
+    "/acca-picker": AccaPickerCalculator
   };
 
   const calculatorInstructions =
@@ -140,7 +149,9 @@ const ExplanationComponent = () => {
             </div>
           </div>
           <footer className="use-footer">
-            <Footer />
+          <div className="lg-footer">
+    <p> Made by <a href="https://ruth-dm.co.uk/?utm_source=odds-calculator&utm_medium=affiliate&utm_campaign=odds-calculator" target="_blank" rel="noopener noreferrer">Ruth Dillon-Mansfield</a></p>
+    </div>
           </footer>
         </aside>
     
