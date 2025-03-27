@@ -1,8 +1,36 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
 import seoConfig from "../../config/seoConfig.js";
+
+// Moved GroupContainer outside the main component to avoid recreating it on every render.
+const GroupContainer = ({ group, children, removeGroup }) => (
+  <div className="group-container" style={{ position: "relative" }}>
+    <button
+      className="group-remove-button"
+      onClick={() => removeGroup(group)}
+      style={{
+        position: "absolute",
+        top: "-10px",
+        right: "-10px",
+        borderRadius: "50%",
+        width: "20px",
+        height: "20px",
+        backgroundColor: "#ff5555",
+        border: "none",
+        color: "#fff",
+        cursor: "pointer",
+        fontWeight: "bold",
+        lineHeight: "20px",
+        padding: 0
+      }}
+    >
+      ×
+    </button>
+    {children}
+  </div>
+);
 
 const AccaPickerCalculator = () => {
   const meta = seoConfig["AccaPickerCalculator"] || {};
@@ -12,6 +40,7 @@ const AccaPickerCalculator = () => {
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);
   const [entries, setEntries] = useState([]);
+  const [nextEntryId, setNextEntryId] = useState(1);
   const [top, setTop] = useState(3);
   const [minOdds, setMinOdds] = useState(4);
   const [nextEventId, setNextEventId] = useState(1);
@@ -46,34 +75,35 @@ const AccaPickerCalculator = () => {
     );
   };
 
-  const updateEntry = (index, field, value) => {
-    const updated = [...entries];
-    updated[index][field] = value;
-    setEntries(updated);
+  const updateEntry = (id, field, value) => {
+    setEntries((prevEntries) =>
+      prevEntries.map((entry) =>
+        entry.id === id ? { ...entry, [field]: value } : entry
+      )
+    );
   };
 
   const addEntry = () => {
-    setEntries([...entries, { match: "", back: "", lay: "", eventId: null }]);
+    setEntries([...entries, { id: nextEntryId, match: "", back: "", lay: "", eventId: null }]);
+    setNextEntryId(nextEntryId + 1);
   };
 
   const addEvent = () => {
     const eventId = nextEventId;
-    setEntries([
-      ...entries,
-      { match: "", back: "", lay: "", eventId },
-      { match: "", back: "", lay: "", eventId },
-    ]);
+    const newEntry1 = { id: nextEntryId, match: "", back: "", lay: "", eventId };
+    const newEntry2 = { id: nextEntryId + 1, match: "", back: "", lay: "", eventId };
+    setEntries([...entries, newEntry1, newEntry2]);
+    setNextEntryId(nextEntryId + 2);
     setNextEventId(nextEventId + 1);
   };
 
   const add3WayEvent = () => {
     const eventId = nextEventId;
-    setEntries([
-      ...entries,
-      { match: "", back: "", lay: "", eventId },
-      { match: "", back: "", lay: "", eventId },
-      { match: "", back: "", lay: "", eventId },
-    ]);
+    const newEntry1 = { id: nextEntryId, match: "", back: "", lay: "", eventId };
+    const newEntry2 = { id: nextEntryId + 1, match: "", back: "", lay: "", eventId };
+    const newEntry3 = { id: nextEntryId + 2, match: "", back: "", lay: "", eventId };
+    setEntries([...entries, newEntry1, newEntry2, newEntry3]);
+    setNextEntryId(nextEntryId + 3);
     setNextEventId(nextEventId + 1);
   };
 
@@ -146,8 +176,7 @@ const AccaPickerCalculator = () => {
         ) {
           grouped.push({
             type: "triple",
-            entries: [current, list[i + 1], list[i + 2]],
-            indices: [i, i + 1, i + 2],
+            entries: [current, list[i + 1], list[i + 2]]
           });
           i += 2;
         } else if (
@@ -156,70 +185,42 @@ const AccaPickerCalculator = () => {
         ) {
           grouped.push({
             type: "pair",
-            entries: [current, list[i + 1]],
-            indices: [i, i + 1],
+            entries: [current, list[i + 1]]
           });
           i += 1;
         } else {
-          grouped.push({ type: "single", entry: current, index: i });
+          grouped.push({ type: "single", entry: current });
         }
       } else {
-        grouped.push({ type: "single", entry: current, index: i });
+        grouped.push({ type: "single", entry: current });
       }
     }
     return grouped;
   };
 
-  const groupedEntries = groupEntries(entries);
+  // Memoize grouping so that the structure remains stable between renders.
+  const groupedEntries = useMemo(() => groupEntries(entries), [entries]);
 
   // Remove an entire group from entries.
   const removeGroup = (group) => {
     setEntries((prevEntries) => {
       if (group.type === "single") {
-        return prevEntries.filter((_, idx) => idx !== group.index);
+        return prevEntries.filter((entry) => entry.id !== group.entry.id);
       } else {
-        const eventId = prevEntries[group.indices[0]].eventId;
+        const eventId = group.entries[0].eventId;
         return prevEntries.filter((entry) => entry.eventId !== eventId);
       }
     });
   };
 
-  // A container for groups that adds a fixed remove (×) button at the top right.
-  const GroupContainer = ({ group, children }) => (
-    <div className="group-container" style={{ position: "relative" }}>
-      <button
-        className="group-remove-button"
-        onClick={() => removeGroup(group)}
-        style={{
-          position: "absolute",
-          top: "-10px",
-          right: "-10px",
-          borderRadius: "50%",
-          width: "20px",
-          height: "20px",
-          backgroundColor: "#ff5555",
-          border: "none",
-          color: "#fff",
-          cursor: "pointer",
-          fontWeight: "bold",
-          lineHeight: "20px",
-          padding: 0
-        }}
-      >
-        ×
-      </button>
-      {children}
-    </div>
-  );
-
-  const renderSingleEntry = (entry, i, placeholder) => {
+  const renderSingleEntry = (entry, placeholder) => {
     return (
-      <div className="entry-box" key={i}>
+      <div className="entry-box" key={entry.id}>
         <div className="inline-fields" style={{ alignItems: "flex-end" }}>
           <div className="input-group-inline">
             <input
               className={
-                highlightedEntries.includes(i)
+                highlightedEntries.includes(entry.id)
                   ? "green-bottom"
                   : entry.match
                   ? "blue-bottom"
@@ -227,13 +228,13 @@ const AccaPickerCalculator = () => {
               }
               type="text"
               value={entry.match}
-              onChange={(e) => updateEntry(i, "match", e.target.value)}
+              onChange={(e) => updateEntry(entry.id, "match", e.target.value)}
               placeholder={placeholder}
             />
           </div>
           <div
             className={`profit-box profit-box-inline ${
-              highlightedEntries.includes(i) ? "highlighted" : ""
+              highlightedEntries.includes(entry.id) ? "highlighted" : ""
             }`}
             style={{ marginTop: 0 }}
           >
@@ -256,7 +257,7 @@ const AccaPickerCalculator = () => {
               type="number"
               step="0.01"
               value={entry.back}
-              onChange={(e) => updateEntry(i, "back", e.target.value)}
+              onChange={(e) => updateEntry(entry.id, "back", e.target.value)}
             />
           </div>
           <div className="input-group-inline">
@@ -265,7 +266,7 @@ const AccaPickerCalculator = () => {
               type="number"
               step="0.01"
               value={entry.lay}
-              onChange={(e) => updateEntry(i, "lay", e.target.value)}
+              onChange={(e) => updateEntry(entry.id, "lay", e.target.value)}
             />
           </div>
         </div>
@@ -273,41 +274,27 @@ const AccaPickerCalculator = () => {
     );
   };
 
-  const renderEventPair = (pairEntries, pairIndices) => {
+  const renderEventPair = (pairEntries) => {
     return (
-      <div className="event-pair-container" key={pairIndices[0]}>
-        {renderSingleEntry(
-          pairEntries[0],
-          pairIndices[0],
-          "Outcome (e.g. Swiatek win)"
-        )}
-        {renderSingleEntry(
-          pairEntries[1],
-          pairIndices[1],
-          "Outcome (e.g. Raducanu win)"
-        )}
+      <div
+        className="event-pair-container"
+        key={`pair-${pairEntries.map((e) => e.id).join("-")}`}
+      >
+        {renderSingleEntry(pairEntries[0], "Outcome (e.g. Swiatek win)")}
+        {renderSingleEntry(pairEntries[1], "Outcome (e.g. Raducanu win)")}
       </div>
     );
   };
 
-  const renderEventTriple = (tripleEntries, tripleIndices) => {
+  const renderEventTriple = (tripleEntries) => {
     return (
-      <div className="event-pair-container" key={tripleIndices[0]}>
-        {renderSingleEntry(
-          tripleEntries[0],
-          tripleIndices[0],
-          "Outcome #1 (e.g. Arsenal win)"
-        )}
-        {renderSingleEntry(
-          tripleEntries[1],
-          tripleIndices[1],
-          "Outcome #2 (e.g. Draw)"
-        )}
-        {renderSingleEntry(
-          tripleEntries[2],
-          tripleIndices[2],
-          "Outcome #3 (e.g. Chelsea win)"
-        )}
+      <div
+        className="event-pair-container"
+        key={`triple-${tripleEntries.map((e) => e.id).join("-")}`}
+      >
+        {renderSingleEntry(tripleEntries[0], "Outcome #1 (e.g. Arsenal win)")}
+        {renderSingleEntry(tripleEntries[1], "Outcome #2 (e.g. Draw)")}
+        {renderSingleEntry(tripleEntries[2], "Outcome #3 (e.g. Chelsea win)")}
       </div>
     );
   };
@@ -366,9 +353,7 @@ const AccaPickerCalculator = () => {
             />
           </div>
           <div className="input-group-inline">
-            <label>
-              Min Odds:
-            </label>
+            <label>Min Odds:</label>
             <input
               type="number"
               step="1"
@@ -407,34 +392,51 @@ const AccaPickerCalculator = () => {
 
         <div className="divider" />
 
-        {groupedEntries.map((group, gIdx) => {
+        {groupedEntries.map((group) => {
+          let groupKey = "";
+          if (group.type === "single") {
+            groupKey = `single-${group.entry.id}`;
+          } else if (group.type === "pair") {
+            groupKey = `pair-${group.entries.map((e) => e.id).join("-")}`;
+          } else if (group.type === "triple") {
+            groupKey = `triple-${group.entries.map((e) => e.id).join("-")}`;
+          }
           return (
-            <div key={gIdx}>
-              {gIdx !== 0 && <div className="divider" />}
-              <GroupContainer group={group}>
+            <div key={groupKey}>
+              <GroupContainer group={group} removeGroup={removeGroup}>
                 {group.type === "single" &&
                   renderSingleEntry(
                     group.entry,
-                    group.index,
                     "Outcome (e.g. Constitution Hill)"
                   )}
-                {group.type === "pair" &&
-                  renderEventPair(group.entries, group.indices)}
-                {group.type === "triple" &&
-                  renderEventTriple(group.entries, group.indices)}
+                {group.type === "pair" && renderEventPair(group.entries)}
+                {group.type === "triple" && renderEventTriple(group.entries)}
               </GroupContainer>
+              <div className="divider" />
             </div>
           );
         })}
 
         <div className="button-group">
-          <button className="add-entry-btn" style={{ padding: "12px" }} onClick={addEntry}>
+          <button
+            className="add-entry-btn"
+            style={{ padding: "12px" }}
+            onClick={addEntry}
+          >
             + Add Single Outcome
           </button>
-          <button className="add-event-btn" style={{ padding: "12px" }} onClick={addEvent}>
+          <button
+            className="add-event-btn"
+            style={{ padding: "12px" }}
+            onClick={addEvent}
+          >
             + Add 2-Way Event
           </button>
-          <button className="add-event-btn" style={{ padding: "12px" }} onClick={add3WayEvent}>
+          <button
+            className="add-event-btn"
+            style={{ padding: "12px" }}
+            onClick={add3WayEvent}
+          >
             + Add 3-Way Event
           </button>
         </div>
