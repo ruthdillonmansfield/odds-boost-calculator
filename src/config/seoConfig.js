@@ -59,6 +59,11 @@ const seoConfig = {
     description:
       "Compare acca options quickly when you don't have a matcher available. Free online matched betting calculators for locking in profit.",
   },
+  'ExtraPlaceMatcherCalculator': {
+    title: 'Extra Place Calculator | Matched Betting Calculators',
+    description:
+      "Assess potential profitability of matched betting on extra place offers. Free online matched betting calculators for locking in profit.",
+  },
   '*': {
     title: 'Lay Stake Calculator | Matched Betting Calculators',
     description:

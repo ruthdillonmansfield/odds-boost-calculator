@@ -48,15 +48,17 @@ const ExplanationComponent = () => {
   const riskFreeEBOInstructions = (
     <div>
       <p>
-        Equivalent Boosted Odds (EBO) reframes risk‐free bets as value bets by converting the risk-free aspect of the bet into an odds boost.
+        Equivalent Boosted Odds (EBO) reframes risk‐free bet offers as value bets by converting the risk-free aspect of the bet into an odds boost.
       </p>
       <p>
-        In other words, treating a risk-free bet as Advantage Play is equivalent to punting a bet at greatly improved odds.
+        In other words, treating a risk-free bet offer as Advantage Play is equivalent to punting a bet at greatly improved odds.
       </p>
       <p>
-        Use this calculator to decide whether to AP, lay it if possible, or skip. 
+        Use this calculator to decide whether to AP, lay it if possible, or skip.</p>
+      <p>
         Use sharp odds or a conservative guess for your true odds.
       </p>
+      <p><strong>Despite the name "risk-free bet" that bookies use, these offers are not entirely risk-free! </strong> Unless your stake is returned as cash, if your first bet loses, your stake is not usually returned in any winnings from the free bet.</p>
     </div>
   );
   const partialLayInstructions = (
@@ -85,6 +87,18 @@ const ExplanationComponent = () => {
       <p>The picker will only select <strong>one outcome per event</strong> so you can find valid accas.</p>
     </div>
   );
+  const ExtraPlaceMatcherCalculator = (
+    <div>
+      <p>Assess the risk vs. reward and theoretical profitability of extra place matched betting.</p>
+      <p>
+        When we matched bet extra place offers, we accept a small potential loss on our lay bet for the chance to make a profit if our selection lands in an extra place.
+      </p>
+      <p>
+        Use this calculator to assess potential profitability by weighing that small loss against the profit opportunity.
+      </p>
+    </div>
+  );
+  
   
 
   // Map instructions
@@ -100,7 +114,8 @@ const ExplanationComponent = () => {
     "/partial-lay": partialLayInstructions,
     "/enhanced-odds": enhancedOddsInstructions,
     "/match-picker": MatchPickerCalculator,
-    "/acca-picker": AccaPickerCalculator
+    "/acca-picker": AccaPickerCalculator,
+    "/extra-place": ExtraPlaceMatcherCalculator
   };
 
   const calculatorInstructions =

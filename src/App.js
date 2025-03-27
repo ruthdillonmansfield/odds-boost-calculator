@@ -10,6 +10,8 @@ import EnhancedOddsCalculator from "./Components/Calculators/EnhancedOddsCalcula
 import AccaPickerCalculator from "./Components/Calculators/AccaPickerCalculator.jsx";
 import MatchPickerCalculator from "./Components/Calculators/MatchPickerCalculator.jsx";
 
+import ExtraPlaceMatcherCalculator from "./Components/Calculators/ExtraPlaceMatcherCalculator.jsx";
+
 
 import OddsBoostCalculatorAdv from "./Components/Calculators/OddsBoostCalculatorAdv.jsx";
 import LayStakeCalculator from "./Components/Calculators/LayStakeCalculator.jsx";
@@ -38,9 +40,10 @@ function App() {
             <Route path="/risk-free-calculator" element={<RiskFreeCalculator />} />
             <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
 
-            <Route path="/match-picker" element={<MatchPickerCalculator />} />
+            <Route path="/extra-place" element={<ExtraPlaceMatcherCalculator />} />
             <Route path="/acca-picker" element={<AccaPickerCalculator />} />
-            
+            <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
+
             <Route path="*" element={<LayStakeCalculator />} />
           </Routes>
         </main>

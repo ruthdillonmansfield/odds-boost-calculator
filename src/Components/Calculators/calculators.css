@@ -20,6 +20,12 @@
   }
 }
 
+@media (max-width: 420px) {
+  .lg {
+    display: none;
+  }
+}
+
 .title {
   font-size: 24px;
   margin-bottom: 20px;
@@ -274,7 +280,7 @@ button:hover {
 }
 
 .negative {
-  color: #ff5555;
+  color: #ffadad;
 }
 
 .glow {

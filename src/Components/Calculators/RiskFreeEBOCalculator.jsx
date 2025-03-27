@@ -172,7 +172,7 @@ const RiskFreeEBOCalculator = () => {
           <span className="info-icon">
               i
               <span className="tooltip-text">
-                This is the percentage of your free bet that you expect to secure as profit.
+                This is the percentage of your free bet that you expect to secure as profit. If your stake would be returned as cash, enter 100%.
               </span>
             </span>
           </label>
