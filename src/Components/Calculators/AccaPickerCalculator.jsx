@@ -1,4 +1,7 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import React from "react";
+import { Clipboard, ClipboardCheck } from "lucide-react";
+
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
@@ -34,6 +37,7 @@ const GroupContainer = ({ group, children, removeGroup }) => (
 const AccaPickerCalculator = () => {
   const meta = pageConfig.accaPickerCalculator?.seo || {};
 
+  // Main calculator state
   const [stake, setStake] = useState(10);
   const [commission, setCommission] = useState(0);
   const [freeBet, setFreeBet] = useState(false);
@@ -43,12 +47,30 @@ const AccaPickerCalculator = () => {
   const [top, setTop] = useState(3);
   const [minOdds, setMinOdds] = useState(4);
   const [nextEventId, setNextEventId] = useState(1);
-  
-  // For overlay
+
+  // Overlay state
   const [showOverlay, setShowOverlay] = useState(false);
+  // Overlay Lay Calculator state (separate from main inputs)
+  const [overlayStake, setOverlayStake] = useState(10);
+  const [overlayCommission, setOverlayCommission] = useState(commission);
+  const [overlayLayOddsOverride, setOverlayLayOddsOverride] = useState("");
+  const [copied, setCopied] = useState(false);
+  const copyToClipboard = () => {
+    if (recommendedLayStakeOverlay !== "") {
+      navigator.clipboard.writeText(recommendedLayStakeOverlay.toString()).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    }
+  };
+  
+  const handleKeyDown = (e) => {
+    if (e.key.toLowerCase() === "c") copyToClipboard();
+  };
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
+  // Functions from your Acca Picker calculations
   const calculateLayStake = (B, LO) => {
     const S = parseFloat(stake);
     if (freeBet && stakeReturned) return (S * B) / (LO - commissionValue);
@@ -71,7 +93,7 @@ const AccaPickerCalculator = () => {
   const formatOutcome = (value) => {
     const formatted = formatMoney(Math.abs(value));
     return (
-      <span className={value >= 0 ? "positive" : ""}>
+      <span className={value >= 0 ? "positive" : "negative"}>
         {value < 0 ? "–" : ""}£{formatted}
       </span>
     );
@@ -85,7 +107,6 @@ const AccaPickerCalculator = () => {
     );
   };
 
-  // Adding entries
   const addEntry = () => {
     setEntries((prev) => [
       ...prev,
@@ -113,13 +134,11 @@ const AccaPickerCalculator = () => {
     setNextEventId((id) => id + 1);
   };
 
-  // Group entries by event
   const groupEntries = (list) => {
     const grouped = [];
     for (let i = 0; i < list.length; i++) {
       const current = list[i];
       if (current.eventId !== null) {
-        // If next two belong to same event => triple
         if (
           i + 2 < list.length &&
           list[i + 1].eventId === current.eventId &&
@@ -130,9 +149,7 @@ const AccaPickerCalculator = () => {
             entries: [current, list[i + 1], list[i + 2]],
           });
           i += 2;
-        }
-        // If next one belongs to same event => pair
-        else if (
+        } else if (
           i + 1 < list.length &&
           list[i + 1].eventId === current.eventId
         ) {
@@ -151,10 +168,8 @@ const AccaPickerCalculator = () => {
     return grouped;
   };
 
-  // Memoized grouping
   const groupedEntries = useMemo(() => groupEntries(entries), [entries]);
 
-  // Remove an entire group
   const removeGroup = (group) => {
     setEntries((prev) => {
       if (group.type === "single") {
@@ -167,19 +182,15 @@ const AccaPickerCalculator = () => {
   };
 
   /**
-   * getBestCombo
-   * Returns an object with { outcomes, productOdds, totalProfit }
-   * or null if no valid combo is found.
+   * getBestCombo returns an object with { outcomes, productOdds, totalProfit }
    */
   const getBestCombo = () => {
     const minOddsVal = parseFloat(minOdds);
-    // Normalize groups => each has .options array
     const groups = groupedEntries
       .map((g) => {
         if (g.type === "single") {
           return { groupId: g.entry.id, options: [g.entry] };
         } else {
-          // pair or triple
           return {
             groupId: g.entries[0].eventId,
             options: g.entries,
@@ -187,12 +198,8 @@ const AccaPickerCalculator = () => {
         }
       })
       .filter((x) => x !== null);
-
     if (groups.length < top) return null;
-
     let bestCombo = null;
-
-    // Step 1: choose 'top' distinct groups
     const groupIndices = [];
     const chooseGroups = (start, combo) => {
       if (combo.length === top) {
@@ -206,8 +213,6 @@ const AccaPickerCalculator = () => {
       }
     };
     chooseGroups(0, []);
-
-    // Step 2: cartesian product of each group's options
     const cartesianProduct = (arrays) => {
       let result = [[]];
       for (const arr of arrays) {
@@ -221,8 +226,6 @@ const AccaPickerCalculator = () => {
       }
       return result;
     };
-
-    // Evaluate each combination
     for (const comboIndices of groupIndices) {
       const optionsArrays = comboIndices.map((idx) => groups[idx].options);
       const combos = cartesianProduct(optionsArrays);
@@ -235,7 +238,6 @@ const AccaPickerCalculator = () => {
           const l = parseFloat(outcome.lay);
           if (isNaN(b) || isNaN(l)) {
             valid = false;
-            return;
           }
           productOdds *= b;
           totalProfit += getWorstCaseProfit(b, l);
@@ -255,7 +257,6 @@ const AccaPickerCalculator = () => {
     return bestCombo;
   };
 
-  // We'll get the best combo once per render
   const bestCombo = useMemo(() => getBestCombo(), [
     entries,
     top,
@@ -267,12 +268,86 @@ const AccaPickerCalculator = () => {
     groupedEntries,
   ]);
 
-  // IDs for highlighting in the UI
   const highlightedEntries = bestCombo
     ? bestCombo.outcomes.map((o) => o.id)
     : [];
 
-  // -- RENDER HELPERS --
+  const combinedBackOdds = bestCombo
+    ? bestCombo.outcomes
+        .reduce((acc, o) => acc * parseFloat(o.back || 1), 1)
+        .toFixed(2)
+    : null;
+  const combinedLayOdds = bestCombo
+    ? bestCombo.outcomes
+        .reduce((acc, o) => acc * parseFloat(o.lay || 1), 1)
+        .toFixed(2)
+    : null;
+
+  // ---- Overlay Lay Calculator Calculations ----
+  const overlayCommissionValue = parseFloat(overlayCommission) / 100 || 0;
+  const overlayBackOdds = parseFloat(combinedBackOdds) || 0;
+  const overlayLayOdds = parseFloat(combinedLayOdds) || 0;
+  const effectiveLayOdds =
+    overlayLayOddsOverride.trim() !== ""
+      ? parseFloat(overlayLayOddsOverride)
+      : overlayLayOdds;
+  
+  // Incorporate free bet / stake returned logic for the overlay recommended lay stake
+  let recommendedLayStakeOverlay = "";
+  if (
+    overlayStake &&
+    overlayBackOdds &&
+    effectiveLayOdds &&
+    effectiveLayOdds - overlayCommissionValue !== 0
+  ) {
+    const S = parseFloat(overlayStake);
+    const B = overlayBackOdds;
+    const LO = effectiveLayOdds;
+    if (freeBet && stakeReturned) {
+      recommendedLayStakeOverlay = ((S * B) / (LO - overlayCommissionValue)).toFixed(2);
+    } else if (freeBet && !stakeReturned) {
+      recommendedLayStakeOverlay = (((B - 1) * S) / (LO - overlayCommissionValue)).toFixed(2);
+    } else {
+      recommendedLayStakeOverlay = ((S * B) / (LO - overlayCommissionValue)).toFixed(2);
+    }
+  }
+  
+  // Profit if Bookie Wins Calculation
+  let profitIfBookieWinsOverlay = "";
+  if (overlayStake && overlayBackOdds && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
+    const S = parseFloat(overlayStake);
+    const B = overlayBackOdds;
+    const LO = effectiveLayOdds;
+    if (freeBet && stakeReturned) {
+      profitIfBookieWinsOverlay = (B * S - (LO - 1) * recommendedLayStakeOverlay).toFixed(2);
+    } else if (freeBet && !stakeReturned) {
+      profitIfBookieWinsOverlay = (((B - 1) * S) - (LO - 1) * recommendedLayStakeOverlay).toFixed(2);
+    } else {
+      profitIfBookieWinsOverlay = (S * (B - 1) - recommendedLayStakeOverlay * (LO - 1)).toFixed(2);
+    }
+  }
+  
+  // Profit if Exchange Wins Calculation
+  let profitIfExchangeWinsOverlay = "";
+  if (overlayStake && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
+    const S = parseFloat(overlayStake);
+    if (freeBet) {
+      profitIfExchangeWinsOverlay = (recommendedLayStakeOverlay * (1 - overlayCommissionValue)).toFixed(2);
+    } else {
+      profitIfExchangeWinsOverlay = (recommendedLayStakeOverlay * (1 - overlayCommissionValue) - S).toFixed(2);
+    }
+  }
+  
+  // Worst Case Profit Calculation
+  let worstCaseProfitOverlay = "";
+  if (profitIfBookieWinsOverlay !== "" && profitIfExchangeWinsOverlay !== "") {
+    worstCaseProfitOverlay = Math.min(
+      parseFloat(profitIfBookieWinsOverlay),
+      parseFloat(profitIfExchangeWinsOverlay)
+    ).toFixed(2);
+  }
+
+  // ---- Render Helpers for entries ----
   const renderSingleEntry = (entry, placeholder) => {
     const isHighlighted = highlightedEntries.includes(entry.id);
     return (
@@ -293,9 +368,7 @@ const AccaPickerCalculator = () => {
           >
             <h5 className="outcome-main">
               {entry.lay
-                ? formatOutcome(
-                    getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay))
-                  )
+                ? formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))
                 : "–"}
             </h5>
           </div>
@@ -347,51 +420,150 @@ const AccaPickerCalculator = () => {
     </div>
   );
 
-  // Combined back/lay odds from the best combo
-  const combinedBackOdds = bestCombo
-    ? bestCombo.outcomes
-        .reduce((acc, o) => acc * parseFloat(o.back || 1), 1)
-        .toFixed(2)
-    : null;
-  const combinedLayOdds = bestCombo
-    ? bestCombo.outcomes
-        .reduce((acc, o) => acc * parseFloat(o.lay || 1), 1)
-        .toFixed(2)
-    : null;
-
   return (
     <>
       <Seo title={meta.title} description={meta.description} />
-
-      {/* 1) Floating Button (only if bestCombo exists) */}
+      
+      {/* Floating Button for Overlay */}
       {bestCombo && (
         <button className="floating-button" onClick={() => setShowOverlay(true)}>
           Show Best Selections
         </button>
       )}
 
-      {/* 2) Overlay Modal */}
+      {/* Overlay Modal */}
       {showOverlay && bestCombo && (
         <div className="overlay">
           <div className="overlay-content m-20">
-            <h3>Best Selections</h3>
+            <h3>Best Combination</h3>
             <div className="best-selections-grid">
-              <div className="grid-header">Event</div>
+              <div className="grid-header first-col">Event</div>
               <div className="grid-header">Back</div>
               <div className="grid-header">Lay</div>
               {bestCombo.outcomes.map((o) => (
-                <>
-                  <div key={`match-${o.id}`}>{o.match || "Untitled"}</div>
-                  <div key={`back-${o.id}`}>{o.back || "–"}</div>
-                  <div key={`lay-${o.id}`}>{o.lay || "–"}</div>
-                </>
+                <React.Fragment key={o.id}>
+                  <div className="first-col">{o.match || "Untitled"}</div>
+                  <div>{o.back || "–"}</div>
+                  <div>{o.lay || "–"}</div>
+                </React.Fragment>
               ))}
             </div>
 
-            <div className="combined-odds">
-              <strong>Combined Back Odds:</strong> {combinedBackOdds}
+            <div className="combined-odds center">
+              Combined Back Odds: <strong>{parseFloat(combinedBackOdds)}</strong>
               <br />
-              <strong>Combined Lay Odds:</strong> {combinedLayOdds}
+              Combined Lay Odds: <strong>{parseFloat(combinedLayOdds)}</strong>
+            </div>
+
+            {/* Lay Calculator Section */}
+            <div className="lay-calculator-section">
+              <h4>Lay Stake Calculator</h4>
+              <div className="inline-fields partial-row-trio">
+                <div className="input-group-inline">
+                  <label>Stake:</label>
+                  <div className="input-prefix-suffix only-prefix">
+                    <span className="prefix">£</span>
+                    <input
+                      type="number"
+                      step="1"
+                      onKeyDown={handleKeyDown}
+                      value={overlayStake}
+                      onChange={(e) => setOverlayStake(e.target.value)}
+                      placeholder="£10.00"
+                    />
+                  </div>
+                </div>
+                <div className="input-group-inline">
+                  <label>Exchange Commission:</label>
+                  <div className="input-prefix-suffix only-suffix">
+                    <input
+                      type="number"
+                      step="1"
+                      onKeyDown={handleKeyDown}
+                      value={overlayCommission}
+                      onChange={(e) => setOverlayCommission(e.target.value)}
+                      placeholder="0"
+                    />
+                    <span className="suffix">%</span>
+                  </div>
+                </div>
+                <div className="input-group-inline">
+                  <label>Use Lay Odds:</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    onKeyDown={handleKeyDown}
+                    value={overlayLayOddsOverride}
+                    onChange={(e) => setOverlayLayOddsOverride(e.target.value)}
+                    placeholder="Optional"
+                  />
+                </div>
+              </div>
+              {recommendedLayStakeOverlay !== "" && (
+                <div
+                  className={`result-box copyable ${copied ? "glow" : ""}`}
+                  onClick={copyToClipboard}
+                  title="Click to copy recommended lay stake"
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: "20px"
+                  }}
+                >
+                  <h5 className="outcome-main">
+                    <span>
+                      You could lay: £{recommendedLayStakeOverlay}
+                    </span>
+                  </h5>
+                  {copied ? (
+                    <ClipboardCheck size={24} color="#edff00" />
+                  ) : (
+                    <Clipboard size={24} color="#00aaff" />
+                  )}
+                </div>
+              )}
+
+              <div
+                className="profit-box copyable center"
+                onClick={copyToClipboard}
+                title="Click to copy recommended lay stake"
+              >
+                <h5 className="outcome-primary">
+                  Your minimum profit would be:{" "}
+                  <span
+                    className={
+                      parseFloat(worstCaseProfitOverlay) >= 0 ? "positive" : "negative"
+                    }
+                  >
+                    £{parseFloat(worstCaseProfitOverlay).toFixed(2)}
+                  </span>
+                </h5>
+                <div className="profit-details">
+                  Profit if bookie wins:{" "}
+                  {profitIfBookieWinsOverlay !== "" && (
+                    <span
+                      className={
+                        parseFloat(profitIfBookieWinsOverlay) >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      £{parseFloat(profitIfBookieWinsOverlay).toFixed(2)}
+                    </span>
+                  )}
+                  <br />
+                  Profit if exchange wins:{" "}
+                  {profitIfExchangeWinsOverlay !== "" && (
+                    <span
+                      className={
+                        parseFloat(profitIfExchangeWinsOverlay) >= 0 ? "positive" : "negative"
+                      }
+                    >
+                      £{parseFloat(profitIfExchangeWinsOverlay).toFixed(2)}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
             <button className="close-overlay-btn" onClick={() => setShowOverlay(false)}>
@@ -536,6 +708,16 @@ const AccaPickerCalculator = () => {
             + Add 3-Way Event
           </button>
         </div>
+        {bestCombo && (<div className="button-group">
+          <button
+            className="add-entry-btn"
+            style={{ padding: "12px", maxWidth: "100%" }}
+            onClick={() => setShowOverlay(true)}
+          >
+          Show Best Selections
+          </button>
+        </div>
+      )}
       </div>
     </>
   );

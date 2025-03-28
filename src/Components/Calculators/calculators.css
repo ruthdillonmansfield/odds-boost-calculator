@@ -295,6 +295,9 @@ button:hover {
   border-bottom: 2px solid #00ff00;
 }
 
+.center {
+  text-align: center;
+}
 /* =======================================================
    Outcome Breakdown Styling
 ========================================================= */
@@ -690,7 +693,7 @@ button:hover {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1001;
-  background: #ff9f1c;
+  background: #00aaff;
   color: #fff;
   border: none;
   padding: 12px 16px;
@@ -776,7 +779,6 @@ button:hover {
   margin-bottom: 16px; /* Spacing before the Close button */
   font-size: 16px;
   color: #fff;
-  text-align: left;
   max-width: 100%;
   margin: 0 auto 16px; /* Center horizontally, space at bottom */
 }
