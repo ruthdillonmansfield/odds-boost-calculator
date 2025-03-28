@@ -108,46 +108,86 @@ const AccaPickerCalculator = () => {
   };
 
   const getHighlightedEntries = () => {
-    const n = entries.length;
     const minOddsVal = parseFloat(minOdds);
+  
+    // Normalize groups so each group always has an options array.
+    const groups = groupedEntries.map((group) => {
+      if (group.type === "single") {
+        return { groupId: group.entry.id, options: [group.entry] };
+      } else if (group.type === "pair" || group.type === "triple") {
+        return { groupId: group.entries[0].eventId, options: group.entries };
+      }
+      return null;
+    }).filter(g => g !== null);
+  
+    // Not enough groups to select 'top' legs.
+    if (groups.length < top) return [];
+  
     let bestCombo = null;
-
-    const combine = (start, combo) => {
+  
+    // First, choose 'top' groups from all available groups.
+    const groupIndices = [];
+    const chooseGroups = (start, combo) => {
       if (combo.length === top) {
-        const usedEvents = {};
-        for (const idx of combo) {
-          const eId = entries[idx].eventId;
-          if (eId !== null) {
-            if (usedEvents[eId]) return;
-            usedEvents[eId] = true;
-          }
-        }
-        let productOdds = 1;
-        let totalProfit = 0;
-        for (const idx of combo) {
-          const { back, lay } = entries[idx];
-          const b = parseFloat(back);
-          const l = parseFloat(lay);
-          if (isNaN(b) || isNaN(l)) return;
-          productOdds *= b;
-          totalProfit += getWorstCaseProfit(b, l);
-        }
-        if (productOdds >= minOddsVal) {
-          if (bestCombo === null || totalProfit > bestCombo.totalProfit) {
-            bestCombo = { indices: [...combo], totalProfit, productOdds };
-          }
-        }
+        groupIndices.push([...combo]);
         return;
       }
-      for (let i = start; i < n; i++) {
+      for (let i = start; i < groups.length; i++) {
         combo.push(i);
-        combine(i + 1, combo);
+        chooseGroups(i + 1, combo);
         combo.pop();
       }
     };
-    combine(0, []);
-    return bestCombo ? bestCombo.indices : [];
+    chooseGroups(0, []);
+  
+    // Helper: get the cartesian product of options arrays.
+    const cartesianProduct = (arrays) => {
+      let result = [[]];
+      for (const arr of arrays) {
+        const temp = [];
+        for (const res of result) {
+          for (const el of arr) {
+            temp.push([...res, el]);
+          }
+        }
+        result = temp;
+      }
+      return result;
+    };
+  
+    for (const groupComboIndices of groupIndices) {
+      // For each chosen group, get the available outcome options.
+      const optionsArrays = groupComboIndices.map(idx => groups[idx].options);
+      // Create all possible combinations picking one outcome per group.
+      const combinations = cartesianProduct(optionsArrays);
+      for (const candidate of combinations) {
+        let productOdds = 1;
+        let totalProfit = 0;
+        let valid = true;
+        candidate.forEach(outcome => {
+          const b = parseFloat(outcome.back);
+          const l = parseFloat(outcome.lay);
+          if (isNaN(b) || isNaN(l)) {
+            valid = false;
+          }
+          productOdds *= b;
+          totalProfit += getWorstCaseProfit(b, l);
+        });
+        if (!valid) continue;
+        if (productOdds >= minOddsVal) {
+          if (bestCombo === null || totalProfit > bestCombo.totalProfit) {
+            bestCombo = {
+              outcomes: candidate,
+              totalProfit,
+              productOdds
+            };
+          }
+        }
+      }
+    }
+    return bestCombo ? bestCombo.outcomes.map(o => o.id) : [];
   };
+  
 
   const getDefaultHighlightedEntries = () => {
     const profits = entries.map((e) =>
