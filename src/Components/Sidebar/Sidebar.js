@@ -23,7 +23,9 @@ const Sidebar = () => {
             <h2 className="category-title">{category.title}</h2>
 
             <div className="calculator-grid">
-              {category.items.map((item, idx) => (
+            {category.items
+              .filter(item => item.link !== "*")
+              .map((item, idx) => (
                 <NavLink
                   key={idx}
                   onClick={handleNavClick}
@@ -35,6 +37,7 @@ const Sidebar = () => {
                   {item.sub && <div className="sub">{item.sub}</div>}
                 </NavLink>
               ))}
+
             </div>
           </div>
         ))}
