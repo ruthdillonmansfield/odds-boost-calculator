@@ -37,7 +37,6 @@ const GroupContainer = ({ group, children, removeGroup }) => (
 const MatchPickerCalculator = () => {
   const meta = pageConfig.matchPickerCalculator?.seo || {};
 
-  // Main calculator state
   const [stake, setStake] = useState(10);
   const [commission, setCommission] = useState(0);
   const [freeBet, setFreeBet] = useState(false);
@@ -48,9 +47,7 @@ const MatchPickerCalculator = () => {
     { match: "", back: "", lay: "" }
   ]);
 
-  // Overlay state
   const [showOverlay, setShowOverlay] = useState(false);
-  // Overlay Lay Calculator state (separate from main inputs)
   const [overlayStake, setOverlayStake] = useState(10);
   const [overlayCommission, setOverlayCommission] = useState(commission);
   const [overlayLayOddsOverride, setOverlayLayOddsOverride] = useState("");
@@ -70,7 +67,6 @@ const MatchPickerCalculator = () => {
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
-  // Functions from your Match Picker calculations
   const calculateLayStake = (B, LO) => {
     const S = parseFloat(stake);
     if (freeBet && stakeReturned) return (S * B) / (LO - commissionValue);
@@ -190,8 +186,6 @@ const MatchPickerCalculator = () => {
     );
   };
 
-// Determine the best match: the entry with the highest worst-case profit
-// and, in case of a tie, prefer the one with the lowest combined lay odds.
 const bestMatch = useMemo(() => {
   let best = null;
   entries.forEach((entry) => {
@@ -199,7 +193,7 @@ const bestMatch = useMemo(() => {
     const l = parseFloat(entry.lay);
     if (!isNaN(b) && !isNaN(l) && b > 1 && l > 1) {
       const profit = getWorstCaseProfit(b, l);
-      const combinedLayOdds = b * l; // Combined lay odds for comparison
+      const combinedLayOdds = b * l; 
       if (
         best === null ||
         profit > best.profit ||
@@ -213,7 +207,6 @@ const bestMatch = useMemo(() => {
 }, [entries, stake, commission, freeBet, stakeReturned]);
 
 
-  // ---- Overlay Lay Calculator Calculations ----
   const overlayCommissionValue = parseFloat(overlayCommission) / 100 || 0;
   const overlayBackOdds = bestMatch ? parseFloat(bestMatch.back) : 0;
   const overlayLayOdds = bestMatch ? parseFloat(bestMatch.lay) : 0;
@@ -273,19 +266,16 @@ const bestMatch = useMemo(() => {
     ).toFixed(2);
   }
 
-  // ---- Render Overlay Section ----
   return (
     <>
       <Seo title={meta.title} description={meta.description} />
       
-      {/* Floating Button for Overlay */}
       {bestMatch && (
         <button className="floating-button" onClick={() => setShowOverlay(true)}>
           Show Best Match
         </button>
       )}
 
-      {/* Overlay Modal */}
       {showOverlay && bestMatch && (
         <div className="overlay">
           <div className="overlay-content m-20">
@@ -301,7 +291,6 @@ const bestMatch = useMemo(() => {
               </React.Fragment>
             </div>
 
-            {/* Lay Calculator Section */}
             <div className="lay-calculator-section">
               <h4>Lay Stake Calculator</h4>
               <div className="inline-fields partial-row-trio">

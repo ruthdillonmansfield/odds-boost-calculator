@@ -167,7 +167,7 @@ const pageConfig = {
       matched: true,
       advantage: false,
       experimental: false,
-      copyable: false,
+      copyable: true,
     },
     sidebar: {
       category: "Lay Calculators",
@@ -197,7 +197,7 @@ const pageConfig = {
       matched: true,
       advantage: false,
       experimental: false,
-      copyable: false,
+      copyable: true,
     },
     sidebar: {
       category: "Lay Calculators",

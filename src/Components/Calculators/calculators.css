@@ -248,7 +248,6 @@ button:hover {
   border: 1px solid #00aaff;
   border-radius: 6px;
   padding: 16px;
-  margin-top: 20px;
   font-size: 18px;
   color: white;
 }
@@ -259,7 +258,6 @@ button:hover {
   border-radius: 6px;
   padding: 10px;
   min-width: 60px;
-  margin-top: 20px;
   font-size: 15px;
   color: white;
 }
@@ -644,11 +642,11 @@ button:hover {
 
 
 .event-pair-container {
-  background: transparent;        /* no background so it contrasts the inputs */
-  border: 1px dashed #888;       /* dashed border for clarity */
+  background: transparent;
+  border: 1px dashed #888;
   border-radius: 6px;
   padding: 16px 16px 0 16px;
-  margin-bottom: 20px;           /* space before the next single or event */
+  margin-bottom: 20px;
 }
 
 
@@ -656,7 +654,7 @@ button:hover {
   position: absolute;
   top: -10px;
   left: 16px;
-  background: #1e1e1e;          /* same color as main container or slightly different */
+  background: #1e1e1e;
   color: #00aaff;
   font-size: 12px;
   padding: 2px 8px;
@@ -665,7 +663,6 @@ button:hover {
   font-weight: bold;
 }
 
-/* Only applies to the second entry within the same .event-pair-container */
 .event-pair-container .entry-box + .entry-box {
   margin-top: 16px;
   border-top: 1px dashed #444;
@@ -673,20 +670,16 @@ button:hover {
 
 .button-group {
   display: flex;
-  gap: 12px;          /* space between the buttons */
-  margin-top: 24px;   /* some vertical space before the buttons */
-  justify-content: center; /* optional: center them horizontally */
+  gap: 12px;
+  margin-top: 24px; 
+  justify-content: center;
 }
 
 .button-group button {
-  flex: 1;            /* each button takes up equal width if you want */
-  max-width: 200px;   /* optional limit so they don't get too wide */
+  flex: 1;
+  max-width: 200px;
 }
 
-
-
-
-/* Floating button */
 .floating-button {
   position: fixed;
   top: 20px;
@@ -713,83 +706,68 @@ button:hover {
 }
 
 .floating-button:hover {
-  background: #e08e17;
+  background: #0088cc;
 }
 
-/* 1) Title inside the overlay content */
 .overlay-content h3 {
   font-size: 20px;
   margin-bottom: 16px;
   color: #fff;
 }
 
-/* 2) Best Selections Grid 
-      Nest this inside .overlay-content so it doesn't conflict elsewhere.
-*/
 .overlay-content .best-selections-grid {
   display: grid;
-  /* The first column for Event is wider, the others narrower */
   grid-template-columns: 1.5fr 1fr 1fr; 
-  margin-bottom: 24px;   /* Spacing below the table */
-  border-radius: 6px;    /* Soft corners */
-  overflow: hidden;      /* Rounds corners on child cells */
-  border: 1px solid #444; /* Outer border */
+  margin-bottom: 24px; 
+  border-radius: 6px; 
+  overflow: hidden;
+  border: 1px solid #444;
 }
 
 .m-20 {
   margin: 20px;
 }
-/* Each cell in the grid */
 .overlay-content .best-selections-grid > div {
   padding: 12px 8px;
   font-size: 16px;
-  background: #2a2a2a;   /* Slightly different from .overlay-content background */
-  border-bottom: 1px solid #444; /* Horizontal dividers */
+  background: #2a2a2a;
+  border-bottom: 1px solid #444;
   display: flex;         
   align-items: center;
-  justify-content: center; /* Center text by default */
+  justify-content: center;
 }
 
-/* Header cells: darker background, bold text */
 .overlay-content .best-selections-grid .grid-header {
   background: #333;
   font-weight: bold;
   justify-content: center;
 }
 
-/* First column: left align text (Event name) */
 .overlay-content .best-selections-grid .first-col {
   justify-content: flex-start; 
-  padding-left: 16px;    /* Extra padding for readability */
+  padding-left: 16px;
 }
 
-/* Remove bottom border on last row (optional if you want a final border) */
 .overlay-content .best-selections-grid > div:last-of-type {
   border-bottom: none;
 }
 
-/* 3) Combined odds box: 
-      Reuse a style similar to .profit-box or .result-box for consistency.
-*/
 .overlay-content .combined-odds {
   background: rgba(0, 170, 255, 0.1);
   border: 1px solid #00aaff;
   border-radius: 6px;
   padding: 12px;
-  margin-bottom: 16px; /* Spacing before the Close button */
+  margin-bottom: 16px; 
   font-size: 16px;
   color: #fff;
   max-width: 100%;
-  margin: 0 auto 16px; /* Center horizontally, space at bottom */
+  margin: 0 auto 16px; 
 }
 
-/* 4) Close button: 
-      Make it full width using your existing global button style.
-*/
 .overlay-content .close-overlay-btn {
   display: block;
   width: 100%;
-  background: #00aaff;  /* Match your global button color */
+  background: #00aaff;
   border: none;
   color: white;
   font-size: 16px;
@@ -797,7 +775,7 @@ button:hover {
   border-radius: 6px;
   cursor: pointer;
   padding: 12px 16px;
-  margin-top: 16px;      /* Some space above the button */
+  margin-top: 16px;
   transition: background 0.3s ease;
 }
 
@@ -805,18 +783,11 @@ button:hover {
   background: #0088cc;
 }
 
-/* 5) Responsive tweaks for small screens */
 @media (max-width: 480px) {
   .overlay-content {
-    padding: 16px; /* Slightly less padding on tiny screens */
+    padding: 16px; 
   }
   .overlay-content .best-selections-grid > div {
     font-size: 14px; 
   }
-  /* If you have many selections or long text, 
-     consider narrower columns:
-     .overlay-content .best-selections-grid {
-       grid-template-columns: 1fr 0.7fr 0.7fr;
-     }
-  */
 }

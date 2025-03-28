@@ -1,56 +1,41 @@
 /* ---------------------------
    Global / Layout Styles
 ---------------------------- */
-
-/* Make html & body occupy the full viewport height */
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* no default scrolling on the entire page */
+  overflow: hidden;
 }
 
-/* Basic reset & background */
 body {
   background-color: #121212;
   color: white;
   font-family: Arial, sans-serif;
 }
 
-/* 
-  The main container: 
-  - left sidebar
-  - main content
-*/
 .app-container {
   display: flex;
   width: 100%;
-  height: 100vh; /* fill the viewport */
-  overflow: hidden; /* no scrollbars on the container itself */
+  height: 100vh;
+  overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Let .content scroll but hide the scrollbar */
 .content {
   flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  
-  /* scrolling but no visible scrollbar */
   overflow-y: scroll;
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .content::-webkit-scrollbar {
-  display: none;            /* Chrome, Safari, Opera */
+  display: none;
 }
 
-/* ...the rest of your .content or global styles remain... */
-
-
-/* Headings */
 h2 {
   font-size: 25px;
   margin-bottom: 10px;
@@ -69,20 +54,18 @@ h5 {
   margin: 0;
 }
 
-/* Example nav styling if you have a top nav somewhere */
 .nav {
   display: flex;
   justify-content: center;
   gap: 20px;
   margin-bottom: 20px;
-  padding: 12px 0;
+  padding: 14px 24px;
   background: #1e1e1e;
   border-radius: 12px;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  padding: 14px 24px;
 }
 .nav-link {
   color: white;
@@ -103,13 +86,11 @@ h5 {
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
 
-/* Prefix/suffix container for currency or % inputs */
 .input-prefix-suffix {
   position: relative;
   display: inline-block;
   width: 100%;
 }
-/* The prefix (left) */
 .prefix {
   position: absolute;
   left: 12px;
@@ -119,7 +100,6 @@ h5 {
   pointer-events: none;
   font-size: 16px;
 }
-/* The suffix (right) */
 .suffix {
   position: absolute;
   right: 12px;
@@ -129,7 +109,6 @@ h5 {
   pointer-events: none;
   font-size: 16px;
 }
-/* Base styling for the input within prefix/suffix container */
 .input-prefix-suffix input {
   width: 100%;
   padding: 10px;
@@ -145,86 +124,73 @@ h5 {
   border-color: #00aaff;
   box-shadow: 0 0 8px rgba(0, 170, 255, 0.5);
 }
-/* If there's only a prefix (e.g. £) */
 .input-prefix-suffix.only-prefix input {
   padding-left: 36px;
   padding-right: 10px;
 }
-/* If there's only a suffix (e.g. %) */
 .input-prefix-suffix.only-suffix input {
   padding-left: 10px;
   padding-right: 36px;
 }
-/* If there's both prefix & suffix */
 .input-prefix-suffix.prefix-suffix input {
   padding-left: 36px;
   padding-right: 36px;
 }
 
-/* Remove default spin buttons in Chrome, Safari, Edge */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-/* Remove default spin buttons in Firefox */
 input[type=number] {
   -moz-appearance: textfield;
 }
 
-
 /* ---------------------------
    Default Heading Styles
 ---------------------------- */
-
-/* For your largest titles (e.g., page headers or calculator names) */
 h1 {
-  font-size: 24px;        /* Large, bold for page-level headers */
-  font-weight: 700;       /* Bold weight for emphasis */
-  margin: 0 0 16px 0;     /* Bottom margin to separate from content */
-  line-height: 1.3;       /* Slightly tighter than normal for headings */
-  color: #00d4ff;         /* White text for a dark background */
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+  color: #00d4ff;
   text-transform: uppercase;
-   letter-spacing: 1px;
+  letter-spacing: 1px;
 }
 
-/* For secondary headers (e.g., major sections) */
 h2 {
-  font-size: 24px;        /* A step down from h1 */
-  font-weight: 600;       /* Still bold, but slightly less than h1 */
-  margin: 24px 0 12px 0;  /* Provide a bit of top margin for spacing from preceding text */
+  font-size: 24px;
+  font-weight: 600;
+  margin: 24px 0 12px 0;
   line-height: 1.4;
   color: #ffffff;
 }
 
-/* For smaller subsection titles (e.g., sub-sections within a calculator) */
 h3 {
-  font-size: 20px;        /* Another step down from h2 */
-  font-weight: 600;       /* Keep consistent boldness across headings */
+  font-size: 20px;
+  font-weight: 600;
   margin: 20px 0 10px 0;
   line-height: 1.4;
   color: #ffffff;
 }
 
 @media (max-width: 1050px) {
-  /* Let body & html scroll on mobile instead of being locked */
   html, body {
     overflow: auto;
     height: auto;
   }
 
-  /* Stack the sidebar and content vertically */
   .app-container {
     flex-direction: column;
     height: auto;
-    overflow: visible; /* allow full scrolling */
+    overflow: visible;
   }
 
-  /* Make .content and .use naturally expand in height */
   .content,
   .use {
     width: 100%;
     height: auto;
-    overflow: visible; /* no hidden overflow here */
+    overflow: visible;
   }
 }

@@ -37,7 +37,6 @@ const GroupContainer = ({ group, children, removeGroup }) => (
 const AccaPickerCalculator = () => {
   const meta = pageConfig.accaPickerCalculator?.seo || {};
 
-  // Main calculator state
   const [stake, setStake] = useState(10);
   const [commission, setCommission] = useState(0);
   const [freeBet, setFreeBet] = useState(false);
@@ -48,9 +47,7 @@ const AccaPickerCalculator = () => {
   const [minOdds, setMinOdds] = useState(4);
   const [nextEventId, setNextEventId] = useState(1);
 
-  // Overlay state
   const [showOverlay, setShowOverlay] = useState(false);
-  // Overlay Lay Calculator state (separate from main inputs)
   const [overlayStake, setOverlayStake] = useState(10);
   const [overlayCommission, setOverlayCommission] = useState(commission);
   const [overlayLayOddsOverride, setOverlayLayOddsOverride] = useState("");
@@ -70,7 +67,6 @@ const AccaPickerCalculator = () => {
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
-  // Functions from your Acca Picker calculations
   const calculateLayStake = (B, LO) => {
     const S = parseFloat(stake);
     if (freeBet && stakeReturned) return (S * B) / (LO - commissionValue);
@@ -181,9 +177,6 @@ const AccaPickerCalculator = () => {
     });
   };
 
-  /**
-   * getBestCombo returns an object with { outcomes, productOdds, totalProfit }
-   */
   const getBestCombo = () => {
     const minOddsVal = parseFloat(minOdds);
     const groups = groupedEntries
@@ -244,7 +237,6 @@ const AccaPickerCalculator = () => {
         });
         if (!valid) continue;
         if (productOdds >= minOddsVal) {
-          // Calculate candidate combined lay odds
           const candidateLayOdds = candidate.reduce(
             (acc, outcome) => acc * parseFloat(outcome.lay),
             1
@@ -323,7 +315,6 @@ const AccaPickerCalculator = () => {
     }
   }
   
-  // Profit if Bookie Wins Calculation
   let profitIfBookieWinsOverlay = "";
   if (overlayStake && overlayBackOdds && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
     const S = parseFloat(overlayStake);
@@ -338,7 +329,6 @@ const AccaPickerCalculator = () => {
     }
   }
   
-  // Profit if Exchange Wins Calculation
   let profitIfExchangeWinsOverlay = "";
   if (overlayStake && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
     const S = parseFloat(overlayStake);
@@ -349,7 +339,6 @@ const AccaPickerCalculator = () => {
     }
   }
   
-  // Worst Case Profit Calculation
   let worstCaseProfitOverlay = "";
   if (profitIfBookieWinsOverlay !== "" && profitIfExchangeWinsOverlay !== "") {
     worstCaseProfitOverlay = Math.min(
@@ -358,7 +347,6 @@ const AccaPickerCalculator = () => {
     ).toFixed(2);
   }
 
-  // ---- Render Helpers for entries ----
   const renderSingleEntry = (entry, placeholder) => {
     const isHighlighted = highlightedEntries.includes(entry.id);
     return (
@@ -435,14 +423,12 @@ const AccaPickerCalculator = () => {
     <>
       <Seo title={meta.title} description={meta.description} />
       
-      {/* Floating Button for Overlay */}
       {bestCombo && (
         <button className="floating-button" onClick={() => setShowOverlay(true)}>
           Show Best Selections
         </button>
       )}
 
-      {/* Overlay Modal */}
       {showOverlay && bestCombo && (
         <div className="overlay">
           <div className="overlay-content m-20">
@@ -466,7 +452,6 @@ const AccaPickerCalculator = () => {
               Combined Lay Odds: <strong>{parseFloat(combinedLayOdds)}</strong>
             </div>
 
-            {/* Lay Calculator Section */}
             <div className="lay-calculator-section">
               <h4>Lay Stake Calculator</h4>
               <div className="inline-fields partial-row-trio">
