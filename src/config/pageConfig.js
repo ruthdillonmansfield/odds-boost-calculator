@@ -455,6 +455,34 @@ const pageConfig = {
       </div>
     ),
   },
+
+  defaultPage: {
+    route: "*",
+    component: LayStakeCalculator,
+    seo: {
+      title: "Lay Stake Calculator | Matched Betting Calculators",
+      description:
+        "Find the optimum lay stake and potential profit for your matched bets. Free online matched betting calculators for locking in profit.",
+    },
+    use: {
+      title: "Lay Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
+    sidebar: {
+      category: "Lay Calculators",
+      icon: <Scale size={24} color="#fff" />,
+      label: "Lay Stake",
+      sub: "",
+    },
+    instructions: createInstructions(
+      <div>
+        <p>Find the optimum lay stake and profit from your matched bets.</p>
+      </div>
+    ),
+  },
 };
 
 export default pageConfig;

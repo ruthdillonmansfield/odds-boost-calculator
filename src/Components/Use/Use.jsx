@@ -10,6 +10,10 @@ const ExplanationComponent = () => {
 
   const currentPage = Object.values(pageConfig).find(
     (page) => page.route === location.pathname
+  ) ? Object.values(pageConfig).find(
+    (page) => page.route === location.pathname
+  ) : Object.values(pageConfig).find(
+    (page) => page.route === "*"
   );
 
   const calculatorInstructions =

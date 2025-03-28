@@ -277,7 +277,7 @@ const RiskFreeEBOCalculator = () => {
 
           <div className="inline-fields">
             <div className="input-group-inline">
-              <label>Lay Odds (Lock-In):</label>
+              <label>Lay Odds:</label>
               <input
                 type="number"
                 step="0.1"
