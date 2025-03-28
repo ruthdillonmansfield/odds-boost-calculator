@@ -190,21 +190,28 @@ const MatchPickerCalculator = () => {
     );
   };
 
-  // Determine the best match: the entry with the highest worst-case profit
-  const bestMatch = useMemo(() => {
-    let best = null;
-    entries.forEach((entry) => {
-      const b = parseFloat(entry.back);
-      const l = parseFloat(entry.lay);
-      if (!isNaN(b) && !isNaN(l) && b > 1 && l > 1) {
-        const profit = getWorstCaseProfit(b, l);
-        if (best === null || profit > best.profit) {
-          best = { ...entry, profit };
-        }
+// Determine the best match: the entry with the highest worst-case profit
+// and, in case of a tie, prefer the one with the lowest combined lay odds.
+const bestMatch = useMemo(() => {
+  let best = null;
+  entries.forEach((entry) => {
+    const b = parseFloat(entry.back);
+    const l = parseFloat(entry.lay);
+    if (!isNaN(b) && !isNaN(l) && b > 1 && l > 1) {
+      const profit = getWorstCaseProfit(b, l);
+      const combinedLayOdds = b * l; // Combined lay odds for comparison
+      if (
+        best === null ||
+        profit > best.profit ||
+        (profit === best.profit && combinedLayOdds < best.combinedLayOdds)
+      ) {
+        best = { ...entry, profit, combinedLayOdds };
       }
-    });
-    return best;
-  }, [entries, stake, commission, freeBet, stakeReturned]);
+    }
+  });
+  return best;
+}, [entries, stake, commission, freeBet, stakeReturned]);
+
 
   // ---- Overlay Lay Calculator Calculations ----
   const overlayCommissionValue = parseFloat(overlayCommission) / 100 || 0;

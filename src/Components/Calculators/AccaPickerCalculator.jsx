@@ -244,14 +244,25 @@ const AccaPickerCalculator = () => {
         });
         if (!valid) continue;
         if (productOdds >= minOddsVal) {
-          if (bestCombo === null || totalProfit > bestCombo.totalProfit) {
+          // Calculate candidate combined lay odds
+          const candidateLayOdds = candidate.reduce(
+            (acc, outcome) => acc * parseFloat(outcome.lay),
+            1
+          );
+          if (
+            bestCombo === null ||
+            totalProfit > bestCombo.totalProfit ||
+            (totalProfit === bestCombo.totalProfit &&
+              candidateLayOdds < bestCombo.combinedLayOdds)
+          ) {
             bestCombo = {
               outcomes: candidate,
               productOdds,
               totalProfit,
+              combinedLayOdds: candidateLayOdds,
             };
           }
-        }
+        }        
       }
     }
     return bestCombo;
