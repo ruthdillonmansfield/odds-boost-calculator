@@ -302,7 +302,7 @@ const RiskFreeEBOCalculator = () => {
           </div>
 
           {lockInProfit !== null && (
-            <div className="result-box" style={{ marginTop: "12px", textAlign: "left" }}>
+            <div className="result-box" style={{ marginTop: "12px", marginBottom: "0px", textAlign: "left" }}>
               <div className="outcome-line">
                 <span className="outcome-label">Lock-In Profit:</span>
                 <span
