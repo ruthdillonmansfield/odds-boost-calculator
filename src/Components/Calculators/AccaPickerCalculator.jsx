@@ -4,7 +4,6 @@ import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
 
-// Moved GroupContainer outside the main component to avoid recreating it on every render.
 const GroupContainer = ({ group, children, removeGroup }) => (
   <div className="group-container" style={{ position: "relative" }}>
     <button
@@ -23,7 +22,7 @@ const GroupContainer = ({ group, children, removeGroup }) => (
         cursor: "pointer",
         fontWeight: "bold",
         lineHeight: "20px",
-        padding: 0
+        padding: 0,
       }}
     >
       ×
@@ -44,6 +43,9 @@ const AccaPickerCalculator = () => {
   const [top, setTop] = useState(3);
   const [minOdds, setMinOdds] = useState(4);
   const [nextEventId, setNextEventId] = useState(1);
+  
+  // For overlay
+  const [showOverlay, setShowOverlay] = useState(false);
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
@@ -83,18 +85,22 @@ const AccaPickerCalculator = () => {
     );
   };
 
+  // Adding entries
   const addEntry = () => {
-    setEntries([...entries, { id: nextEntryId, match: "", back: "", lay: "", eventId: null }]);
-    setNextEntryId(nextEntryId + 1);
+    setEntries((prev) => [
+      ...prev,
+      { id: nextEntryId, match: "", back: "", lay: "", eventId: null },
+    ]);
+    setNextEntryId((id) => id + 1);
   };
 
   const addEvent = () => {
     const eventId = nextEventId;
     const newEntry1 = { id: nextEntryId, match: "", back: "", lay: "", eventId };
     const newEntry2 = { id: nextEntryId + 1, match: "", back: "", lay: "", eventId };
-    setEntries([...entries, newEntry1, newEntry2]);
-    setNextEntryId(nextEntryId + 2);
-    setNextEventId(nextEventId + 1);
+    setEntries((prev) => [...prev, newEntry1, newEntry2]);
+    setNextEntryId((id) => id + 2);
+    setNextEventId((id) => id + 1);
   };
 
   const add3WayEvent = () => {
@@ -102,29 +108,18 @@ const AccaPickerCalculator = () => {
     const newEntry1 = { id: nextEntryId, match: "", back: "", lay: "", eventId };
     const newEntry2 = { id: nextEntryId + 1, match: "", back: "", lay: "", eventId };
     const newEntry3 = { id: nextEntryId + 2, match: "", back: "", lay: "", eventId };
-    setEntries([...entries, newEntry1, newEntry2, newEntry3]);
-    setNextEntryId(nextEntryId + 3);
-    setNextEventId(nextEventId + 1);
+    setEntries((prev) => [...prev, newEntry1, newEntry2, newEntry3]);
+    setNextEntryId((id) => id + 3);
+    setNextEventId((id) => id + 1);
   };
 
-
-  const getDefaultHighlightedEntries = () => {
-    const profits = entries.map((e) =>
-      getWorstCaseProfit(parseFloat(e.back), parseFloat(e.lay))
-    );
-    const sorted = [...profits].sort((a, b) => b - a);
-    const topValue = sorted[top - 1];
-    return profits
-      .map((p, i) => (p >= topValue ? i : -1))
-      .filter((i) => i !== -1);
-  };
-
-
+  // Group entries by event
   const groupEntries = (list) => {
     const grouped = [];
     for (let i = 0; i < list.length; i++) {
       const current = list[i];
       if (current.eventId !== null) {
+        // If next two belong to same event => triple
         if (
           i + 2 < list.length &&
           list[i + 1].eventId === current.eventId &&
@@ -132,16 +127,18 @@ const AccaPickerCalculator = () => {
         ) {
           grouped.push({
             type: "triple",
-            entries: [current, list[i + 1], list[i + 2]]
+            entries: [current, list[i + 1], list[i + 2]],
           });
           i += 2;
-        } else if (
+        }
+        // If next one belongs to same event => pair
+        else if (
           i + 1 < list.length &&
           list[i + 1].eventId === current.eventId
         ) {
           grouped.push({
             type: "pair",
-            entries: [current, list[i + 1]]
+            entries: [current, list[i + 1]],
           });
           i += 1;
         } else {
@@ -153,30 +150,49 @@ const AccaPickerCalculator = () => {
     }
     return grouped;
   };
-  
-  // Memoize grouping so that the structure remains stable between renders.
+
+  // Memoized grouping
   const groupedEntries = useMemo(() => groupEntries(entries), [entries]);
 
-
-  const getHighlightedEntries = () => {
-    const minOddsVal = parseFloat(minOdds);
-  
-    // Normalize groups so each group always has an options array.
-    const groups = groupedEntries.map((group) => {
+  // Remove an entire group
+  const removeGroup = (group) => {
+    setEntries((prev) => {
       if (group.type === "single") {
-        return { groupId: group.entry.id, options: [group.entry] };
-      } else if (group.type === "pair" || group.type === "triple") {
-        return { groupId: group.entries[0].eventId, options: group.entries };
+        return prev.filter((e) => e.id !== group.entry.id);
+      } else {
+        const eventId = group.entries[0].eventId;
+        return prev.filter((e) => e.eventId !== eventId);
       }
-      return null;
-    }).filter(g => g !== null);
-  
-    // Not enough groups to select 'top' legs.
-    if (groups.length < top) return [];
-  
+    });
+  };
+
+  /**
+   * getBestCombo
+   * Returns an object with { outcomes, productOdds, totalProfit }
+   * or null if no valid combo is found.
+   */
+  const getBestCombo = () => {
+    const minOddsVal = parseFloat(minOdds);
+    // Normalize groups => each has .options array
+    const groups = groupedEntries
+      .map((g) => {
+        if (g.type === "single") {
+          return { groupId: g.entry.id, options: [g.entry] };
+        } else {
+          // pair or triple
+          return {
+            groupId: g.entries[0].eventId,
+            options: g.entries,
+          };
+        }
+      })
+      .filter((x) => x !== null);
+
+    if (groups.length < top) return null;
+
     let bestCombo = null;
-  
-    // First, choose 'top' groups from all available groups.
+
+    // Step 1: choose 'top' distinct groups
     const groupIndices = [];
     const chooseGroups = (start, combo) => {
       if (combo.length === top) {
@@ -190,8 +206,8 @@ const AccaPickerCalculator = () => {
       }
     };
     chooseGroups(0, []);
-  
-    // Helper: get the cartesian product of options arrays.
+
+    // Step 2: cartesian product of each group's options
     const cartesianProduct = (arrays) => {
       let result = [[]];
       for (const arr of arrays) {
@@ -205,21 +221,21 @@ const AccaPickerCalculator = () => {
       }
       return result;
     };
-  
-    for (const groupComboIndices of groupIndices) {
-      // For each chosen group, get the available outcome options.
-      const optionsArrays = groupComboIndices.map(idx => groups[idx].options);
-      // Create all possible combinations picking one outcome per group.
-      const combinations = cartesianProduct(optionsArrays);
-      for (const candidate of combinations) {
+
+    // Evaluate each combination
+    for (const comboIndices of groupIndices) {
+      const optionsArrays = comboIndices.map((idx) => groups[idx].options);
+      const combos = cartesianProduct(optionsArrays);
+      for (const candidate of combos) {
         let productOdds = 1;
         let totalProfit = 0;
         let valid = true;
-        candidate.forEach(outcome => {
+        candidate.forEach((outcome) => {
           const b = parseFloat(outcome.back);
           const l = parseFloat(outcome.lay);
           if (isNaN(b) || isNaN(l)) {
             valid = false;
+            return;
           }
           productOdds *= b;
           totalProfit += getWorstCaseProfit(b, l);
@@ -229,48 +245,42 @@ const AccaPickerCalculator = () => {
           if (bestCombo === null || totalProfit > bestCombo.totalProfit) {
             bestCombo = {
               outcomes: candidate,
+              productOdds,
               totalProfit,
-              productOdds
             };
           }
         }
       }
     }
-    return bestCombo ? bestCombo.outcomes.map(o => o.id) : [];
+    return bestCombo;
   };
 
-  const highlightedEntries = minOdds
-    ? getHighlightedEntries()
-    : getDefaultHighlightedEntries();
+  // We'll get the best combo once per render
+  const bestCombo = useMemo(() => getBestCombo(), [
+    entries,
+    top,
+    minOdds,
+    freeBet,
+    stakeReturned,
+    stake,
+    commission,
+    groupedEntries,
+  ]);
 
+  // IDs for highlighting in the UI
+  const highlightedEntries = bestCombo
+    ? bestCombo.outcomes.map((o) => o.id)
+    : [];
 
-
-
-  // Remove an entire group from entries.
-  const removeGroup = (group) => {
-    setEntries((prevEntries) => {
-      if (group.type === "single") {
-        return prevEntries.filter((entry) => entry.id !== group.entry.id);
-      } else {
-        const eventId = group.entries[0].eventId;
-        return prevEntries.filter((entry) => entry.eventId !== eventId);
-      }
-    });
-  };
-
+  // -- RENDER HELPERS --
   const renderSingleEntry = (entry, placeholder) => {
+    const isHighlighted = highlightedEntries.includes(entry.id);
     return (
       <div className="entry-box" key={entry.id}>
         <div className="inline-fields" style={{ alignItems: "flex-end" }}>
           <div className="input-group-inline">
             <input
-              className={
-                highlightedEntries.includes(entry.id)
-                  ? "green-bottom"
-                  : entry.match
-                  ? "blue-bottom"
-                  : ""
-              }
+              className={isHighlighted ? "green-bottom" : entry.match ? "blue-bottom" : ""}
               type="text"
               value={entry.match}
               onChange={(e) => updateEntry(entry.id, "match", e.target.value)}
@@ -278,25 +288,19 @@ const AccaPickerCalculator = () => {
             />
           </div>
           <div
-            className={`profit-box profit-box-inline ${
-              highlightedEntries.includes(entry.id) ? "highlighted" : ""
-            }`}
+            className={`profit-box profit-box-inline ${isHighlighted ? "highlighted" : ""}`}
             style={{ marginTop: 0 }}
           >
             <h5 className="outcome-main">
               {entry.lay
                 ? formatOutcome(
-                    getWorstCaseProfit(
-                      parseFloat(entry.back),
-                      parseFloat(entry.lay)
-                    )
+                    getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay))
                   )
                 : "–"}
             </h5>
           </div>
         </div>
         <div className="inline-fields mb-16">
-
           <div className="input-group-inline input-prefix-suffix only-suffix">
             <input
               type="number"
@@ -305,7 +309,7 @@ const AccaPickerCalculator = () => {
               value={entry.back}
               onChange={(e) => updateEntry(entry.id, "back", e.target.value)}
             />
-              <span className="suffix">Back</span>
+            <span className="suffix">Back</span>
           </div>
           <div className="input-group-inline input-prefix-suffix only-suffix">
             <input
@@ -315,53 +319,88 @@ const AccaPickerCalculator = () => {
               value={entry.lay}
               onChange={(e) => updateEntry(entry.id, "lay", e.target.value)}
             />
-              <span className="suffix">Lay</span>
-              </div>
+            <span className="suffix">Lay</span>
+          </div>
         </div>
       </div>
     );
   };
 
-  const renderSingleEntryGroup = (entry, placeholder) => {
-    return (
-      <div
-        className="event-pair-container"
-        key={entry.id}
-      >
-        {renderSingleEntry(entry, placeholder)}
-      </div>
-    );
-  };
-  
+  const renderSingleEntryGroup = (entry, placeholder) => (
+    <div className="event-pair-container" key={entry.id}>
+      {renderSingleEntry(entry, placeholder)}
+    </div>
+  );
 
-  const renderEventPair = (pairEntries) => {
-    return (
-      <div
-        className="event-pair-container"
-        key={`pair-${pairEntries.map((e) => e.id).join("-")}`}
-      >
-        {renderSingleEntry(pairEntries[0], "Outcome (e.g. Swiatek win)")}
-        {renderSingleEntry(pairEntries[1], "Outcome (e.g. Raducanu win)")}
-      </div>
-    );
-  };
+  const renderEventPair = (pairEntries) => (
+    <div className="event-pair-container" key={`pair-${pairEntries.map((e) => e.id).join("-")}`}>
+      {renderSingleEntry(pairEntries[0], "Outcome (e.g. Swiatek win)")}
+      {renderSingleEntry(pairEntries[1], "Outcome (e.g. Raducanu win)")}
+    </div>
+  );
 
-  const renderEventTriple = (tripleEntries) => {
-    return (
-      <div
-        className="event-pair-container"
-        key={`triple-${tripleEntries.map((e) => e.id).join("-")}`}
-      >
-        {renderSingleEntry(tripleEntries[0], "Outcome #1 (e.g. Arsenal win)")}
-        {renderSingleEntry(tripleEntries[1], "Outcome #2 (e.g. Draw)")}
-        {renderSingleEntry(tripleEntries[2], "Outcome #3 (e.g. Chelsea win)")}
-      </div>
-    );
-  };
+  const renderEventTriple = (tripleEntries) => (
+    <div className="event-pair-container" key={`triple-${tripleEntries.map((e) => e.id).join("-")}`}>
+      {renderSingleEntry(tripleEntries[0], "Outcome #1 (e.g. Arsenal win)")}
+      {renderSingleEntry(tripleEntries[1], "Outcome #2 (e.g. Draw)")}
+      {renderSingleEntry(tripleEntries[2], "Outcome #3 (e.g. Chelsea win)")}
+    </div>
+  );
+
+  // Combined back/lay odds from the best combo
+  const combinedBackOdds = bestCombo
+    ? bestCombo.outcomes
+        .reduce((acc, o) => acc * parseFloat(o.back || 1), 1)
+        .toFixed(2)
+    : null;
+  const combinedLayOdds = bestCombo
+    ? bestCombo.outcomes
+        .reduce((acc, o) => acc * parseFloat(o.lay || 1), 1)
+        .toFixed(2)
+    : null;
 
   return (
     <>
       <Seo title={meta.title} description={meta.description} />
+
+      {/* 1) Floating Button (only if bestCombo exists) */}
+      {bestCombo && (
+        <button className="floating-button" onClick={() => setShowOverlay(true)}>
+          Show Best Selections
+        </button>
+      )}
+
+      {/* 2) Overlay Modal */}
+      {showOverlay && bestCombo && (
+        <div className="overlay">
+          <div className="overlay-content m-20">
+            <h3>Best Selections</h3>
+            <div className="best-selections-grid">
+              <div className="grid-header">Event</div>
+              <div className="grid-header">Back</div>
+              <div className="grid-header">Lay</div>
+              {bestCombo.outcomes.map((o) => (
+                <>
+                  <div key={`match-${o.id}`}>{o.match || "Untitled"}</div>
+                  <div key={`back-${o.id}`}>{o.back || "–"}</div>
+                  <div key={`lay-${o.id}`}>{o.lay || "–"}</div>
+                </>
+              ))}
+            </div>
+
+            <div className="combined-odds">
+              <strong>Combined Back Odds:</strong> {combinedBackOdds}
+              <br />
+              <strong>Combined Lay Odds:</strong> {combinedLayOdds}
+            </div>
+
+            <button className="close-overlay-btn" onClick={() => setShowOverlay(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="container">
         <h2 className="title with-subhead">Acca Picker</h2>
         <h4 className="subhead">
@@ -465,10 +504,7 @@ const AccaPickerCalculator = () => {
             <div key={groupKey}>
               <GroupContainer group={group} removeGroup={removeGroup}>
                 {group.type === "single" &&
-                  renderSingleEntryGroup(
-                    group.entry,
-                    "Outcome (e.g. Constitution Hill)"
-                  )}
+                  renderSingleEntryGroup(group.entry, "Outcome (e.g. Constitution Hill)")}
                 {group.type === "pair" && renderEventPair(group.entries)}
                 {group.type === "triple" && renderEventTriple(group.entries)}
               </GroupContainer>

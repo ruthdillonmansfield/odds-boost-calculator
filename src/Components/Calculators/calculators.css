@@ -679,3 +679,142 @@ button:hover {
   flex: 1;            /* each button takes up equal width if you want */
   max-width: 200px;   /* optional limit so they don't get too wide */
 }
+
+
+
+
+/* Floating button */
+.floating-button {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  background: #ff9f1c;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  max-width: 200px;
+  text-align: center;
+}
+
+@media (max-width: 1050px) {
+  .floating-button {
+    top: 70px;
+  }
+}
+
+.floating-button:hover {
+  background: #e08e17;
+}
+
+/* 1) Title inside the overlay content */
+.overlay-content h3 {
+  font-size: 20px;
+  margin-bottom: 16px;
+  color: #fff;
+}
+
+/* 2) Best Selections Grid 
+      Nest this inside .overlay-content so it doesn't conflict elsewhere.
+*/
+.overlay-content .best-selections-grid {
+  display: grid;
+  /* The first column for Event is wider, the others narrower */
+  grid-template-columns: 1.5fr 1fr 1fr; 
+  margin-bottom: 24px;   /* Spacing below the table */
+  border-radius: 6px;    /* Soft corners */
+  overflow: hidden;      /* Rounds corners on child cells */
+  border: 1px solid #444; /* Outer border */
+}
+
+.m-20 {
+  margin: 20px;
+}
+/* Each cell in the grid */
+.overlay-content .best-selections-grid > div {
+  padding: 12px 8px;
+  font-size: 16px;
+  background: #2a2a2a;   /* Slightly different from .overlay-content background */
+  border-bottom: 1px solid #444; /* Horizontal dividers */
+  display: flex;         
+  align-items: center;
+  justify-content: center; /* Center text by default */
+}
+
+/* Header cells: darker background, bold text */
+.overlay-content .best-selections-grid .grid-header {
+  background: #333;
+  font-weight: bold;
+  justify-content: center;
+}
+
+/* First column: left align text (Event name) */
+.overlay-content .best-selections-grid .first-col {
+  justify-content: flex-start; 
+  padding-left: 16px;    /* Extra padding for readability */
+}
+
+/* Remove bottom border on last row (optional if you want a final border) */
+.overlay-content .best-selections-grid > div:last-of-type {
+  border-bottom: none;
+}
+
+/* 3) Combined odds box: 
+      Reuse a style similar to .profit-box or .result-box for consistency.
+*/
+.overlay-content .combined-odds {
+  background: rgba(0, 170, 255, 0.1);
+  border: 1px solid #00aaff;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px; /* Spacing before the Close button */
+  font-size: 16px;
+  color: #fff;
+  text-align: left;
+  max-width: 100%;
+  margin: 0 auto 16px; /* Center horizontally, space at bottom */
+}
+
+/* 4) Close button: 
+      Make it full width using your existing global button style.
+*/
+.overlay-content .close-overlay-btn {
+  display: block;
+  width: 100%;
+  background: #00aaff;  /* Match your global button color */
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 12px 16px;
+  margin-top: 16px;      /* Some space above the button */
+  transition: background 0.3s ease;
+}
+
+.overlay-content .close-overlay-btn:hover {
+  background: #0088cc;
+}
+
+/* 5) Responsive tweaks for small screens */
+@media (max-width: 480px) {
+  .overlay-content {
+    padding: 16px; /* Slightly less padding on tiny screens */
+  }
+  .overlay-content .best-selections-grid > div {
+    font-size: 14px; 
+  }
+  /* If you have many selections or long text, 
+     consider narrower columns:
+     .overlay-content .best-selections-grid {
+       grid-template-columns: 1fr 0.7fr 0.7fr;
+     }
+  */
+}
