@@ -3,10 +3,10 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched } from "./calculations.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const PartialLayCalculator = () => {
-  const meta = seoConfig["RiskFreeEBOCalculator"] || {};
+  const meta = pageConfig.riskFreeEBOCalculator?.seo || {};
 
   const [backStake, setBackStake] = useState("");
   const [backOdds, setBackOdds] = useState("");

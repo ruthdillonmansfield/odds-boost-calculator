@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const conversionTypes = [
   {
@@ -79,7 +79,7 @@ const americanToDecimal = (american) => {
 };
 
 const OddsConverter = () => {
-    const meta = seoConfig["OddsConverter"] || {};
+    const meta = pageConfig.oddsConverter?.seo || {};
 
   const [inputOdds, setInputOdds] = useState("");
   const [numerator, setNumerator] = useState("");

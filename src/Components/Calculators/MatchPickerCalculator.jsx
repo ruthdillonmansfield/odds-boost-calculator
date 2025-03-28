@@ -2,10 +2,10 @@ import { useState } from "react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const MatchPickerCalculator = () => {
-  const meta = seoConfig["MatchPickerCalculator"] || {};
+  const meta = pageConfig.matchPickerCalculator?.seo || {};
 
   const [stake, setStake] = useState(10);
   const [commission, setCommission] = useState(0);

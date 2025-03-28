@@ -10,23 +10,18 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Header (always rendered, but hidden on desktop via CSS) */}
       <div className="mobile-header">
         <button className="hamburger" onClick={toggleMenu}>
           {menuOpen ? "✖" : "☰"}
         </button>
       </div>
-
-      {/* Sidebar overlay (slides in on mobile) */}
       <aside className={`sidebar ${menuOpen ? "active" : ""}`}>
         <h1 className="site-title">Matched Betting Calculators</h1>
 
         {sidebarCategories.map((category, catIdx) => (
           <div key={catIdx} className="category-section">
-            {/* Optional category heading */}
             <h2 className="category-title">{category.title}</h2>
 
-            {/* The grid of squares */}
             <div className="calculator-grid">
               {category.items.map((item, idx) => (
                 <NavLink

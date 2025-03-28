@@ -3,10 +3,10 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const EnhancedOddsCalculator = () => {
-  const meta = seoConfig["EnhancedOddsCalculator"] || {};
+  const meta = pageConfig.enhancedOddsCalculator?.seo || {};
 
   const [stake, setStake] = useState("");
   const [returnAmount, setReturnAmount] = useState("");

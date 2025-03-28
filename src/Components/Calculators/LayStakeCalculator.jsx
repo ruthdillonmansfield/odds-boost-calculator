@@ -3,10 +3,10 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const LayStakeCalculator = () => {
-  const meta = seoConfig["LayStakeCalculator"] || {};
+  const meta = pageConfig.layStakeCalculator?.seo || {};
 
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);

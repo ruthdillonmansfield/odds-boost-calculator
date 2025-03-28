@@ -3,10 +3,10 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const OddsBoostCalculator = () => {
-  const meta = seoConfig["OddsBoostCalculator"] || {};
+  const meta = pageConfig.oddsBoostCalculator?.seo || {};
 
   const [odds, setOdds] = useState("");
   const [boost, setBoost] = useState(10);

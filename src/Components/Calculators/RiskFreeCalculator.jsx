@@ -3,9 +3,9 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 const RiskFreeBetCalculator = () => {
-  const meta = seoConfig["RiskFreeBetCalculator"] || {};
+  const meta = pageConfig.riskFreeBetCalculator?.seo || {};
 
   const [backOdds, setBackOdds] = useState("");
   const [stake, setStake] = useState("");

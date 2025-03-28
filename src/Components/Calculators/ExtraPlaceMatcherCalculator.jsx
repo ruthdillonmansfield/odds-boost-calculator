@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./calculators.css";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const calcOutcomeIfBookieWins = (S, B, L, commission) => {
   const commissionValue = commission / 100;
@@ -18,7 +18,7 @@ const calcOutcomeIfExchangeWins = (S, B, L, commission) => {
 };
 
 const ExtraPlaceMatcherCalculator = () => {
-  const meta = seoConfig["ExtraPlaceMatcherCalculator"] || {};
+  const meta = pageConfig.extraPlaceMatcherCalculator?.seo || {};
 
   const [stake, setStake] = useState(20);
   const [backOdds, setBackOdds] = useState();

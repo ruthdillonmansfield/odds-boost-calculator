@@ -1,23 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import OddsBoostCalculator from "./Components/Calculators/OddsBoostCalculator.jsx";
-import FractionalToDecimalConverter from "./Components/Calculators/FractionalToDecimalConverter.jsx";
-import DecimalToFractionalConverter from "./Components/Calculators/DecimalToFractionalConverter.jsx";
-import OddsConverter from "./Components/Calculators/OddsConverter.jsx";
-import RiskFreeEBOCalculator from "./Components/Calculators/RiskFreeEBOCalculator.jsx";
-import PartialLayCalculator from "./Components/Calculators/PartialLayCalculator.jsx";
-import EnhancedOddsCalculator from "./Components/Calculators/EnhancedOddsCalculator.jsx";
-import AccaPickerCalculator from "./Components/Calculators/AccaPickerCalculator.jsx";
-import MatchPickerCalculator from "./Components/Calculators/MatchPickerCalculator.jsx";
-
-import ExtraPlaceMatcherCalculator from "./Components/Calculators/ExtraPlaceMatcherCalculator.jsx";
-
-
-import OddsBoostCalculatorAdv from "./Components/Calculators/OddsBoostCalculatorAdv.jsx";
-import LayStakeCalculator from "./Components/Calculators/LayStakeCalculator.jsx";
-import RiskFreeCalculator from "./Components/Calculators/RiskFreeCalculator.jsx";
-import Use from "./Components/Use/Use.jsx";
+import pageConfig from "./config/pageConfig.js";
 import Sidebar from "./Components/Sidebar/Sidebar.js";
+import Use from "./Components/Use/Use.jsx";
 import Footer from "./Components/Footer/Footer.jsx";
 import "./App.css";
 
@@ -28,27 +13,32 @@ function App() {
         <Sidebar />
         <main className="content">
           <Routes>
-            <Route path="/boost-calculator" element={<OddsBoostCalculator />} />
-            <Route path="/fractional-to-decimal" element={<FractionalToDecimalConverter />} />
-            <Route path="/decimal-to-fractional" element={<DecimalToFractionalConverter />} />
-            <Route path="/enhanced-odds" element={<EnhancedOddsCalculator />} />
-            <Route path="/partial-lay" element={<PartialLayCalculator />} />
-
-            <Route path="/risk-free-ebo" element={<RiskFreeEBOCalculator />} />
-            <Route path="/odds-converter" element={<OddsConverter />} />
-            <Route path="/boost-calculator-advanced" element={<OddsBoostCalculatorAdv />} />
-            <Route path="/risk-free-calculator" element={<RiskFreeCalculator />} />
-            <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
-
-            <Route path="/extra-place" element={<ExtraPlaceMatcherCalculator />} />
-            <Route path="/acca-picker" element={<AccaPickerCalculator />} />
-            <Route path="/lay-stake-calculator" element={<LayStakeCalculator />} />
-
-            <Route path="*" element={<LayStakeCalculator />} />
+            {Object.values(pageConfig)
+              .filter((page) => page.component)
+              .map((page) => {
+                const Component = page.component;
+                return (
+                  <Route
+                    key={page.route}
+                    path={page.route}
+                    element={<Component />}
+                  />
+                );
+              })}
+            <Route
+              path="*"
+              element={
+                pageConfig.layStakeCalculator && pageConfig.layStakeCalculator.component ? (
+                  <pageConfig.layStakeCalculator.component />
+                ) : (
+                  <div>Page not found</div>
+                )
+              }
+            />
           </Routes>
         </main>
-          <Use />
-          <Footer />
+        <Use />
+        <Footer />
       </div>
     </Router>
   );

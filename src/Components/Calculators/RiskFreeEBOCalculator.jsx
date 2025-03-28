@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./calculators.css";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const RiskFreeEBOCalculator = () => {
-  const meta = seoConfig["RiskFreeEBOCalculator"] || {};
+  const meta = pageConfig.riskFreeEBOCalculator?.seo || {};
 
   const [stake, setStake] = useState("");
   const [riskFreeAmount, setRiskFreeAmount] = useState("");

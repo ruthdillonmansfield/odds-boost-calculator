@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 // Moved GroupContainer outside the main component to avoid recreating it on every render.
 const GroupContainer = ({ group, children, removeGroup }) => (
@@ -33,7 +33,7 @@ const GroupContainer = ({ group, children, removeGroup }) => (
 );
 
 const AccaPickerCalculator = () => {
-  const meta = seoConfig["AccaPickerCalculator"] || {};
+  const meta = pageConfig.accaPickerCalculator?.seo || {};
 
   const [stake, setStake] = useState(10);
   const [commission, setCommission] = useState(0);

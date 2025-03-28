@@ -1,11 +1,11 @@
+// DecimalToFractionalConverter.jsx
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const convertDecimalToFraction = (decimal) => {
-
   if (isNaN(decimal) || decimal <= 1) return "";
   const frac = decimal - 1;
   const tolerance = 1.0e-6;
@@ -29,7 +29,8 @@ const convertDecimalToFraction = (decimal) => {
 };
 
 const DecimalToFractionalConverter = () => {
-    const meta = seoConfig["DecimalToFractionalConverter"] || {};
+  // Use the SEO data from pageConfig (ensure key matches!)
+  const meta = pageConfig.decimalToFractionConverter?.seo || {};
 
   const [decimalOdds, setDecimalOdds] = useState("");
   const [fractionalOdds, setFractionalOdds] = useState("");
@@ -59,55 +60,50 @@ const DecimalToFractionalConverter = () => {
 
   return (
     <>
-    <Seo 
-        title={meta.title} 
-        description={meta.description} 
-      />
-    <div className="container">
-      <h2 className="title">Decimal to Fractional Odds Converter</h2>
-      <div className="inline-fields" style={{ justifyContent: "center" }}>
-        <div className="input-group-inline" style={{ flexBasis: "100%" }}>
-          <label>Decimal Odds:</label>
-          <input
-            type="number"
-            step="0.01"
-            value={decimalOdds}
-            onChange={(e) => setDecimalOdds(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="2.5"
-          />
+      <Seo title={meta.title} description={meta.description} />
+      <div className="container">
+        <h2 className="title">Decimal to Fractional Odds Converter</h2>
+        <div className="inline-fields" style={{ justifyContent: "center" }}>
+          <div className="input-group-inline" style={{ flexBasis: "100%" }}>
+            <label>Decimal Odds:</label>
+            <input
+              type="number"
+              step="0.01"
+              value={decimalOdds}
+              onChange={(e) => setDecimalOdds(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="2.5"
+            />
+          </div>
         </div>
+        {fractionalOdds && (
+          <div
+            className={`result-box copyable ${copied ? "glow" : ""}`}
+            onClick={copyToClipboard}
+            title="Click to copy fractional odds"
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginTop: "20px",
+            }}
+          >
+            <h5 className="outcome-main">
+              <span className="label">Fractional Odds:</span>
+            </h5>
+            <h5 className="outcome-main">
+              <span className="value">{fractionalOdds}</span>
+            </h5>
+            {fractionalOdds &&
+              (copied ? (
+                <ClipboardCheck size={22} color="#edff00" />
+              ) : (
+                <Clipboard size={22} />
+              ))}
+          </div>
+        )}
       </div>
-      {fractionalOdds && (
-        <div
-          className={`result-box copyable ${copied ? "glow" : ""}`}
-          onClick={copyToClipboard}
-          title="Click to copy fractional odds"
-          style={{
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginTop: "20px"
-          }}
-        >
-          <h5 className="outcome-main">
-            <span className="label">Fractional Odds:</span>
-          </h5>
-          <h5 className="outcome-main">
-            <span className="value">{fractionalOdds}</span>
-          </h5>
-          
-          
-          {fractionalOdds &&
-            (copied ? (
-              <ClipboardCheck size={22} color="#edff00" />
-            ) : (
-              <Clipboard size={22} />
-            ))}
-        </div>
-      )}
-    </div>
     </>
   );
 };

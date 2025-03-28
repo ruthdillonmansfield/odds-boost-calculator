@@ -3,7 +3,7 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber, formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const formatValue = (value) => {
   if (value === null) return "";
@@ -35,7 +35,7 @@ const isInputValid = (stake, odds, layOdds) => {
 };
 
 const AdvancedOddsBoostCalculator = () => {
-  const meta = seoConfig["AdvancedOddsBoostCalculator"] || {};
+  const meta = pageConfig.advancedOddsBoostCalculator?.seo || {};
 
   const [freeBet, setFreeBet] = useState(false);
   const [stakeReturned, setStakeReturned] = useState(false);

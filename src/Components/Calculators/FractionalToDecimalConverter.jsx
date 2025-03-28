@@ -3,10 +3,11 @@ import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
 import { formatNumber } from "../../helpers.js";
 import Seo from "../Seo.jsx";
-import seoConfig from "../../config/seoConfig.js";
+import pageConfig from "../../config/pageConfig.js";
 
 const FractionalToDecimalConverter = () => {
-  const meta = seoConfig["FractionalToDecimalConverter"] || {};
+  const meta = pageConfig.fractionalToDecimalConverter?.seo || {};
+
 
   const [numerator, setNumerator] = useState("");
   const [denominator, setDenominator] = useState("");
