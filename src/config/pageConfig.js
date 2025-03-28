@@ -39,7 +39,13 @@ const pageConfig = {
       description:
         "Find the optimum lay stake and potential profit for your matched bets. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Lay Calculator",
+    use: {
+      title: "Lay Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <Scale size={24} color="#fff" />,
@@ -62,7 +68,13 @@ const pageConfig = {
       description:
         "Calculate optimum lay stakes and expected profit from boosted odds. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Boosted Lay Calculator",
+    use: {
+      title: "Boosted Lay Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <Zap size={24} color="#fff" />,
@@ -84,7 +96,13 @@ const pageConfig = {
       description:
         "Calculate your lay stake and potential profit from risk-free bet offers. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Risk-Free Bet Calculator",
+    use: {
+      title: "Risk-Free Bet Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <Star size={24} color="#fff" />,
@@ -111,7 +129,13 @@ const pageConfig = {
       description:
         "Determine the optimal additional lay stake when liquidity is limited. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Partial Lay Calculator",
+    use: {
+      title: "Partial Lay Calculator",
+      matched: true,
+      advantage: false,
+      experimental: true,
+      copyable: true,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <Calculator size={24} color="#fff" />,
@@ -138,7 +162,13 @@ const pageConfig = {
       description:
         "Compare lay options quickly when you don't have a matcher available. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Match Picker",
+    use: {
+      title: "Match Picker",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: false,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <ZoomIn size={24} color="#fff" />,
@@ -162,7 +192,13 @@ const pageConfig = {
       description:
         "Compare acca options quickly when you don't have a matcher available. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Acca Picker",
+    use: {
+      title: "Acca Picker",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: false,
+    },
     sidebar: {
       category: "Lay Calculators",
       icon: <Combine size={24} color="#fff" />,
@@ -192,7 +228,13 @@ const pageConfig = {
       description:
         "Easily calculate boosted odds by entering decimal odds and a boost percentage. For profit boost and odds boost offers.",
     },
-    useTitle: "Odds Boost Calculator",
+    use: {
+      title: "Odds Boost Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Advantage",
       icon: <Rocket size={24} color="#fff" />,
@@ -216,7 +258,13 @@ const pageConfig = {
       description:
         "Assess risk-free bets with Equivalent Boosted Odds with this Risk-Free Bet Calculator. Accurately assess potential profit and loss to make informed matched betting decisions.",
     },
-    useTitle: "Risk-Free Advantage Play Calculator and Equivalent Boosted Odds",
+    use: {
+      title: "Risk-Free Advantage Play Calculator and Equivalent Boosted Odds",
+      matched: false,
+      advantage: true,
+      experimental: true,
+      copyable: false,
+    },
     sidebar: {
       category: "Advantage",
       icon: <AlertTriangle size={24} color="#fff" />,
@@ -255,7 +303,13 @@ const pageConfig = {
       description:
         "Use this calculator to work out the original odds when bookies offer enhanced winnings. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Enhanced Odds Calculator",
+    use: {
+      title: "Enhanced Odds Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Advantage",
       icon: <ChevronsUp size={24} color="#fff" />,
@@ -282,7 +336,13 @@ const pageConfig = {
       description:
         "Assess potential profitability of matched betting on extra place offers. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Extra Place Analyser",
+    use: {
+      title: "Extra Place Analyser",
+      matched: false,
+      advantage: true,
+      experimental: true,
+      copyable: false,
+    },
     sidebar: {
       category: "Advantage",
       icon: <Plus size={24} color="#fff" />,
@@ -312,7 +372,13 @@ const pageConfig = {
       description:
         "Easily convert between decimal, fractional, and American odds. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Odds Converter",
+    use: {
+      title: "Odds Converter",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Converters",
       icon: <Repeat size={24} color="#fff" />,
@@ -337,7 +403,13 @@ const pageConfig = {
       description:
         "Quickly convert fractional odds into decimal odds. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Fractional to Decimal Converter",
+    use: {
+      title: "Fractional to Decimal Converter",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Converters",
       icon: <Repeat size={24} color="#fff" />,
@@ -362,7 +434,13 @@ const pageConfig = {
       description:
         "Instantly convert decimal odds into fractional odds. Free online matched betting calculators for locking in profit.",
     },
-    useTitle: "Decimal to Fractional Converter",
+    use: {
+      title: "Decimal to Fractional Converter",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
     sidebar: {
       category: "Converters",
       icon: <Repeat size={24} color="#fff" />,

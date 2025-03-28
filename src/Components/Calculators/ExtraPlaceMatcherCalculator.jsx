@@ -266,10 +266,10 @@ const ExtraPlaceMatcherCalculator = () => {
           </div>
         )}
 
-        <div className="divider" />
 
         {resultWin === null ? "" : (
-          <>
+            <>
+            <div className="divider" />
             <div className="result-box" style={{ textAlign: "left" }}>
                 <h3 style={{ marginTop: 0, marginBottom: "12px" }}>Outcomes</h3>
                 <div className="outcome-line">

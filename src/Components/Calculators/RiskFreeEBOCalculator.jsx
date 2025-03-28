@@ -315,6 +315,12 @@ const RiskFreeEBOCalculator = () => {
               <p style={{ fontSize: "14px", marginTop: "8px", color: "#ccc" }}>
                 This is how much you'd make if you chose to lock in your bet at the specified lay odds, regardless of the outcome.
               </p>
+              <p style={{ fontSize: "14px", fontWeight: "bold", marginTop: "8px", color: "#ccc" }}>
+                {ev > lockInProfit 
+                  ? "The expected value of treating this offer as AP is better than the profit you can lock in, but you should be comfortable with the risk and confident with value betting. Small profits may not be worth the risk."
+                  : "Lay the bet. The expected value of treating this offer as AP is worse than the profit you can lock in."
+                }
+              </p>
             </div>
           )}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import pageConfig from "./config/pageConfig.js";
 import Sidebar from "./Components/Sidebar/Sidebar.js";
@@ -7,6 +7,19 @@ import Footer from "./Components/Footer/Footer.jsx";
 import "./App.css";
 
 function App() {
+  useEffect(() => {
+    const handleFocus = (event) => {
+      if (event.target.tagName === "INPUT") {
+        event.target.select();
+      }
+    };
+    // Add the event listener on the capture phase
+    document.addEventListener("focus", handleFocus, true);
+    return () => {
+      document.removeEventListener("focus", handleFocus, true);
+    };
+  }, []);
+
   return (
     <Router>
       <div className="app-container">
@@ -28,7 +41,8 @@ function App() {
             <Route
               path="*"
               element={
-                pageConfig.layStakeCalculator && pageConfig.layStakeCalculator.component ? (
+                pageConfig.layStakeCalculator &&
+                pageConfig.layStakeCalculator.component ? (
                   <pageConfig.layStakeCalculator.component />
                 ) : (
                   <div>Page not found</div>

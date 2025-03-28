@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import pageConfig from "../../config/pageConfig";
 import "./Use.css";
-import { Zap, Rocket } from "lucide-react";
+import { Zap, Rocket, Sparkles, Crown } from "lucide-react";
 
 const ExplanationComponent = () => {
   const location = useLocation();
@@ -22,7 +22,7 @@ const ExplanationComponent = () => {
       <aside className="use">
         <div className="use-content">
           <div className="instructions-plain">
-            <h3 className="title">Using the {`${currentPage && currentPage.useTitle ? currentPage.useTitle : "Calculator"}`}</h3>
+            <h3 className="title">Using the {`${currentPage && currentPage.use.title ? currentPage.use.title : "Calculator"}`}</h3>
             {calculatorInstructions}
 
             {location.pathname === "/risk-free-ebo" && (
@@ -38,16 +38,27 @@ const ExplanationComponent = () => {
           <div className="calculator-instructions">
             <h3>Lightning-Fast Odds Calculations</h3>
             <ul className="use-list">
-              <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Zap size={18} color="#00aaff" />
+              
+              {currentPage.use.matched && <li style={{ display: "flex", alignItems: "flex-start", gap: "8px"}}>
+                <Zap size={18} style={{marginTop: "5px"}} color="#00aaff" />
                 Matched betting? Quickly lock in profit before odds shift.
-              </li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <Rocket size={18} color="#ff9900" />
+              </li>}
+              {currentPage.use.advantage && <li style={{ display: "flex", alignItems: "flex-start", gap: "8px"}}>
+                <Crown size={18} style={{marginTop: "5px"}} color="#00aaff" />
+                Assess the underlying value of bets for advantage play.
+              </li>}
+              {currentPage.use.copyable && <li style={{ display: "flex", alignItems: "flex-start", gap: "8px"}}>
+                <Rocket size={18} style={{marginTop: "5px"}} color="#ff9900" />
                 <span>
                   Press <strong>"C"</strong> to <strong>copy</strong> instantly.
                 </span>
-              </li>
+              </li>}
+              {currentPage.use.experimental && <li style={{ display: "flex", alignItems: "flex-start", gap: "8px"}}>
+                <Sparkles size={18} style={{marginTop: "5px"}} color="#e1d154" />
+                <span>
+                  This tool is experimental. It might be conceptually untested, or yield unexpected results.
+                </span>
+              </li>}
             </ul>
           </div>
 
