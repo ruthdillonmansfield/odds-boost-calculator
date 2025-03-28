@@ -296,28 +296,43 @@ const AccaPickerCalculator = () => {
           </div>
         </div>
         <div className="inline-fields mb-16">
-          <div className="input-group-inline">
-            <label>Back Odds:</label>
+
+          <div className="input-group-inline input-prefix-suffix only-suffix">
             <input
               type="number"
-              step="0.01"
+              step="0.1"
+              placeholder="2"
               value={entry.back}
               onChange={(e) => updateEntry(entry.id, "back", e.target.value)}
             />
+              <span className="suffix">Back</span>
           </div>
-          <div className="input-group-inline">
-            <label>Lay Odds:</label>
+          <div className="input-group-inline input-prefix-suffix only-suffix">
             <input
               type="number"
-              step="0.01"
+              step="0.1"
+              placeholder="2.1"
               value={entry.lay}
               onChange={(e) => updateEntry(entry.id, "lay", e.target.value)}
             />
-          </div>
+              <span className="suffix">Lay</span>
+              </div>
         </div>
       </div>
     );
   };
+
+  const renderSingleEntryGroup = (entry, placeholder) => {
+    return (
+      <div
+        className="event-pair-container"
+        key={entry.id}
+      >
+        {renderSingleEntry(entry, placeholder)}
+      </div>
+    );
+  };
+  
 
   const renderEventPair = (pairEntries) => {
     return (
@@ -450,7 +465,7 @@ const AccaPickerCalculator = () => {
             <div key={groupKey}>
               <GroupContainer group={group} removeGroup={removeGroup}>
                 {group.type === "single" &&
-                  renderSingleEntry(
+                  renderSingleEntryGroup(
                     group.entry,
                     "Outcome (e.g. Constitution Hill)"
                   )}

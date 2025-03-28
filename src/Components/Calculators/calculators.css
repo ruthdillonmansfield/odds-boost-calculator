@@ -644,7 +644,7 @@ button:hover {
   background: transparent;        /* no background so it contrasts the inputs */
   border: 1px dashed #888;       /* dashed border for clarity */
   border-radius: 6px;
-  padding: 16px;
+  padding: 16px 16px 0 16px;
   margin-bottom: 20px;           /* space before the next single or event */
 }
 
@@ -665,7 +665,6 @@ button:hover {
 /* Only applies to the second entry within the same .event-pair-container */
 .event-pair-container .entry-box + .entry-box {
   margin-top: 16px;
-  padding-top: 16px;
   border-top: 1px dashed #444;
 }
 
