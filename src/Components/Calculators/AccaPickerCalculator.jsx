@@ -406,7 +406,8 @@ const AccaPickerCalculator = () => {
 
   const renderEventPair = (pairEntries) => (
     <div className="event-pair-container" key={`pair-${pairEntries.map((e) => e.id).join("-")}`}>
-      {renderSingleEntry(pairEntries[0], "Outcome (e.g. Swiatek win)")}
+      {renderSingleEntry(pairEntries[0], `Outcome (e.g. \u015Awi\u0105tek
+ win)`)}
       {renderSingleEntry(pairEntries[1], "Outcome (e.g. Raducanu win)")}
     </div>
   );
