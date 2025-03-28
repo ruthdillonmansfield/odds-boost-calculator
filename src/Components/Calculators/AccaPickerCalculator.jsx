@@ -107,6 +107,57 @@ const AccaPickerCalculator = () => {
     setNextEventId(nextEventId + 1);
   };
 
+
+  const getDefaultHighlightedEntries = () => {
+    const profits = entries.map((e) =>
+      getWorstCaseProfit(parseFloat(e.back), parseFloat(e.lay))
+    );
+    const sorted = [...profits].sort((a, b) => b - a);
+    const topValue = sorted[top - 1];
+    return profits
+      .map((p, i) => (p >= topValue ? i : -1))
+      .filter((i) => i !== -1);
+  };
+
+
+  const groupEntries = (list) => {
+    const grouped = [];
+    for (let i = 0; i < list.length; i++) {
+      const current = list[i];
+      if (current.eventId !== null) {
+        if (
+          i + 2 < list.length &&
+          list[i + 1].eventId === current.eventId &&
+          list[i + 2].eventId === current.eventId
+        ) {
+          grouped.push({
+            type: "triple",
+            entries: [current, list[i + 1], list[i + 2]]
+          });
+          i += 2;
+        } else if (
+          i + 1 < list.length &&
+          list[i + 1].eventId === current.eventId
+        ) {
+          grouped.push({
+            type: "pair",
+            entries: [current, list[i + 1]]
+          });
+          i += 1;
+        } else {
+          grouped.push({ type: "single", entry: current });
+        }
+      } else {
+        grouped.push({ type: "single", entry: current });
+      }
+    }
+    return grouped;
+  };
+  
+  // Memoize grouping so that the structure remains stable between renders.
+  const groupedEntries = useMemo(() => groupEntries(entries), [entries]);
+
+
   const getHighlightedEntries = () => {
     const minOddsVal = parseFloat(minOdds);
   
@@ -187,59 +238,13 @@ const AccaPickerCalculator = () => {
     }
     return bestCombo ? bestCombo.outcomes.map(o => o.id) : [];
   };
-  
-
-  const getDefaultHighlightedEntries = () => {
-    const profits = entries.map((e) =>
-      getWorstCaseProfit(parseFloat(e.back), parseFloat(e.lay))
-    );
-    const sorted = [...profits].sort((a, b) => b - a);
-    const topValue = sorted[top - 1];
-    return profits
-      .map((p, i) => (p >= topValue ? i : -1))
-      .filter((i) => i !== -1);
-  };
 
   const highlightedEntries = minOdds
     ? getHighlightedEntries()
     : getDefaultHighlightedEntries();
 
-  const groupEntries = (list) => {
-    const grouped = [];
-    for (let i = 0; i < list.length; i++) {
-      const current = list[i];
-      if (current.eventId !== null) {
-        if (
-          i + 2 < list.length &&
-          list[i + 1].eventId === current.eventId &&
-          list[i + 2].eventId === current.eventId
-        ) {
-          grouped.push({
-            type: "triple",
-            entries: [current, list[i + 1], list[i + 2]]
-          });
-          i += 2;
-        } else if (
-          i + 1 < list.length &&
-          list[i + 1].eventId === current.eventId
-        ) {
-          grouped.push({
-            type: "pair",
-            entries: [current, list[i + 1]]
-          });
-          i += 1;
-        } else {
-          grouped.push({ type: "single", entry: current });
-        }
-      } else {
-        grouped.push({ type: "single", entry: current });
-      }
-    }
-    return grouped;
-  };
 
-  // Memoize grouping so that the structure remains stable between renders.
-  const groupedEntries = useMemo(() => groupEntries(entries), [entries]);
+
 
   // Remove an entire group from entries.
   const removeGroup = (group) => {

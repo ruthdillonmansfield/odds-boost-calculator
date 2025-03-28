@@ -22,7 +22,7 @@ const ExplanationComponent = () => {
       <aside className="use">
         <div className="use-content">
           <div className="instructions-plain">
-            <h3 className="title">Using the {`${currentPage.useTitle ? currentPage.useTitle : "this Calculator"}`}</h3>
+            <h3 className="title">Using the {`${currentPage && currentPage.useTitle ? currentPage.useTitle : "Calculator"}`}</h3>
             {calculatorInstructions}
 
             {location.pathname === "/risk-free-ebo" && (
