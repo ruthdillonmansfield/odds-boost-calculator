@@ -122,6 +122,7 @@ svg {
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  overflow-y: auto;
 }
 
 .overlay-content {
@@ -134,6 +135,8 @@ svg {
   line-height: 25px;
   position: relative;
   box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .close-button {

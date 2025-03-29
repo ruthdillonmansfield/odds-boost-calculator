@@ -67,6 +67,15 @@ const MatchPickerCalculator = () => {
 
   const commissionValue = parseFloat(commission) / 100 || 0;
 
+  const retentionRate = (backOdds, layOdds) => {
+    const S = 1;
+    const ls = (S * backOdds) / (layOdds - commissionValue);
+    const bookieOutcome = (backOdds - 1) - (layOdds - 1) * ls;
+    const exchangeOutcome = ls * (1 - commissionValue) - S;
+    const worstCase = Math.min(bookieOutcome, exchangeOutcome);
+    return (S + worstCase) * 100;
+  };
+
   const calculateLayStake = (B, LO) => {
     const S = parseFloat(stake);
     if (freeBet && stakeReturned) return (S * B) / (LO - commissionValue);
@@ -89,7 +98,7 @@ const MatchPickerCalculator = () => {
   const formatOutcome = (value) => {
     const formatted = formatMoney(Math.abs(value));
     return (
-      <span className={value >= 0 ? "positive" : "negative"}>
+      <span className={value >= 0 ? "positive" : ""}>
         {value < 0 ? "–" : ""}£{formatted}
       </span>
     );
@@ -154,31 +163,40 @@ const MatchPickerCalculator = () => {
             </div>
             <div className={`profit-box profit-box-inline ${isBest ? "highlighted" : ""}`}>
               <h5 className="outcome-main">
-                {entry.lay
-                  ? formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))
-                  : "–"}
+              {entry.lay ? (
+                <>
+                  {formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))}{" "}
+                  <span className="lg" style={{ color: "#ccc", fontWeight: "normal" }}>
+                    / {retentionRate(parseFloat(entry.back), parseFloat(entry.lay)).toFixed(1)}%
+                  </span>
+                </>
+              ) : (
+                "–"
+              )}
+
               </h5>
             </div>
 
           </div>
           <div className="inline-fields mb-16">
-            <div className="input-group-inline">
-              <label>Back Odds:</label>
+          <div className="input-group-inline input-prefix-suffix only-suffix">
               <input
                 type="number"
                 step="0.1"
                 value={entry.back}
                 onChange={(e) => updateEntry(i, "back", e.target.value)}
               />
+              <span className="suffix">Back</span>
+
             </div>
-            <div className="input-group-inline">
-              <label>Lay Odds:</label>
+            <div className="input-group-inline input-prefix-suffix only-suffix">
               <input
                 type="number"
                 step="0.1"
                 value={entry.lay}
                 onChange={(e) => updateEntry(i, "lay", e.target.value)}
               />
+              <span className="suffix">Lay</span>
             </div>
           </div>
         </div>
@@ -272,7 +290,7 @@ const bestMatch = useMemo(() => {
       
       {bestMatch && (
         <button className="floating-button" onClick={() => setShowOverlay(true)}>
-          Show Best Match
+          Show Lay Calculator
         </button>
       )}
 
@@ -480,7 +498,7 @@ const bestMatch = useMemo(() => {
             style={{ padding: "12px", maxWidth: "100%" }}
             onClick={() => setShowOverlay(true)}
           >
-          Show Best Match
+          Show Lay Calculator
           </button>
         </div>
       )}

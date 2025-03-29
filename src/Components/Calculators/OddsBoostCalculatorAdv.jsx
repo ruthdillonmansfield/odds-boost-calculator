@@ -162,6 +162,11 @@ const AdvancedOddsBoostCalculator = () => {
     return `£${formatMoney(layStake)}`;
   };
 
+  const pureBetRating = (B, LO) => {
+    if (!B || !LO || B <= 1 || LO <= 1) return null;
+    return ((B - 1) / (LO - 1)) * 100;
+  };
+  
   const copyToClipboard = () => {
     if (layStake !== null) {
       navigator.clipboard.writeText(layStake.toString()).then(() => {
@@ -328,15 +333,45 @@ const AdvancedOddsBoostCalculator = () => {
       )}
 
       {isValid && guaranteedProfit !== "" && (
-        <div className="profit-box">
-          <h5 className="outcome-main">
-            Your Profit: {formatValue(guaranteedProfit)}
-          </h5>
-          <div className="profit-details">
-            If bookie wins: {formatValue(calculateProfitIfBookieWins())} <br />
-            If bookie loses: {formatValue(calculateProfitIfBookieLoses())}
+        <div className="highlight-box">
+        {/* Key stats row */}
+        <div className="stats-row">
+          <div className="stat-block">
+            <div className="stat-label">Your Profit</div>
+            {/* Example of a large, bold figure */}
+            <div className="stat-value">
+              {formatValue(guaranteedProfit)}
+            </div>
+          </div>
+      
+          <div className="stat-block">
+            <div className="stat-label">
+              Bet Rating
+              <span className="info-icon" style={{ marginLeft: "4px" }}>
+                i
+                <span className="tooltip-text">
+                  This tells us how close the back/lay odds are after the back odds are boosted. If the unboosted back odds exceed the lay odds, the bet might be an arbitrage.
+                </span>
+              </span>
+            </div>
+            {(() => {
+              const rating = pureBetRating(parseFloat(odds), parseFloat(layOdds));
+              const isGood = rating >= 100 && parseFloat(odds) <= parseFloat(layOdds);              
+              if (rating === null) {
+                return <div className="stat-value">–</div>;
+              }
+              return (
+                <div
+                  className={`stat-value ${isGood ? "positive" : "negative"}`}
+                >
+                  {rating.toFixed(1)}%
+                </div>
+              );
+            })()}
           </div>
         </div>
+      </div>
+      
       )}
 
       {isValid && breakdown && (

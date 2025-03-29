@@ -162,6 +162,11 @@ const LayStakeCalculator = () => {
     }
   };
 
+  const pureBetRating = (B, LO) => {
+    if (!B || !LO || B <= 1 || LO <= 1) return null;
+    return ((B - 1) / (LO - 1)) * 100;
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") setLayStake(calculateLayStake());
     if (e.key.toLowerCase() === "c") copyToClipboard();
@@ -279,20 +284,44 @@ const LayStakeCalculator = () => {
       )}
 
       {isValid && guaranteedProfit !== "" && (
-        <div className="profit-box">
-          <h5 className="outcome-primary">Your Profit:{" "}
-          {guaranteedProfit >= 0 ? (
-            <span className="positive"> £{guaranteedProfit.toFixed(2)}</span>
-          ) : (
-            <span className="negative">-£{Math.abs(guaranteedProfit).toFixed(2)}</span>
-          )}
-          </h5>
-          <div className="profit-details">
-            If bookie wins: {calculateProfitIfBookieWins() !== null && formatValue(calculateProfitIfBookieWins())}
-            <br />
-            If exchange wins: {calculateProfitIfBookieLoses() !== null && formatValue(calculateProfitIfBookieLoses())}
-          </div>
-        </div>
+         <div className="highlight-box">
+         {/* Key stats row */}
+         <div className="stats-row">
+           <div className="stat-block">
+             <div className="stat-label">Your Profit</div>
+             {/* Example of a large, bold figure */}
+             <div className="stat-value">
+               {formatValue(guaranteedProfit)}
+             </div>
+           </div>
+       
+           <div className="stat-block">
+             <div className="stat-label">
+               Bet Rating
+               <span className="info-icon" style={{ marginLeft: "4px" }}>
+                 i
+                 <span className="tooltip-text">
+                   This tells us how close the back/lay odds are. If the back odds exceed the lay odds, the bet might be an arbitrage.
+                 </span>
+               </span>
+             </div>
+             {(() => {
+               const rating = pureBetRating(parseFloat(backOdds), parseFloat(layOdds));
+               const isGood = rating >= 100;              
+               if (rating === null) {
+                 return <div className="stat-value">–</div>;
+               }
+               return (
+                 <div
+                   className={`stat-value ${isGood ? "positive" : "negative"}`}
+                 >
+                   {rating.toFixed(1)}%
+                 </div>
+               );
+             })()}
+           </div>
+         </div>
+       </div>
       )}
 
       {isValid && breakdown && (
