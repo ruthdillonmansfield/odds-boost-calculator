@@ -74,6 +74,16 @@ const AccaPickerCalculator = () => {
     return (S * B) / (LO - commissionValue);
   };
 
+  const retentionRate = (backOdds, layOdds) => {
+    const S = 1;
+    const ls = (S * backOdds) / (layOdds - commissionValue);
+    const bookieOutcome = (backOdds - 1) - (layOdds - 1) * ls;
+    const exchangeOutcome = ls * (1 - commissionValue) - S;
+    const worstCase = Math.min(bookieOutcome, exchangeOutcome);
+    return (S + worstCase) * 100;
+  };
+  
+
   const getWorstCaseProfit = (B, LO) => {
     const S = parseFloat(stake);
     const layStake = calculateLayStake(B, LO);
@@ -219,12 +229,12 @@ const AccaPickerCalculator = () => {
       }
       return result;
     };
+  
     for (const comboIndices of groupIndices) {
       const optionsArrays = comboIndices.map((idx) => groups[idx].options);
       const combos = cartesianProduct(optionsArrays);
       for (const candidate of combos) {
         let productOdds = 1;
-        let totalProfit = 0;
         let valid = true;
         candidate.forEach((outcome) => {
           const b = parseFloat(outcome.back);
@@ -233,7 +243,6 @@ const AccaPickerCalculator = () => {
             valid = false;
           }
           productOdds *= b;
-          totalProfit += getWorstCaseProfit(b, l);
         });
         if (!valid) continue;
         if (productOdds >= minOddsVal) {
@@ -241,6 +250,27 @@ const AccaPickerCalculator = () => {
             (acc, outcome) => acc * parseFloat(outcome.lay),
             1
           );
+          let totalProfit;
+          const S = parseFloat(stake);
+          if (freeBet) {
+            let layStakeCandidate, profitBookieCandidate, profitExchangeCandidate;
+            if (stakeReturned) {
+              layStakeCandidate = (S * productOdds) / (candidateLayOdds - commissionValue);
+              profitBookieCandidate = (productOdds * S) - (candidateLayOdds - 1) * layStakeCandidate;
+            } else {
+              layStakeCandidate = ((productOdds - 1) * S) / (candidateLayOdds - commissionValue);
+              profitBookieCandidate = ((productOdds - 1) * S) - (candidateLayOdds - 1) * layStakeCandidate;
+            }
+            profitExchangeCandidate = layStakeCandidate * (1 - commissionValue);
+            totalProfit = Math.min(profitBookieCandidate, profitExchangeCandidate);
+          } else {
+            totalProfit = 0;
+            candidate.forEach((outcome) => {
+              const b = parseFloat(outcome.back);
+              const l = parseFloat(outcome.lay);
+              totalProfit += getWorstCaseProfit(b, l);
+            });
+          }
           if (
             bestCombo === null ||
             totalProfit > bestCombo.totalProfit ||
@@ -254,11 +284,12 @@ const AccaPickerCalculator = () => {
               combinedLayOdds: candidateLayOdds,
             };
           }
-        }        
+        }
       }
     }
     return bestCombo;
   };
+  
 
   const bestCombo = useMemo(() => getBestCombo(), [
     entries,
@@ -366,9 +397,12 @@ const AccaPickerCalculator = () => {
             style={{ marginTop: 0 }}
           >
             <h5 className="outcome-main">
-              {entry.lay
-                ? formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))
-                : "–"}
+            {entry.lay
+              ? `${retentionRate(
+                  parseFloat(entry.back),
+                  parseFloat(entry.lay)
+                ).toFixed(1)}%`
+              : "–"}
             </h5>
           </div>
         </div>
