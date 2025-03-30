@@ -102,7 +102,6 @@ describe("calculateAdditionalLayNew", () => {
         const chosenOdds = 10;
         const commission = 5;
         const result = calculateAdditionalLayNew(S, B, freeBet, stakeReturned, totalMatched, chosenOdds, commission);
-        console.log(result)
         expect(result).to.be.closeTo(10.05, 0.01);
       });
       it("should calculate additional lay as 4.55 when stake=10, backOdds=10, layOdds=11, totalMatched=5, commission=0", () => {
@@ -250,61 +249,159 @@ describe("calculateOverallProfit", () => {
 describe("calcMinProfit", () => {
   it("should return 0 profit for a normal bet with S=10, B=10, L=10, commission=0", () => {
     const profit = calcMinProfit(10, 10, 10, 0, false, false);
-    expect(profit).to.be.closeTo(0, 0.001);
+    expect(profit.minProfit).to.be.closeTo(0, 0.001);
   });
 
   it("should return -0.18 profit for a normal bet with S=10, B=10, L=10, commission=2", () => {
     const profit = calcMinProfit(10, 10, 10, 2, false, false);
-    expect(profit).to.be.closeTo(-0.18, 0.01);
+    expect(profit.minProfit).to.be.closeTo(-0.18, 0.01);
   });
 
   it("should return -2.73 profit for a normal bet with S=14, B=14.83, L=17.5, commission=5", () => {
     const profit = calcMinProfit(14, 14.83, 17.5, 5, false, false);
-    expect(profit).to.be.closeTo(-2.73, 0.01);
+    expect(profit.minProfit).to.be.closeTo(-2.73, 0.01);
   });
   it("should return -128.83 for a normal bet with 204.89, 81.923, 144.5, 34.2", () => {
-    const layStake = calcMinProfit(204.89, 81.923, 144.5, 34.2, false, false);
-    expect(layStake).to.be.closeTo(-128.83, 0.01);
+    const profit = calcMinProfit(204.89, 81.923, 144.5, 34.2, false, false);
+    expect(profit.minProfit).to.be.closeTo(-128.83, 0.01);
   });
   it("should return -121.65 for a normal bet with 204.89, 81.923, 133, 34.2", () => {
-    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, false, false);
-    expect(layStake).to.be.closeTo(-121.65, 0.01);
+    const profit = calcMinProfit(204.89, 81.923, 133, 34.2, false, false);
+    expect(profit.minProfit).to.be.closeTo(-121.65, 0.01);
   });
   it("should return 83.24 for a FB SR with 204.89, 81.923, 133, 34.2", () => {
-    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, true, true);
-    expect(layStake).to.be.closeTo(83.24, 0.01);
+    const profit = calcMinProfit(204.89, 81.923, 133, 34.2, true, true);
+    expect(profit.minProfit).to.be.closeTo(83.24, 0.01);
   });
   it("should return 9 profit for a FB SNR bet with S=10, B=10, L=10, commission=0", () => {
 
     const profit = calcMinProfit(10, 10, 10, 0, true, false);
-    expect(profit).to.be.closeTo(9, 0.001);
+    expect(profit.minProfit).to.be.closeTo(9, 0.001);
   });
 
   it("should return 10 profit for a FB SR bet with S=10, B=10, L=10, commission=0", () => {
     const profit = calcMinProfit(10, 10, 10, 0, true, true);
-    expect(profit).to.be.closeTo(10, 0.001);
+    expect(profit.minProfit).to.be.closeTo(10, 0.001);
   });
 
   it("should return ~8.82 profit for a FB SNR bet with S=10, B=10, L=10, commission=2", () => {
     const profit = calcMinProfit(10, 10, 10, 2, true, false);
-    expect(profit).to.be.closeTo(8.82, 0.01);
+    expect(profit.minProfit).to.be.closeTo(8.82, 0.01);
   });
 
   it("should return 10.47 profit for a FB SNR bet with S=14, B=14.83, L=17.5, commission=5", () => {
     const profit = calcMinProfit(14, 14.83, 17.5, 5, true, false);
-    expect(profit).to.be.closeTo(10.47, 0.01);
+    expect(profit.minProfit).to.be.closeTo(10.47, 0.01);
   });
   it("should return 75.68 for a FB SNR bet with 204.89, 81.923, 144.5, 34.2", () => {
-    const layStake = calcMinProfit(204.89, 81.923, 144.5, 34.2, true, false);
-    expect(layStake).to.be.closeTo(75.68, 0.01);
+    const profit = calcMinProfit(204.89, 81.923, 144.5, 34.2, true, false);
+    expect(profit.minProfit).to.be.closeTo(75.68, 0.01);
   });
   it("should return 81.63 for a FB SNR bet with 204.89, 81.923, 133, 34.2", () => {
-    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, true, false);
-    expect(layStake).to.be.closeTo(81.63, 0.01);
+    const profit = calcMinProfit(204.89, 81.923, 133, 34.2, true, false);
+    expect(profit.minProfit).to.be.closeTo(81.63, 0.01);
   });
   it("should return ~9.82 profit for a FB SR bet with S=10, B=10, L=10, commission=2", () => {
     const profit = calcMinProfit(10, 10, 10, 2, true, true);
-    expect(profit).to.be.closeTo(9.82, 0.01);
+    expect(profit.minProfit).to.be.closeTo(9.82, 0.01);
+  });
+  it('should return an object with the correct keys', () => {
+    const result = calcMinProfit(122.2, 5, 6, 2, false, false);
+    expect(result).to.have.property('layStake');
+    expect(result).to.have.property('potBookieWinnings');
+    expect(result).to.have.property('potBookieLoss');
+    expect(result).to.have.property('potExchangeWinnings');
+    expect(result).to.have.property('potExchangeLoss');
+    expect(result).to.have.property('profitIfBookieWins');
+    expect(result).to.have.property('profitIfExchangeWins');
+    expect(result).to.have.property('minProfit');
+  });
+  it('should return the expected outcome for the given normal bet input', () => {
+    const S = 122.2;
+    const B = 5;
+    const L = 6.2;
+    const commission = 2;
+    const freeBet = false;
+    const stakeReturned = false;
+
+    const expected = {
+      layStake: 98.87,
+      potBookieWinnings: 488.80,
+      potBookieLoss: 122.2,
+      potExchangeWinnings: 96.89,
+      potExchangeLoss: 514.12,
+      profitIfBookieWins: -25.32,
+      profitIfExchangeWins: -25.31,
+      minProfit: -25.32
+    };
+
+    const result = calcMinProfit(S, B, L, commission, freeBet, stakeReturned);
+    expect(result.layStake).to.be.closeTo(expected.layStake, 0.01);
+    expect(result.potBookieWinnings).to.be.closeTo(expected.potBookieWinnings, 0.01);
+    expect(result.potBookieLoss).to.be.closeTo(expected.potBookieLoss, 0.01);
+    expect(result.potExchangeWinnings).to.be.closeTo(expected.potExchangeWinnings, 0.01);
+    expect(result.potExchangeLoss).to.be.closeTo(expected.potExchangeLoss, 0.01);
+    expect(result.profitIfBookieWins).to.be.closeTo(expected.profitIfBookieWins, 0.01);
+    expect(result.profitIfExchangeWins).to.be.closeTo(expected.profitIfExchangeWins, 0.01);
+    expect(result.minProfit).to.be.closeTo(expected.minProfit, 0.01);
+  });
+  it('should return the expected outcome for the given free bet input', () => {
+    const S = 122.2;
+    const B = 5;
+    const L = 6.2;
+    const commission = 2;
+    const freeBet = true;
+    const stakeReturned = false;
+
+    const expected = {
+      layStake: 79.09,
+      potBookieWinnings: 488.80,
+      potBookieLoss: 122.2,
+      potExchangeWinnings: 77.51,
+      potExchangeLoss: -411.27,
+      profitIfBookieWins: 77.53,
+      profitIfExchangeWins: 77.51,
+      minProfit: 77.51
+    };
+
+    const result = calcMinProfit(S, B, L, commission, freeBet, stakeReturned);
+    expect(result.layStake).to.be.closeTo(expected.layStake, 0.01);
+    expect(result.potBookieWinnings).to.be.closeTo(expected.potBookieWinnings, 0.01);
+    expect(result.potBookieLoss).to.be.closeTo(expected.potBookieLoss, 0.01);
+    expect(result.potExchangeWinnings).to.be.closeTo(expected.potExchangeWinnings, 0.01);
+    expect(result.potExchangeLoss).to.be.closeTo(expected.potExchangeLoss, 0.01);
+    expect(result.profitIfBookieWins).to.be.closeTo(expected.profitIfBookieWins, 0.01);
+    expect(result.profitIfExchangeWins).to.be.closeTo(expected.profitIfExchangeWins, 0.01);
+    expect(result.minProfit).to.be.closeTo(expected.minProfit, 0.01);
+  });
+  it('should return the expected outcome for the given FB SR input', () => {
+    const S = 122.2;
+    const B = 5;
+    const L = 6.2;
+    const commission = 2;
+    const freeBet = true;
+    const stakeReturned = true;
+
+    const expected = {
+      layStake: 98.87,
+      potBookieWinnings: 611,
+      potBookieLoss: 0,
+      potExchangeWinnings: 96.89,
+      potExchangeLoss: 514.12,
+      profitIfBookieWins: 96.88,
+      profitIfExchangeWins: 96.89,
+      minProfit: 96.88
+    };
+
+    const result = calcMinProfit(S, B, L, commission, freeBet, stakeReturned);
+    expect(result.layStake).to.be.closeTo(expected.layStake, 0.01);
+    expect(result.potBookieWinnings).to.be.closeTo(expected.potBookieWinnings, 0.01);
+    expect(result.potBookieLoss).to.be.closeTo(expected.potBookieLoss, 0.01);
+    expect(result.potExchangeWinnings).to.be.closeTo(expected.potExchangeWinnings, 0.01);
+    expect(result.potExchangeLoss).to.be.closeTo(expected.potExchangeLoss, 0.01);
+    expect(result.profitIfBookieWins).to.be.closeTo(expected.profitIfBookieWins, 0.01);
+    expect(result.profitIfExchangeWins).to.be.closeTo(expected.profitIfExchangeWins, 0.01);
+    expect(result.minProfit).to.be.closeTo(expected.minProfit, 0.01);
   });
 });
 

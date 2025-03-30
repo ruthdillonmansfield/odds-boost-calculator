@@ -1,4 +1,5 @@
 import { LetterText } from "lucide-react";
+import { Result } from "postcss";
 
 /**
  * Calculate the suggested additional lay using the new method.
@@ -38,13 +39,13 @@ export const calculateAdditionalLayNew = (S, B, freeBet, stakeReturned, totalBac
    */
   export const calculateGroupProfit = (groupBack, groupLayStake, groupLayLiability, B, commission, freeBet, stakeReturned) => {
     if (freeBet && !stakeReturned) {
-      const profitIfBackWins = groupBack * (B - 1) - groupLayLiability - (groupBack / B);
+      const profitIfBookieWins = groupBack * (B - 1) - groupLayLiability - (groupBack / B);
       const profitIfExchangeWins = groupLayStake * (1 - commission / 100) - groupBack;
-      return Math.min(profitIfBackWins, profitIfExchangeWins);
+      return Math.min(profitIfBookieWins, profitIfExchangeWins);
     } else {
-      const profitIfBackWins = groupBack * (B - 1) - groupLayLiability;
+      const profitIfBookieWins = groupBack * (B - 1) - groupLayLiability;
       const profitIfExchangeWins = groupLayStake * (1 - commission / 100) - groupBack;
-      return Math.min(profitIfBackWins, profitIfExchangeWins);
+      return Math.min(profitIfBookieWins, profitIfExchangeWins);
     }
   };
   
@@ -82,7 +83,7 @@ export const calculateAdditionalLayNew = (S, B, freeBet, stakeReturned, totalBac
     if (lockedPartials.length > 0 && totalLockedAmount > 0) {
       const avgLockedLayOdds = sumLockedLayOdds / totalLockedAmount;
       const avgLockedCommission = sumLockedCommission / totalLockedAmount;
-      lockedProfit = calcMinProfit(lockedBackMatched, backOdds, avgLockedLayOdds, avgLockedCommission, freeBet, stakeReturned);
+      lockedProfit = calcMinProfit(lockedBackMatched, backOdds, avgLockedLayOdds, avgLockedCommission, freeBet, stakeReturned).minProfit;
     }
   
     const remainingBackStake = Math.max(0, backStake - lockedBackMatched);
@@ -91,7 +92,7 @@ export const calculateAdditionalLayNew = (S, B, freeBet, stakeReturned, totalBac
       const currentRow = unlockedPartials[0];
       const lOdds = parseFloat(currentRow.layOdds) || 0;
       const comm = parseFloat(currentRow.commission) || 0;
-      unlockedProfit = calcMinProfit(remainingBackStake, backOdds, lOdds, comm, freeBet, stakeReturned);
+      unlockedProfit = calcMinProfit(remainingBackStake, backOdds, lOdds, comm, freeBet, stakeReturned).minProfit;
     }
   
     return lockedProfit + unlockedProfit;
@@ -133,19 +134,32 @@ export const getIdealLayStake = (S, B, L, commission, freeBet, stakeReturned) =>
 };
 
 /**
- * Calculates the worst‐case profit for a full hedge in matched betting.
+ * Calculates detailed outcome values for a full hedge in matched betting and returns a breakdown object.
  *
  * For a normal bet:
- *   - Profit if back wins = S × (B - 1) - layStake × (L - 1)
- *   - Profit if exchange wins = layStake × (1 - commission/100) - S
+ *   - Potential bookmaker winnings = S × (B - 1)
+ *   - Potential exchange loss = layStake × (L - 1)
+ *   - Profit if bookmaker wins (back bet wins) = S × (B - 1) - layStake × (L - 1)
+ *   - Profit if exchange wins (lay bet wins) = (layStake × (1 - commission/100)) - S
  *
  * For a free bet:
- *   - If stake is returned:
- *       Profit = S × B - layStake × (L - 1)
- *   - If stake is NOT returned (SNR):
- *       Profit if free bet wins = (B - 1) × S - layStake × (L - 1)
- *       Profit if lay bet wins = layStake × (1 - commission/100)
- *       (Both outcomes are equal by design using the ideal lay stake.)
+ *   - If the free bet stake is returned:
+ *       - Adjusted potential exchange loss = S × B - layStake × (L - 1)
+ *       - Profit if bookmaker wins = S × (B - 1) - (S × B - layStake × (L - 1))
+ *       - Profit if exchange wins = layStake × (1 - commission/100)
+ *   - If the free bet stake is NOT returned:
+ *       - Adjusted potential exchange loss = (B - 1) × S - layStake × (L - 1)
+ *       - Profit if bookmaker wins = S × (B - 1) - [(B - 1) × S - layStake × (L - 1)]
+ *       - Profit if exchange wins = layStake × (1 - commission/100)
+ *
+ * The function returns an object containing:
+ *   - potBookieWinnings: The potential winnings from the bookmaker bet.
+ *   - potBookieLoss: The stake amount placed at the bookmaker.
+ *   - potExchangeWinnings: The potential winnings from the exchange bet.
+ *   - potExchangeLoss: The potential loss from the exchange bet.
+ *   - profitIfBookieWins: The profit if the bookmaker (back bet) wins.
+ *   - profitIfExchangeWins: The profit if the exchange (lay bet) wins.
+ *   - minProfit: The worst-case profit (the minimum of profitIfBookieWins and profitIfExchangeWins).
  *
  * @param {number} S - Back bet stake or free bet size.
  * @param {number} B - Back odds.
@@ -153,90 +167,58 @@ export const getIdealLayStake = (S, B, L, commission, freeBet, stakeReturned) =>
  * @param {number} commission - Commission percentage.
  * @param {boolean} freeBet - True if this is a free bet.
  * @param {boolean} stakeReturned - True if the free bet stake is returned.
- * @returns {number} The worst-case profit.
+ * @returns {Object} An object with detailed outcome values and the worst-case profit.
  */
+
 export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
-  const layStake = getIdealLayStake(S, B, L, commission, freeBet, stakeReturned);  
-  let profitIfExchangeWins;
+  const layStake = getIdealLayStake(S, B, L, commission, freeBet, stakeReturned); 
+  let potBookieWinnings = S * (B - 1);
+  let potBookieLoss = S;
+  let potExchangeWinnings = layStake * (1 - commission / 100);
+  let potExchangeLoss = layStake * (L - 1);
+  let profitIfBookieWins = potBookieWinnings - potExchangeLoss;
+  let profitIfExchangeWins = potExchangeWinnings - S;
+  
+  let returnResult = {
+    layStake: layStake,
+    potBookieWinnings: potBookieWinnings,
+    potBookieLoss: potBookieLoss,
+    potExchangeWinnings: potExchangeWinnings,
+    potExchangeLoss: potExchangeLoss,
+    profitIfBookieWins: profitIfBookieWins,
+    profitIfExchangeWins: profitIfExchangeWins,
+    minProfit: null
+  }
   
   if (!freeBet) {
-    const profitIfBackWins = S * (B - 1) - layStake * (L - 1);
-    profitIfExchangeWins = layStake * (1 - commission / 100) - S;
-    return Math.min(profitIfBackWins, profitIfExchangeWins);
+    profitIfBookieWins = S * (B - 1) - layStake * (L - 1);
+    profitIfExchangeWins = potExchangeWinnings - S;
+    returnResult.minProfit = Math.min(profitIfBookieWins, profitIfExchangeWins);
   } else {
     if (stakeReturned) {
+      potBookieWinnings = S * B; 
+      potBookieLoss = 0; 
+      potExchangeLoss = layStake * (L - 1); 
+      profitIfBookieWins = potBookieWinnings - potExchangeLoss;
       profitIfExchangeWins = layStake * (1 - commission / 100);
-      return Math.min(S * B - layStake * (L - 1), profitIfExchangeWins)
+      
+      returnResult.potBookieWinnings = potBookieWinnings;
+      returnResult.potBookieLoss = potBookieLoss;
+      returnResult.potExchangeLoss = potExchangeLoss;
+      returnResult.profitIfBookieWins = profitIfBookieWins;
+      returnResult.profitIfExchangeWins = profitIfExchangeWins;
+      returnResult.minProfit = Math.min(profitIfBookieWins, profitIfExchangeWins);
     } else {
-      profitIfExchangeWins = layStake * (1 - commission / 100);
-      return Math.min((B - 1) * S - layStake * (L - 1), profitIfExchangeWins);
+      potExchangeLoss = (B - 1) * S - layStake * (L - 1);
+      profitIfBookieWins = S * (B - 1) - layStake * (L - 1);
+      returnResult.potExchangeLoss = -(layStake * (L - 1));
+      returnResult.profitIfBookieWins = profitIfBookieWins;
+      returnResult.profitIfExchangeWins = potExchangeWinnings;
+      returnResult.minProfit = Math.min(potExchangeLoss, potExchangeWinnings);
     }
   }
+  return returnResult;
 };
-
-
- /**
- * Calculates the worst‐case profit when the bookmaker wins in a full hedge matched betting scenario.
- *
- * For a normal bet (or free bet with stake returned):
- *   Profit if back wins = S*(B - 1) - layStake*(L - 1)
- *   Profit if exchange wins = layStake*(1 - commission/100) - S
- *
- * For a free bet where stake is NOT returned:
- *   Profit if back wins = S*B - layStake*(L - 1)
- *   Profit if exchange wins = layStake*(1 - commission/100) - (S/B)
- *
- * @param {number} S - Back bet stake.
- * @param {number} B - Back bet odds.
- * @param {number} L - Lay odds.
- * @param {number} commission - Commission percentage.
- * @param {boolean} freeBet - True if this is a free bet.
- * @param {boolean} stakeReturned - True if the free bet stake is returned.
- * @returns {number} The worst-case profit when the bookmaker wins.
- */
-export const calcOutcomeIfBookieWins = (S, B, L, commission, freeBet, stakeReturned) => {
-    const layStake = getIdealLayStake(S, B, L, commission, freeBet, stakeReturned);  
-    
-    if (!freeBet) {
-      return S * (B - 1) - layStake * (L - 1);
-    } else {
-      if (stakeReturned) {
-        return S * B - layStake * (L - 1);
-      } else {
-        return (B - 1) * S - layStake * (L - 1)
-      }
-    }
-  };
-
-/**
- * Calculates the worst‐case profit when the exchange wins in a full hedge matched betting scenario.
- *
- * For a normal bet (or free bet with stake returned):
- *   Profit if back wins = S*(B - 1) - layStake*(L - 1)
- *   Profit if exchange wins = layStake*(1 - commission/100) - S
- *
- * For a free bet where stake is NOT returned:
- *   Profit if back wins = S*B - layStake*(L - 1)
- *   Profit if exchange wins = layStake*(1 - commission/100) - (S/B)
- *
- * @param {number} S - Back bet stake.
- * @param {number} B - Back bet odds.
- * @param {number} L - Lay odds.
- * @param {number} commission - Commission percentage.
- * @param {boolean} freeBet - True if this is a free bet.
- * @param {boolean} stakeReturned - True if the free bet stake is returned.
- * @returns {number} The worst-case profit when the exchange wins.
- */
-export const calcOutcomeIfExchangeWins = (S, B, L, commission, freeBet, stakeReturned) => {
-  const layStake = getIdealLayStake(S, B, L, commission, freeBet, stakeReturned);
-  
-  if (!freeBet) {
-    return layStake * (1 - commission / 100) - S;
-  } else {
-    return layStake * (1 - commission / 100);
-  }
-};
-
 
   
   /**
