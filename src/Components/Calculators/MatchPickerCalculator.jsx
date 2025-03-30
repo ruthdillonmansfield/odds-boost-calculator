@@ -48,7 +48,6 @@ const MatchPickerCalculator = () => {
   ]);
 
   const [showOverlay, setShowOverlay] = useState(false);
-  const [overlayStake, setOverlayStake] = useState(10);
   const [overlayCommission, setOverlayCommission] = useState(commission);
   const [overlayLayOddsOverride, setOverlayLayOddsOverride] = useState("");
   const [copied, setCopied] = useState(false);
@@ -235,12 +234,12 @@ const bestMatch = useMemo(() => {
 
   let recommendedLayStakeOverlay = "";
   if (
-    overlayStake &&
+    stake &&
     overlayBackOdds &&
     effectiveLayOdds &&
     effectiveLayOdds - overlayCommissionValue !== 0
   ) {
-    const S = parseFloat(overlayStake);
+    const S = parseFloat(stake);
     const B = overlayBackOdds;
     const LO = effectiveLayOdds;
     if (freeBet && stakeReturned) {
@@ -253,8 +252,8 @@ const bestMatch = useMemo(() => {
   }
 
   let profitIfBookieWinsOverlay = "";
-  if (overlayStake && overlayBackOdds && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
-    const S = parseFloat(overlayStake);
+  if (stake && overlayBackOdds && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
+    const S = parseFloat(stake);
     const B = overlayBackOdds;
     const LO = effectiveLayOdds;
     if (freeBet && stakeReturned) {
@@ -267,8 +266,8 @@ const bestMatch = useMemo(() => {
   }
 
   let profitIfExchangeWinsOverlay = "";
-  if (overlayStake && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
-    const S = parseFloat(overlayStake);
+  if (stake && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
+    const S = parseFloat(stake);
     if (freeBet) {
       profitIfExchangeWinsOverlay = (recommendedLayStakeOverlay * (1 - overlayCommissionValue)).toFixed(2);
     } else {
@@ -320,8 +319,8 @@ const bestMatch = useMemo(() => {
                       type="number"
                       step="1"
                       onKeyDown={handleKeyDown}
-                      value={overlayStake}
-                      onChange={(e) => setOverlayStake(e.target.value)}
+                      value={stake}
+                      onChange={(e) => setStake(e.target.value)}
                       placeholder="Enter stake"
                     />
                   </div>

@@ -4,7 +4,8 @@ import {
     calculateAdditionalLayNew, 
     calculateGroupProfit,
     calculateOverallProfit,
-    simpleProfitCalculator
+    calcMinProfit,
+    getIdealLayStake
   } from "./calculations.js";
   
 describe("computeBackMatched", () => {
@@ -246,35 +247,113 @@ describe("calculateOverallProfit", () => {
   });
 });
 
-describe("simpleProfitCalculator", () => {
+describe("calcMinProfit", () => {
   it("should return 0 profit for a normal bet with S=10, B=10, L=10, commission=0", () => {
-    const profit = simpleProfitCalculator(10, 10, 10, 0, false, false);
+    const profit = calcMinProfit(10, 10, 10, 0, false, false);
     expect(profit).to.be.closeTo(0, 0.001);
   });
 
   it("should return -0.18 profit for a normal bet with S=10, B=10, L=10, commission=2", () => {
-    const profit = simpleProfitCalculator(10, 10, 10, 2, false, false);
+    const profit = calcMinProfit(10, 10, 10, 2, false, false);
     expect(profit).to.be.closeTo(-0.18, 0.01);
   });
 
+  it("should return -2.73 profit for a normal bet with S=14, B=14.83, L=17.5, commission=5", () => {
+    const profit = calcMinProfit(14, 14.83, 17.5, 5, false, false);
+    expect(profit).to.be.closeTo(-2.73, 0.01);
+  });
+  it("should return -128.83 for a normal bet with 204.89, 81.923, 144.5, 34.2", () => {
+    const layStake = calcMinProfit(204.89, 81.923, 144.5, 34.2, false, false);
+    expect(layStake).to.be.closeTo(-128.83, 0.01);
+  });
+  it("should return -121.65 for a normal bet with 204.89, 81.923, 133, 34.2", () => {
+    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, false, false);
+    expect(layStake).to.be.closeTo(-121.65, 0.01);
+  });
+  it("should return 83.24 for a FB SR with 204.89, 81.923, 133, 34.2", () => {
+    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, true, true);
+    expect(layStake).to.be.closeTo(83.24, 0.01);
+  });
   it("should return 9 profit for a FB SNR bet with S=10, B=10, L=10, commission=0", () => {
 
-    const profit = simpleProfitCalculator(10, 10, 10, 0, true, false);
+    const profit = calcMinProfit(10, 10, 10, 0, true, false);
     expect(profit).to.be.closeTo(9, 0.001);
   });
 
   it("should return 10 profit for a FB SR bet with S=10, B=10, L=10, commission=0", () => {
-    const profit = simpleProfitCalculator(10, 10, 10, 0, true, true);
+    const profit = calcMinProfit(10, 10, 10, 0, true, true);
     expect(profit).to.be.closeTo(10, 0.001);
   });
 
   it("should return ~8.82 profit for a FB SNR bet with S=10, B=10, L=10, commission=2", () => {
-    const profit = simpleProfitCalculator(10, 10, 10, 2, true, false);
+    const profit = calcMinProfit(10, 10, 10, 2, true, false);
     expect(profit).to.be.closeTo(8.82, 0.01);
   });
 
+  it("should return 10.47 profit for a FB SNR bet with S=14, B=14.83, L=17.5, commission=5", () => {
+    const profit = calcMinProfit(14, 14.83, 17.5, 5, true, false);
+    expect(profit).to.be.closeTo(10.47, 0.01);
+  });
+  it("should return 75.68 for a FB SNR bet with 204.89, 81.923, 144.5, 34.2", () => {
+    const layStake = calcMinProfit(204.89, 81.923, 144.5, 34.2, true, false);
+    expect(layStake).to.be.closeTo(75.68, 0.01);
+  });
+  it("should return 81.63 for a FB SNR bet with 204.89, 81.923, 133, 34.2", () => {
+    const layStake = calcMinProfit(204.89, 81.923, 133, 34.2, true, false);
+    expect(layStake).to.be.closeTo(81.63, 0.01);
+  });
   it("should return ~9.82 profit for a FB SR bet with S=10, B=10, L=10, commission=2", () => {
-    const profit = simpleProfitCalculator(10, 10, 10, 2, true, true);
+    const profit = calcMinProfit(10, 10, 10, 2, true, true);
     expect(profit).to.be.closeTo(9.82, 0.01);
+  });
+});
+
+describe("getIdealLayStake", () => {
+  it("should return 10.00 for a normal bet with S=10, B=10, L=10, commission=0", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 0, false, false);
+    expect(layStake).to.be.closeTo(10.00, 0.001);
+  });
+
+  it("should return 10.02 for a normal bet with S=10, B=10, L=10, commission=2", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 2, false, false);
+    expect(layStake).to.be.closeTo(10.02, 0.01);
+  });
+
+  it("should return 11.90 for a normal bet with S=14, B=14.83, L=17.5, commission=5", () => {
+    const layStake = getIdealLayStake(14, 14.83, 17.5, 5, false, false);
+    expect(layStake).to.be.closeTo(11.90, 0.01);
+  });
+
+  it("should return 116.44 for a normal bet with 204.89, 81.923, 144.5, 34.2", () => {
+    const layStake = getIdealLayStake(204.89, 81.923, 144.5, 34.2, false, false);
+    expect(layStake).to.be.closeTo(116.44, 0.01);
+  });
+
+  it("should return 9.00 for a free bet SNR (stake not returned) with S=10, B=10, L=10, commission=0", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 0, true, false);
+    expect(layStake).to.be.closeTo(9.00, 0.001);
+  });
+
+  it("should return 10.00 for a free bet SR (stake returned) with S=10, B=10, L=10, commission=0", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 0, true, true);
+    expect(layStake).to.be.closeTo(10.00, 0.001);
+  });
+
+  it("should return ~9.02 for a free bet SNR with S=10, B=10, L=10, commission=2", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 2, true, false);
+    expect(layStake).to.be.closeTo(9.02, 0.01);
+  });
+
+  it("should return 11.09 for a free bet SNR with S=14, B=14.83, L=17.5, commission=5", () => {
+    const layStake = getIdealLayStake(14, 14.83, 17.5, 5, true, false);
+    expect(layStake).to.be.closeTo(11.1, 0.01);
+  });
+  it("should return 115.01 for a FB SNR bet with 204.89, 81.923, 144.5, 34.2", () => {
+    const layStake = getIdealLayStake(204.89, 81.923, 144.5, 34.2, true, false);
+    expect(layStake).to.be.closeTo(115.01, 0.01);
+  });
+  it("should return ~10.02 for a free bet SR with S=10, B=10, L=10, commission=2", () => {
+    const layStake = getIdealLayStake(10, 10, 10, 2, true, true);
+    expect(layStake).to.be.closeTo(10.02, 0.01);
   });
 });
