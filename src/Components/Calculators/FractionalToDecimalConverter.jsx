@@ -8,7 +8,6 @@ import pageConfig from "../../config/pageConfig.js";
 const FractionalToDecimalConverter = () => {
   const meta = pageConfig.fractionalToDecimalConverter?.seo || {};
 
-
   const [numerator, setNumerator] = useState("");
   const [denominator, setDenominator] = useState("");
   const [decimalOdds, setDecimalOdds] = useState(null);

@@ -1,4 +1,3 @@
-// DecimalToFractionalConverter.jsx
 import { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
@@ -29,7 +28,6 @@ const convertDecimalToFraction = (decimal) => {
 };
 
 const DecimalToFractionalConverter = () => {
-  // Use the SEO data from pageConfig (ensure key matches!)
   const meta = pageConfig.decimalToFractionConverter?.seo || {};
 
   const [decimalOdds, setDecimalOdds] = useState("");

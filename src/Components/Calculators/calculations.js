@@ -175,7 +175,7 @@ export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
   let potBookieWinnings = S * (B - 1);
   let potBookieLoss = S;
   let potExchangeWinnings = layStake * (1 - commission / 100);
-  let potExchangeLoss = layStake * (L - 1);
+  let potExchangeLoss = -(layStake * (L - 1));
   let profitIfBookieWins = potBookieWinnings - potExchangeLoss;
   let profitIfExchangeWins = potExchangeWinnings - S;
   
@@ -204,7 +204,7 @@ export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
       
       returnResult.potBookieWinnings = potBookieWinnings;
       returnResult.potBookieLoss = potBookieLoss;
-      returnResult.potExchangeLoss = potExchangeLoss;
+      returnResult.potExchangeLoss = -potExchangeLoss;
       returnResult.profitIfBookieWins = profitIfBookieWins;
       returnResult.profitIfExchangeWins = profitIfExchangeWins;
       returnResult.minProfit = Math.min(profitIfBookieWins, profitIfExchangeWins);

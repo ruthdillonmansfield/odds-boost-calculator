@@ -8,33 +8,6 @@ import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
 import { calcMinProfit } from "./calculations.js";
 
-const GroupContainer = ({ group, children, removeGroup }) => (
-  <div className="group-container" style={{ position: "relative" }}>
-    <button
-      className="group-remove-button"
-      onClick={() => removeGroup(group)}
-      style={{
-        position: "absolute",
-        top: "-10px",
-        right: "-10px",
-        borderRadius: "50%",
-        width: "20px",
-        height: "20px",
-        backgroundColor: "#ff5555",
-        border: "none",
-        color: "#fff",
-        cursor: "pointer",
-        fontWeight: "bold",
-        lineHeight: "20px",
-        padding: 0,
-      }}
-    >
-      ×
-    </button>
-    {children}
-  </div>
-);
-
 const MatchPickerCalculator = () => {
   const meta = pageConfig.matchPickerCalculator?.seo || {};
 
@@ -189,7 +162,6 @@ const MatchPickerCalculator = () => {
     );
   };
 
-  // Identify the best match based on highest worst-case profit
   const bestMatch = useMemo(() => {
     let best = null;
     entries.forEach((entry) => {
@@ -211,7 +183,6 @@ const MatchPickerCalculator = () => {
     return best;
   }, [entries, stake, commission, freeBet, stakeReturned]);
 
-  // Overlay recommended calculations using bestMatch data and any overrides.
   const overlayCommissionValue = parseFloat(overlayCommission) || 0;
   const overlayBackOdds = bestMatch ? parseFloat(bestMatch.back) : 0;
   const overlayLayOdds = bestMatch ? parseFloat(bestMatch.lay) : 0;

@@ -4,7 +4,7 @@ import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
-import { calcMinProfit } from "./calculations.js"; // import the universal function
+import { calcMinProfit } from "./calculations.js";
 
 const LayStakeCalculator = () => {
   const meta = pageConfig.layStakeCalculator?.seo || {};
@@ -18,7 +18,6 @@ const LayStakeCalculator = () => {
   const [calcData, setCalcData] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Validate inputs
   const isInputValid = () => {
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
@@ -28,13 +27,11 @@ const LayStakeCalculator = () => {
     return true;
   };
 
-  // Call calcMinProfit whenever any input changes
   useEffect(() => {
     if (isInputValid()) {
       const S = parseFloat(stake);
       const B = parseFloat(backOdds);
       const L = parseFloat(layOdds);
-      // Pass commission as a number (percentage) and the free bet flags
       const result = calcMinProfit(S, B, L, parseFloat(commission), freeBet, stakeReturned);
       setCalcData(result);
     } else {
@@ -52,9 +49,6 @@ const LayStakeCalculator = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      // No extra action needed – state changes trigger useEffect recalculation.
-    }
     if (e.key.toLowerCase() === "c") copyToClipboard();
   };
 
@@ -78,16 +72,13 @@ const LayStakeCalculator = () => {
     return calcData.minProfit;
   };
 
-  // Build a breakdown object for displaying outcome details
   const buildBreakdown = () => {
     if (!isInputValid() || calcData === null) return null;
     const S = parseFloat(stake);
     const B = parseFloat(backOdds);
     const L = parseFloat(layOdds);
 
-    // Determine the back profit based on bet type
     const bookieBackProfit = freeBet ? (stakeReturned ? S * B : S * (B - 1)) : S * (B - 1);
-    // For lay loss, use the absolute value (calcMinProfit may return negative values in some branches)
     const layLoss = Math.abs(calcData.potExchangeLoss);
     const bookieOutcome = {
       backProfit: parseFloat(bookieBackProfit.toFixed(2)),

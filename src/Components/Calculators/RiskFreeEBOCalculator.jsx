@@ -67,7 +67,6 @@ const RiskFreeEBOCalculator = () => {
     }
   }, [stake, riskFreeAmount, retention, bookieOdds, trueOdds]);
 
-  // Refactored Lock-In Profit calculation using calcRiskFreeProfit
   useEffect(() => {
     const st = parseFloat(stake) || 0;
     const bo = parseFloat(bookieOdds) || 0;

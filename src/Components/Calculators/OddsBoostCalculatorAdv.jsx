@@ -39,7 +39,6 @@ const AdvancedOddsBoostCalculator = () => {
   const [calcData, setCalcData] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  // Compute boosted odds and recalc all outcome values via calcMinProfit.
   useEffect(() => {
     const S = parseFloat(stake);
     const decOdds = parseFloat(odds);
@@ -54,6 +53,7 @@ const AdvancedOddsBoostCalculator = () => {
     const newBoostedOdds = 1 + (decOdds - 1) * (1 + boostPct / 100);
     const roundedBoostedOdds = parseFloat(newBoostedOdds.toFixed(3));
     setBoostedOdds(roundedBoostedOdds);
+
     const result = calcMinProfit(S, roundedBoostedOdds, LO, comm, freeBet, stakeReturned);
     setCalcData(result);
   }, [odds, boost, stake, layOdds, commission, freeBet, stakeReturned]);
@@ -68,9 +68,6 @@ const AdvancedOddsBoostCalculator = () => {
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      // Calculations update automatically via useEffect.
-    }
     if (e.key.toLowerCase() === "c") {
       copyToClipboard();
     }
@@ -86,53 +83,6 @@ const AdvancedOddsBoostCalculator = () => {
     return calcData.minProfit;
   };
 
-  // Build a breakdown for display using calcData values.
-  const buildBreakdown = () => {
-    if (!isInputValid(stake, odds, layOdds) || calcData === null) return null;
-    const S = parseFloat(stake);
-    const B = boostedOdds; // boosted odds used in place of the original odds
-    const LO = parseFloat(layOdds);
-
-    let bookieOutcome, exchangeOutcome;
-    if (freeBet && stakeReturned) {
-      bookieOutcome = {
-        backProfit: parseFloat((S * B).toFixed(2)),
-        layLoss: parseFloat(((LO - 1) * calcData.layStake).toFixed(2)),
-        net: parseFloat(calcData.profitIfBookieWins.toFixed(2))
-      };
-      exchangeOutcome = {
-        backLoss: 0,
-        layWin: parseFloat(calcData.potExchangeWinnings.toFixed(2)),
-        net: parseFloat(calcData.profitIfExchangeWins.toFixed(2))
-      };
-    } else if (freeBet && !stakeReturned) {
-      bookieOutcome = {
-        backProfit: parseFloat((S * (B - 1)).toFixed(2)),
-        layLoss: parseFloat(((LO - 1) * calcData.layStake).toFixed(2)),
-        net: parseFloat(calcData.profitIfBookieWins.toFixed(2))
-      };
-      exchangeOutcome = {
-        backLoss: 0,
-        layWin: parseFloat(calcData.potExchangeWinnings.toFixed(2)),
-        net: parseFloat(calcData.profitIfExchangeWins.toFixed(2))
-      };
-    } else {
-      bookieOutcome = {
-        backProfit: parseFloat((S * (B - 1)).toFixed(2)),
-        layLoss: parseFloat(((LO - 1) * calcData.layStake).toFixed(2)),
-        net: parseFloat(calcData.profitIfBookieWins.toFixed(2))
-      };
-      exchangeOutcome = {
-        backLoss: -S,
-        layWin: parseFloat(calcData.potExchangeWinnings.toFixed(2)),
-        net: parseFloat(calcData.profitIfExchangeWins.toFixed(2))
-      };
-    }
-    return { bookieOutcome, exchangeOutcome };
-  };
-
-  const breakdown = buildBreakdown();
-
   const pureBetRating = (B, LO) => {
     if (!B || !LO || B <= 1 || LO <= 1) return null;
     return ((B - 1) / (LO - 1)) * 100;
@@ -143,10 +93,7 @@ const AdvancedOddsBoostCalculator = () => {
 
   return (
     <>
-      <Seo 
-        title={meta.title} 
-        description={meta.description} 
-      />
+      <Seo title={meta.title} description={meta.description} />
       <div className="container">
         <h2 className="title with-subhead">Lay Stake Calculator</h2>
         <h4 className="subhead">
@@ -209,10 +156,7 @@ const AdvancedOddsBoostCalculator = () => {
         </div>
 
         {boostedOdds && (
-          <div
-            className="result-box"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
+          <div className="result-box" style={{ display: "flex", justifyContent: "space-between" }}>
             <h5 className="outcome-primary">
               <span>Boosted Odds:</span>
             </h5>
@@ -296,11 +240,8 @@ const AdvancedOddsBoostCalculator = () => {
             <div className="stats-row">
               <div className="stat-block">
                 <div className="stat-label">Your Profit</div>
-                <div className="stat-value">
-                  {formatValue(guaranteedProfit)}
-                </div>
+                <div className="stat-value">{formatValue(guaranteedProfit)}</div>
               </div>
-
               <div className="stat-block">
                 <div className="stat-label">
                   Bet Rating
@@ -328,50 +269,36 @@ const AdvancedOddsBoostCalculator = () => {
           </div>
         )}
 
-        {isValid && breakdown && (
+        {isValid && calcData && (
           <div className="outcome-container" style={{ marginTop: "20px" }}>
             <div className="outcome-group">
               <div className="group-title">If Bookie Wins:</div>
               <div className="outcome-line">
                 <span className="outcome-label">Back Profit:</span>
-                <span className="outcome-value">
-                  {formatValue(breakdown.bookieOutcome.backProfit)}
-                </span>
+                <span className="outcome-value">{formatValue(calcData.potBookieWinnings)}</span>
               </div>
               <div className="outcome-line">
                 <span className="outcome-label">Lay Loss:</span>
-                <span className="outcome-value">
-                  {formatValue(-breakdown.bookieOutcome.layLoss)}
-                </span>
+                <span className="outcome-value">{formatValue(calcData.potExchangeLoss)}</span>
               </div>
               <div className="outcome-line net-outcome">
                 <span className="outcome-label">Net Outcome:</span>
-                <span className="outcome-value">
-                  {formatValue(breakdown.bookieOutcome.net)}
-                </span>
+                <span className="outcome-value">{formatValue(calcData.profitIfBookieWins)}</span>
               </div>
             </div>
             <div className="outcome-group">
               <div className="group-title">If Exchange Wins:</div>
               <div className="outcome-line">
                 <span className="outcome-label">Back Loss:</span>
-                <span className="outcome-value">
-                  {freeBet && !stakeReturned
-                    ? formatValue(0)
-                    : formatValue(breakdown.exchangeOutcome.backLoss)}
-                </span>
+                <span className="outcome-value">{formatValue(freeBet ? 0 : -calcData.potBookieLoss)}</span>
               </div>
               <div className="outcome-line">
                 <span className="outcome-label">Lay Win:</span>
-                <span className="outcome-value">
-                  {formatValue(breakdown.exchangeOutcome.layWin)}
-                </span>
+                <span className="outcome-value">{formatValue(calcData.potExchangeWinnings)}</span>
               </div>
               <div className="outcome-line net-outcome">
                 <span className="outcome-label">Net Outcome:</span>
-                <span className="outcome-value">
-                  {formatValue(breakdown.exchangeOutcome.net)}
-                </span>
+                <span className="outcome-value">{formatValue(calcData.profitIfExchangeWins)}</span>
               </div>
             </div>
           </div>

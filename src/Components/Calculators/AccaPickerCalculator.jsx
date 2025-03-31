@@ -67,12 +67,7 @@ const AccaPickerCalculator = () => {
     if (e.key.toLowerCase() === "c") copyToClipboard();
   };
 
-  // We still compute a commission value for functions like retentionRate.
-  const commissionValue = parseFloat(commission) / 100 || 0;
-
-  // Retention rate remains a pure calculation based on raw odds.
   const retentionRate = (backOdds, layOdds) => {
-    // Use a local commission value
     const localCommissionValue = parseFloat(commission) / 100 || 0;
     const S = 1;
     const ls = (S * backOdds) / (layOdds - localCommissionValue);
@@ -80,18 +75,6 @@ const AccaPickerCalculator = () => {
     const exchangeOutcome = ls * (1 - localCommissionValue) - S;
     const worstCase = Math.min(bookieOutcome, exchangeOutcome);
     return (S + worstCase) * 100;
-  };
-
-  // Remove custom calculateLayStake and getWorstCaseProfit functions—
-  // instead, we use calcMinProfit below.
-
-  const formatOutcome = (value) => {
-    const formatted = formatMoney(Math.abs(value));
-    return (
-      <span className={value >= 0 ? "positive" : "negative"}>
-        {value < 0 ? "–" : ""}£{formatted}
-      </span>
-    );
   };
 
   const updateEntry = (id, field, value) => {
@@ -176,8 +159,6 @@ const AccaPickerCalculator = () => {
     });
   };
 
-  // Refactored best combo: instead of manually calculating lay stake and profit,
-  // we now call calcMinProfit for each candidate combination.
   const getBestCombo = () => {
     const minOddsVal = parseFloat(minOdds);
     const groups = groupedEntries
@@ -236,7 +217,6 @@ const AccaPickerCalculator = () => {
             1
           );
           const S = parseFloat(stake);
-          // Use calcMinProfit to get all outcome values
           const outcomeData = calcMinProfit(
             S,
             productOdds,
@@ -285,7 +265,6 @@ const AccaPickerCalculator = () => {
     ? bestCombo.outcomes.reduce((acc, o) => acc * parseFloat(o.lay || 1), 1).toFixed(2)
     : null;
 
-  // ---- Overlay Lay Calculator Calculations ----
   const overlayCommissionValue = parseFloat(overlayCommission) / 100 || 0;
   const overlayBackOdds = parseFloat(combinedBackOdds) || 0;
   const overlayLayOdds = parseFloat(combinedLayOdds) || 0;
@@ -294,7 +273,6 @@ const AccaPickerCalculator = () => {
       ? parseFloat(overlayLayOddsOverride)
       : overlayLayOdds;
 
-  // For the overlay, use calcMinProfit to determine recommended lay stake and profits.
   let recommendedLayStakeOverlay = "";
   let profitIfBookieWinsOverlay = "";
   let profitIfExchangeWinsOverlay = "";
