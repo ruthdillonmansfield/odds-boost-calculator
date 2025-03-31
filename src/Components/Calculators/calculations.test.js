@@ -5,7 +5,8 @@ import {
     calculateGroupProfit,
     calculateOverallProfit,
     calcMinProfit,
-    getIdealLayStake
+    getIdealLayStake,
+    calcRiskFreeProfit
   } from "./calculations.js";
   
 describe("computeBackMatched", () => {
@@ -452,5 +453,132 @@ describe("getIdealLayStake", () => {
   it("should return ~10.02 for a free bet SR with S=10, B=10, L=10, commission=2", () => {
     const layStake = getIdealLayStake(10, 10, 10, 2, true, true);
     expect(layStake).to.be.closeTo(10.02, 0.01);
+  });
+});
+
+describe("calcRiskFreeProfit", () => {
+  it("should return 7.2 profit for a risk-free bet with S=10, B=10, L=10, commission=0, freeBetAmount=10, retention=80", () => {
+    // commissionValue = 0, retentionRate = 0.8
+    // rawLayStake = (10*10 - 0.8*10) / (10 - 0) = (100 - 8)/10 = 92/10 = 9.2
+    // backProfit = 10 * (10-1) = 90
+    // layLoss = 9.2 * (10-1) = 82.8
+    // profitIfBookieWins = 90 - 82.8 = 7.2
+    // exchangeWin = 9.2 * 1 = 9.2
+    // freeBetRefund = 0.8 * 10 = 8
+    // profitIfExchangeWins = 9.2 - 10 + 8 = 7.2
+    // minProfit = 7.2
+    const profit = calcRiskFreeProfit(10, 10, 10, 0, 10, 80);
+    expect(profit.layStake).to.be.closeTo(9.2, 0.01);
+    expect(profit.potBookieWinnings).to.be.closeTo(90, 0.01);
+    expect(profit.potBookieLoss).to.be.closeTo(10, 0.01);
+    expect(profit.potExchangeWinnings).to.be.closeTo(9.2, 0.01);
+    expect(profit.potExchangeLoss).to.be.closeTo(82.8, 0.01);
+    expect(profit.freeBetRefund).to.be.closeTo(8, 0.01);
+    expect(profit.profitIfBookieWins).to.be.closeTo(7.2, 0.01);
+    expect(profit.profitIfExchangeWins).to.be.closeTo(7.2, 0.01);
+    expect(profit.minProfit).to.be.closeTo(7.2, 0.01);
+  });
+
+  it("should return ~7.02 profit for a risk-free bet with S=10, B=10, L=10, commission=2, freeBetAmount=10, retention=80", () => {
+    // commissionValue = 0.02, retentionRate = 0.8
+    // rawLayStake = (10*10 - 0.8*10) / (10 - 0.02) = 92 / 9.98 ≈ 9.22
+    // backProfit = 90
+    // layLoss = 9.22 * 9 = 82.98
+    // profitIfBookieWins ≈ 90 - 82.98 = 7.02
+    // exchangeWin = 9.22 * 0.98 ≈ 9.04
+    // profitIfExchangeWins = 9.04 - 10 + 8 = 7.04
+    // minProfit = ~7.02
+    const profit = calcRiskFreeProfit(10, 10, 10, 2, 10, 80);
+    expect(profit.layStake).to.be.closeTo(9.22, 0.01);
+    expect(profit.potBookieWinnings).to.be.closeTo(90, 0.01);
+    expect(profit.potBookieLoss).to.be.closeTo(10, 0.01);
+    expect(profit.potExchangeWinnings).to.be.closeTo(9.04, 0.01);
+    expect(profit.potExchangeLoss).to.be.closeTo(82.98, 0.01);
+    expect(profit.freeBetRefund).to.be.closeTo(8, 0.01);
+    expect(profit.profitIfBookieWins).to.be.closeTo(7.02, 0.01);
+    expect(profit.profitIfExchangeWins).to.be.closeTo(7.04, 0.01);
+    expect(profit.minProfit).to.be.closeTo(7.02, 0.01);
+  });
+
+  it("should return approximately 37.7 profit for a risk-free bet with larger numbers", () => {
+    // Using S=204.89, B=81.923, L=133, commission=34.2, freeBetAmount=204.89, retention=80
+    // commissionValue = 34.2/100 = 0.342, retentionRate = 0.8
+    // rawLayStake = (204.89*81.923 - 0.8*204.89) / (133 - 0.342)
+    // Approximation:
+    // 204.89*81.923 ≈ 16796.75, then 16796.75 - 163.912 ≈ 16632.84,
+    // denominator = 132.658, so layStake ≈ 125.28
+    // backProfit = 204.89*(81.923-1) ≈ 204.89*80.923 ≈ 16570.7
+    // layLoss = 125.28*(133-1) = 125.28*132 ≈ 16533.0
+    // profitIfBookieWins ≈ 16570.7 - 16533.0 = 37.7
+    // exchangeWin = 125.28*(1-0.342) = 125.28*0.658 ≈ 82.43
+    // freeBetRefund = 0.8 * 204.89 ≈ 163.912
+    // profitIfExchangeWins = 82.43 - 204.89 + 163.912 ≈ 41.45
+    // minProfit ≈ 37.7
+    const profit = calcRiskFreeProfit(204.89, 81.923, 133, 34.2, 204.89, 80);
+    expect(profit.layStake).to.be.closeTo(125.29, 0.5);
+    expect(profit.potBookieWinnings).to.be.closeTo(16580.31, 1);
+    expect(profit.potBookieLoss).to.be.closeTo(204.89, 0.01);
+    expect(profit.potExchangeWinnings).to.be.closeTo(82.44, 0.5);
+    expect(profit.potExchangeLoss).to.be.closeTo(16538.31, 1);
+    expect(profit.freeBetRefund).to.be.closeTo(163.912, 0.01);
+    expect(profit.profitIfBookieWins).to.be.closeTo(42.03, 0.5);
+    expect(profit.profitIfExchangeWins).to.be.closeTo(41.46, 0.5);
+    expect(profit.minProfit).to.be.closeTo(41.46, 0.5);
+  });
+
+  it("should return an object with the correct keys", () => {
+    const result = calcRiskFreeProfit(122.2, 5, 6, 2, 122.2, 80);
+    expect(result).to.have.property('layStake');
+    expect(result).to.have.property('potBookieWinnings');
+    expect(result).to.have.property('potBookieLoss');
+    expect(result).to.have.property('potExchangeWinnings');
+    expect(result).to.have.property('potExchangeLoss');
+    expect(result).to.have.property('freeBetRefund');
+    expect(result).to.have.property('profitIfBookieWins');
+    expect(result).to.have.property('profitIfExchangeWins');
+    expect(result).to.have.property('minProfit');
+  });
+
+  it("should return the expected outcome for the given risk-free bet input", () => {
+    const S = 122.2;
+    const B = 5;
+    const L = 6.2;
+    const commission = 2;
+    const freeBetAmount = 122.2;
+    const retention = 70;
+
+    // commissionValue = 0.02, retentionRate = 0.8
+    // rawLayStake = (122.2*5 - 0.8*122.2) / (6.2 - 0.02)
+    //             = (611 - 97.76) / 6.18 ≈ 513.24 / 6.18 ≈ 83.06
+    // layStake = 83.06
+    // backProfit = 122.2*(5-1)=488.8
+    // layLoss = 83.06*(6.2-1)=83.06*5.2 ≈ 431.912
+    // profitIfBookieWins = 488.8 - 431.912 ≈ 56.888
+    // exchangeWin = 83.06*(1-0.02)=83.06*0.98 ≈ 81.3988
+    // freeBetRefund = 0.8*122.2 = 97.76
+    // profitIfExchangeWins = 81.3988 - 122.2 + 97.76 ≈ 56.9588
+    // minProfit ≈ 56.888
+    const expected = {
+      layStake: 85.03,
+      potBookieWinnings: 488.8,
+      potBookieLoss: 122.2,
+      potExchangeWinnings: 83.33,
+      potExchangeLoss: 442.16,
+      freeBetRefund: 85.54,
+      profitIfBookieWins: 46.64,
+      profitIfExchangeWins: 46.67,
+      minProfit: 46.64
+    };
+
+    const result = calcRiskFreeProfit(S, B, L, commission, freeBetAmount, retention);
+    expect(result.layStake).to.be.closeTo(expected.layStake, 0.01);
+    expect(result.potBookieWinnings).to.be.closeTo(expected.potBookieWinnings, 0.01);
+    expect(result.potBookieLoss).to.be.closeTo(expected.potBookieLoss, 0.01);
+    expect(result.potExchangeWinnings).to.be.closeTo(expected.potExchangeWinnings, 0.01);
+    expect(result.potExchangeLoss).to.be.closeTo(expected.potExchangeLoss, 0.01);
+    expect(result.freeBetRefund).to.be.closeTo(expected.freeBetRefund, 0.01);
+    expect(result.profitIfBookieWins).to.be.closeTo(expected.profitIfBookieWins, 0.01);
+    expect(result.profitIfExchangeWins).to.be.closeTo(expected.profitIfExchangeWins, 0.01);
+    expect(result.minProfit).to.be.closeTo(expected.minProfit, 0.01);
   });
 });

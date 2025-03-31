@@ -6,6 +6,7 @@ import "./calculators.css";
 import { formatMoney } from "../../helpers.js";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
+import { calcMinProfit } from "./calculations.js";
 
 const GroupContainer = ({ group, children, removeGroup }) => (
   <div className="group-container" style={{ position: "relative" }}>
@@ -51,6 +52,7 @@ const MatchPickerCalculator = () => {
   const [overlayCommission, setOverlayCommission] = useState(commission);
   const [overlayLayOddsOverride, setOverlayLayOddsOverride] = useState("");
   const [copied, setCopied] = useState(false);
+
   const copyToClipboard = () => {
     if (recommendedLayStakeOverlay !== "") {
       navigator.clipboard.writeText(recommendedLayStakeOverlay.toString()).then(() => {
@@ -64,34 +66,19 @@ const MatchPickerCalculator = () => {
     if (e.key.toLowerCase() === "c") copyToClipboard();
   };
 
-  const commissionValue = parseFloat(commission) / 100 || 0;
-
-  const retentionRate = (backOdds, layOdds) => {
+  const retentionRate = (B, L) => {
+    const commissionValue = parseFloat(commission) / 100 || 0;
     const S = 1;
-    const ls = (S * backOdds) / (layOdds - commissionValue);
-    const bookieOutcome = (backOdds - 1) - (layOdds - 1) * ls;
+    const ls = (S * B) / (L - commissionValue);
+    const bookieOutcome = (B - 1) - (L - 1) * ls;
     const exchangeOutcome = ls * (1 - commissionValue) - S;
     const worstCase = Math.min(bookieOutcome, exchangeOutcome);
     return (S + worstCase) * 100;
   };
 
-  const calculateLayStake = (B, LO) => {
-    const S = parseFloat(stake);
-    if (freeBet && stakeReturned) return (S * B) / (LO - commissionValue);
-    if (freeBet && !stakeReturned) return ((B - 1) * S) / (LO - commissionValue);
-    return (S * B) / (LO - commissionValue);
-  };
-
-  const getWorstCaseProfit = (B, LO) => {
-    const S = parseFloat(stake);
-    const layStake = calculateLayStake(B, LO);
-    const backWin = freeBet ? (stakeReturned ? B : B - 1) * S : S * (B - 1);
-    const layLoss = layStake * (LO - 1);
-    const bookieNet = backWin - layLoss;
-    const backLoss = freeBet ? 0 : -S;
-    const layWin = layStake * (1 - commissionValue);
-    const exchangeNet = backLoss + layWin;
-    return Math.min(bookieNet, exchangeNet);
+  const getWorstCaseProfit = (B, L) => {
+    const outcome = calcMinProfit(parseFloat(stake), B, L, parseFloat(commission), freeBet, stakeReturned);
+    return outcome.minProfit;
   };
 
   const formatOutcome = (value) => {
@@ -122,6 +109,8 @@ const MatchPickerCalculator = () => {
       entry.match === bestMatch.match &&
       entry.back === bestMatch.back &&
       entry.lay === bestMatch.lay;
+    const b = parseFloat(entry.back);
+    const l = parseFloat(entry.lay);
     return (
       <div
         className="group-container"
@@ -152,33 +141,31 @@ const MatchPickerCalculator = () => {
         <div className="entry-box">
           <div className="inline-fields" style={{ alignItems: "flex-end" }}>
             <div className="input-group-inline">
-            <input
-              className={`${entry.match ? "blue-bottom" : ""} ${isBest ? "green-bottom" : ""}`}
-              type="text"
-              value={entry.match}
-              onChange={(e) => updateEntry(i, "match", e.target.value)}
-              placeholder="Event (e.g. Arsenal v Chelsea)"
-            />
+              <input
+                className={`${entry.match ? "blue-bottom" : ""} ${isBest ? "green-bottom" : ""}`}
+                type="text"
+                value={entry.match}
+                onChange={(e) => updateEntry(i, "match", e.target.value)}
+                placeholder="Event (e.g. Arsenal v Chelsea)"
+              />
             </div>
             <div className={`profit-box profit-box-inline ${isBest ? "highlighted" : ""}`}>
               <h5 className="outcome-main">
-              {entry.lay ? (
-                <>
-                  {formatOutcome(getWorstCaseProfit(parseFloat(entry.back), parseFloat(entry.lay)))}{" "}
-                  <span className="lg" style={{ color: "#ccc", fontWeight: "normal" }}>
-                    / {retentionRate(parseFloat(entry.back), parseFloat(entry.lay)).toFixed(1)}%
-                  </span>
-                </>
-              ) : (
-                "–"
-              )}
-
+                {entry.lay ? (
+                  <>
+                    {formatOutcome(getWorstCaseProfit(b, l))}{" "}
+                    <span className="lg" style={{ color: "#ccc", fontWeight: "normal" }}>
+                      / {retentionRate(b, l).toFixed(1)}%
+                    </span>
+                  </>
+                ) : (
+                  "–"
+                )}
               </h5>
             </div>
-
           </div>
           <div className="inline-fields mb-16">
-          <div className="input-group-inline input-prefix-suffix only-suffix">
+            <div className="input-group-inline input-prefix-suffix only-suffix">
               <input
                 type="number"
                 step="0.1"
@@ -186,7 +173,6 @@ const MatchPickerCalculator = () => {
                 onChange={(e) => updateEntry(i, "back", e.target.value)}
               />
               <span className="suffix">Back</span>
-
             </div>
             <div className="input-group-inline input-prefix-suffix only-suffix">
               <input
@@ -203,28 +189,30 @@ const MatchPickerCalculator = () => {
     );
   };
 
-const bestMatch = useMemo(() => {
-  let best = null;
-  entries.forEach((entry) => {
-    const b = parseFloat(entry.back);
-    const l = parseFloat(entry.lay);
-    if (!isNaN(b) && !isNaN(l) && b > 1 && l > 1) {
-      const profit = getWorstCaseProfit(b, l);
-      const combinedLayOdds = b * l; 
-      if (
-        best === null ||
-        profit > best.profit ||
-        (profit === best.profit && combinedLayOdds < best.combinedLayOdds)
-      ) {
-        best = { ...entry, profit, combinedLayOdds };
+  // Identify the best match based on highest worst-case profit
+  const bestMatch = useMemo(() => {
+    let best = null;
+    entries.forEach((entry) => {
+      const b = parseFloat(entry.back);
+      const l = parseFloat(entry.lay);
+      if (!isNaN(b) && !isNaN(l) && b > 1 && l > 1) {
+        const outcome = calcMinProfit(parseFloat(stake), b, l, parseFloat(commission), freeBet, stakeReturned);
+        const profit = outcome.minProfit;
+        const combinedLayOdds = b * l; 
+        if (
+          best === null ||
+          profit > best.profit ||
+          (profit === best.profit && combinedLayOdds < best.combinedLayOdds)
+        ) {
+          best = { ...entry, profit, combinedLayOdds };
+        }
       }
-    }
-  });
-  return best;
-}, [entries, stake, commission, freeBet, stakeReturned]);
+    });
+    return best;
+  }, [entries, stake, commission, freeBet, stakeReturned]);
 
-
-  const overlayCommissionValue = parseFloat(overlayCommission) / 100 || 0;
+  // Overlay recommended calculations using bestMatch data and any overrides.
+  const overlayCommissionValue = parseFloat(overlayCommission) || 0;
   const overlayBackOdds = bestMatch ? parseFloat(bestMatch.back) : 0;
   const overlayLayOdds = bestMatch ? parseFloat(bestMatch.lay) : 0;
   const effectiveLayOdds =
@@ -233,54 +221,22 @@ const bestMatch = useMemo(() => {
       : overlayLayOdds;
 
   let recommendedLayStakeOverlay = "";
-  if (
-    stake &&
-    overlayBackOdds &&
-    effectiveLayOdds &&
-    effectiveLayOdds - overlayCommissionValue !== 0
-  ) {
-    const S = parseFloat(stake);
-    const B = overlayBackOdds;
-    const LO = effectiveLayOdds;
-    if (freeBet && stakeReturned) {
-      recommendedLayStakeOverlay = ((S * B) / (LO - overlayCommissionValue)).toFixed(2);
-    } else if (freeBet && !stakeReturned) {
-      recommendedLayStakeOverlay = (((B - 1) * S) / (LO - overlayCommissionValue)).toFixed(2);
-    } else {
-      recommendedLayStakeOverlay = ((S * B) / (LO - overlayCommissionValue)).toFixed(2);
-    }
-  }
-
   let profitIfBookieWinsOverlay = "";
-  if (stake && overlayBackOdds && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
-    const S = parseFloat(stake);
-    const B = overlayBackOdds;
-    const LO = effectiveLayOdds;
-    if (freeBet && stakeReturned) {
-      profitIfBookieWinsOverlay = (B * S - (LO - 1) * recommendedLayStakeOverlay).toFixed(2);
-    } else if (freeBet && !stakeReturned) {
-      profitIfBookieWinsOverlay = (((B - 1) * S) - (LO - 1) * recommendedLayStakeOverlay).toFixed(2);
-    } else {
-      profitIfBookieWinsOverlay = (S * (B - 1) - recommendedLayStakeOverlay * (LO - 1)).toFixed(2);
-    }
-  }
-
   let profitIfExchangeWinsOverlay = "";
-  if (stake && effectiveLayOdds && recommendedLayStakeOverlay !== "") {
-    const S = parseFloat(stake);
-    if (freeBet) {
-      profitIfExchangeWinsOverlay = (recommendedLayStakeOverlay * (1 - overlayCommissionValue)).toFixed(2);
-    } else {
-      profitIfExchangeWinsOverlay = (recommendedLayStakeOverlay * (1 - overlayCommissionValue) - S).toFixed(2);
-    }
-  }
-
   let worstCaseProfitOverlay = "";
-  if (profitIfBookieWinsOverlay !== "" && profitIfExchangeWinsOverlay !== "") {
-    worstCaseProfitOverlay = Math.min(
-      parseFloat(profitIfBookieWinsOverlay),
-      parseFloat(profitIfExchangeWinsOverlay)
-    ).toFixed(2);
+  if (stake && overlayBackOdds && effectiveLayOdds) {
+    const overlayCalc = calcMinProfit(
+      parseFloat(stake),
+      overlayBackOdds,
+      effectiveLayOdds,
+      overlayCommissionValue,
+      freeBet,
+      stakeReturned
+    );
+    recommendedLayStakeOverlay = overlayCalc.layStake.toFixed(2);
+    profitIfBookieWinsOverlay = overlayCalc.profitIfBookieWins.toFixed(2);
+    profitIfExchangeWinsOverlay = overlayCalc.profitIfExchangeWins.toFixed(2);
+    worstCaseProfitOverlay = overlayCalc.minProfit.toFixed(2);
   }
 
   return (
@@ -491,16 +447,17 @@ const bestMatch = useMemo(() => {
             + Add Option
           </button>
         </div>
-        {bestMatch && (<div className="button-group">
-          <button
-            className="add-entry-btn"
-            style={{ padding: "12px", maxWidth: "100%" }}
-            onClick={() => setShowOverlay(true)}
-          >
-          Show Lay Calculator
-          </button>
-        </div>
-      )}
+        {bestMatch && (
+          <div className="button-group">
+            <button
+              className="add-entry-btn"
+              style={{ padding: "12px", maxWidth: "100%" }}
+              onClick={() => setShowOverlay(true)}
+            >
+              Show Lay Calculator
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

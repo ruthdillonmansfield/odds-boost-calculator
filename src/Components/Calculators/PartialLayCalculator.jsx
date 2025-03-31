@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched } from "./calculations.js";
+import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched,calcMinProfit } from "./calculations.js";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
 
@@ -106,9 +106,8 @@ const PartialLayCalculator = () => {
     setSuggestedAdditionalLay(additionalNew > 0 ? additionalNew : 0);
     setFinishedLaying(additionalNew <= 0);
 
-    const overallProfit = calculateOverallProfit(S, B, freeBet, stakeReturned, partials);
-setMinProfit(Number.isFinite(overallProfit) ? overallProfit : null);
-  }, [backStake, backOdds, partials, freeBet, stakeReturned]);
+    const { minProfit: newMinProfit } = calcMinProfit(S, B, chosenOdds, finalComm, freeBet, stakeReturned);
+    setMinProfit(Number.isFinite(newMinProfit) ? newMinProfit : null);  }, [backStake, backOdds, partials, freeBet, stakeReturned]);
 
   const handlePartialChange = (index, field, value) => {
     const newPartials = [...partials];

@@ -241,3 +241,62 @@ export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
     return freeBet && !stakeReturned ? (amt * effectiveLay) / (B - 1) : (amt * effectiveLay) / B;
   };
   
+
+
+  /**
+ * Calculates detailed outcome values for a risk-free bet in matched betting and returns a breakdown object.
+ *
+ * For a risk-free bet:
+ *   - The ideal lay stake is calculated as: (S × B - (retention/100 × freeBetAmount)) / (L - (commission/100))
+ *   - If Bookie Wins:
+ *       - Back Profit = S × (B - 1)
+ *       - Lay Loss = layStake × (L - 1)
+ *       - Net Profit = Back Profit - Lay Loss
+ *   - If Exchange Wins:
+ *       - Exchange Win = layStake × (1 - commission/100)
+ *       - Free Bet Refund = (retention/100) × freeBetAmount
+ *       - Net Profit = Exchange Win - S + Free Bet Refund
+ *
+ * @param {number} S - The back bet stake.
+ * @param {number} B - The back odds.
+ * @param {number} L - The lay odds.
+ * @param {number} commission - The commission percentage on the exchange.
+ * @param {number} freeBetAmount - The value of the free bet.
+ * @param {number} retention - The free bet retention rate as a percentage.
+ * @returns {Object} An object with detailed outcome values and the worst-case profit.
+ */
+export const calcRiskFreeProfit = (S, B, L, commission, freeBetAmount, retention) => {
+  // Convert commission and retention from percentage to fraction.
+  const commissionValue = commission / 100;
+  const retentionRate = retention / 100;
+
+  // Calculate the ideal lay stake using the risk-free bet formula.
+  const rawLayStake = (S * B - retentionRate * freeBetAmount) / (L - commissionValue);
+  const layStake = parseFloat(rawLayStake.toFixed(2));
+
+  // Calculate outcomes if the bookmaker (back bet) wins.
+  const backProfit = S * (B - 1);
+  const layLoss = layStake * (L - 1);
+  const profitIfBookieWins = parseFloat((backProfit - layLoss).toFixed(2));
+
+  // Calculate outcomes if the exchange (lay bet) wins.
+  const exchangeWin = layStake * (1 - commissionValue);
+  const freeBetRefund = retentionRate * freeBetAmount;
+  const profitIfExchangeWins = parseFloat((exchangeWin - S + freeBetRefund).toFixed(2));
+
+  // Determine the worst-case profit.
+  const minProfit = Math.min(profitIfBookieWins, profitIfExchangeWins);
+
+  // Return the breakdown object.
+  return {
+    layStake,
+    potBookieWinnings: backProfit,
+    potBookieLoss: S,
+    potExchangeWinnings: exchangeWin,
+    potExchangeLoss: layLoss,
+    freeBetRefund,
+    profitIfBookieWins,
+    profitIfExchangeWins,
+    minProfit
+  };
+};
