@@ -2,20 +2,7 @@ import { useState, useEffect } from "react";
 import "./calculators.css";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
-
-const calcOutcomeIfBookieWins = (S, B, L, commission) => {
-  const commissionValue = commission / 100;
-  const layStake = ((S * B) / (L - commissionValue)).toFixed(2);
-  const outcome = S * (B - 1) - layStake * (L - 1);
-  return parseFloat(outcome.toFixed(2));
-};
-
-const calcOutcomeIfExchangeWins = (S, B, L, commission) => {
-  const commissionValue = commission / 100;
-  const layStake = parseFloat((S * B) / (L - commissionValue)).toFixed(2);
-  const outcome = layStake * (1 - commissionValue) - S;
-  return parseFloat(outcome.toFixed(2));
-};
+import { calcMinProfit } from "./calculations.js";
 
 const ExtraPlaceMatcherCalculator = () => {
   const meta = pageConfig.extraPlaceMatcherCalculator?.seo || {};
@@ -81,10 +68,12 @@ const ExtraPlaceMatcherCalculator = () => {
     const L_place = pLO;
     const comm_place = placeLayCommission;
 
-    const lossIfBookieWinsWinPart = calcOutcomeIfBookieWins(S_win, B_win, L_win, comm_win);
-    const lossIfExchangeWinsWinPart = calcOutcomeIfExchangeWins(S_win, B_win, L_win, comm_win);
-    const lossIfBookieWinsPlacePart = calcOutcomeIfBookieWins(S_place, B_place, L_place, comm_place);
-    const lossIfExchangeWinsPlacePart = calcOutcomeIfExchangeWins(S_place, B_place, L_place, comm_place);
+    const outcomeWin = calcMinProfit(S_win, B_win, L_win, comm_win, false, false);
+    const lossIfBookieWinsWinPart = outcomeWin.profitIfBookieWins;
+    const lossIfExchangeWinsWinPart = outcomeWin.profitIfExchangeWins;
+    const outcomePlace = calcMinProfit(S_place, B_place, L_place, comm_place, false, false);
+    const lossIfBookieWinsPlacePart = outcomePlace.profitIfBookieWins;
+    const lossIfExchangeWinsPlacePart = outcomePlace.profitIfExchangeWins;
 
     const netIfWon = lossIfBookieWinsWinPart + lossIfBookieWinsPlacePart;
     const netIfPlaced = lossIfExchangeWinsWinPart + lossIfBookieWinsPlacePart;
