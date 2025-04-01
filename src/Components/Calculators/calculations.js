@@ -381,3 +381,86 @@ export const calcUnwantedLayAdjustment = (
     }
   };
 };
+/**
+ * Calculates the Dutching bet amounts for back bets and returns a detailed breakdown.
+ *
+ * This function calculates the individual stakes for a series of back bets so that the distribution
+ * is proportional to the odds. You can choose between two targeting methods:
+ *
+ * 1. Target Total Stake:
+ *    - Let S be the target total stake.
+ *    - Compute the sum of inverses: M = (1 / price1) + (1 / price2) + ... + (1 / priceN).
+ *    - The intermediate payout is: P = S / M.
+ *    - Each individual stake is calculated as: stake_i = P / price_i.
+ *
+ * 2. Target First Selection Stake:
+ *    - Let T be the target stake for the first selection.
+ *    - Let firstOdds be the odds of the first selection.
+ *    - The intermediate payout is: P = T * firstOdds.
+ *    - Each individual stake is calculated as: stake_i = P / price_i.
+ *
+ * The function returns:
+ *   - {number} totalOutlay: The sum of all stakes.
+ *   - {number[]} stakes: The calculated stake amounts for each outcome.
+ *   - {number[]} profits: The potential profit for each outcome (each computed as stake_i × price_i - totalOutlay).
+ *   - {number[]} returns: The total return for each outcome (each computed as stake_i × price_i).
+ *   - {number} minProfit: The minimum guaranteed profit (the worst-case profit) across all outcomes.
+ *
+ * Additionally, if the "round" option is enabled, the calculated stakes will be rounded to whole numbers.
+ *
+ * @param {Object} options - The input parameters for the dutching calculator.
+ * @param {'totalStake'|'firstStake'} options.targetType - The target type:
+ *          'totalStake' means the sum of all stakes equals the target value,
+ *          'firstStake' means the stake for the first selection equals the target value.
+ * @param {number} options.targetValue - The target total stake or target stake for the first selection.
+ * @param {number[]} options.prices - An array of odds for each outcome.
+ * @param {boolean} [options.round=false] - Optional flag; if true, the calculated stakes will be rounded.
+ *
+ * @returns {Object} An object containing:
+ *   - {number} totalOutlay: The sum of all stakes.
+ *   - {number[]} stakes: The calculated stake amounts for each outcome.
+ *   - {number[]} profits: The potential profit for each outcome.
+ *   - {number[]} returns: The total return for each outcome.
+ *   - {number} minProfit: The minimum guaranteed profit across outcomes.
+ */
+export const dutchingCalc = ({ targetType, targetValue, prices, round = false }) => {
+  if (!Array.isArray(prices) || prices.some(price => price <= 0)) {
+    throw new Error("Invalid prices: Provide an array of positive numbers.");
+  }
+  if (typeof targetValue !== "number" || targetValue <= 0) {
+    throw new Error("Invalid targetValue: Must be a positive number.");
+  }
+
+  let payout;
+  if (targetType === "totalStake") {
+    const sumInverse = prices.reduce((sum, price) => sum + (1 / price), 0);
+    payout = targetValue / sumInverse;
+  } else if (targetType === "firstStake") {
+    payout = targetValue * prices[0];
+  } else {
+    throw new Error("Invalid targetType: Must be 'totalStake' or 'firstStake'.");
+  }
+
+  // Calculate individual stakes: stake_i = payout / price_i.
+  let stakes = prices.map(price => payout / price);
+
+  // If round flag is enabled, round to whole numbers; otherwise round to 2 decimal places.
+  if (round) {
+    stakes = stakes.map(stake => Math.round(stake));
+  } else {
+    stakes = stakes.map(stake => Number(stake.toFixed(2)));
+  }
+
+  const totalOutlay = stakes.reduce((sum, stake) => sum + stake, 0);
+  const profits = stakes.map((stake, i) => (stake * prices[i]) - totalOutlay);
+  const returns = stakes.map((stake, i) => stake * prices[i]);
+  const minProfit = Math.min(...profits);
+
+  return {
+    totalOutlay,
+    stakes,
+    profits,
+    returns,
+    minProfit,
+  };
+};

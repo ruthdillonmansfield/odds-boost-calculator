@@ -13,7 +13,8 @@ import {
   Combine,
   Plus,
   TrendingUp,
-  Ban
+  Ban,
+  GalleryHorizontalEnd
 } from "lucide-react";
 
 import OddsBoostCalculator from "../Components/Calculators/OddsBoostCalculator.jsx";
@@ -31,6 +32,8 @@ import LayStakeCalculator from "../Components/Calculators/LayStakeCalculator.jsx
 import RiskFreeCalculator from "../Components/Calculators/RiskFreeCalculator.jsx";
 import UnwantedLayCalculator from "../Components/Calculators/UnwantedLayCalculator.jsx";
 import ArbCalculator from "../Components/Calculators/ArbCalculator.jsx";
+import DutchingCalculator from "../Components/Calculators/DutchingCalculator.jsx";
+
 
 
 const createInstructions = (jsx) => jsx;
@@ -63,6 +66,7 @@ const pageConfig = {
       </div>
     ),
   },
+
 
   advancedOddsBoostCalculator: {
     route: "/boost-calculator-advanced",
@@ -518,6 +522,40 @@ const pageConfig = {
       </div>
     ),
   },
+
+  dutchingCalculator: {
+    route: "/dutching-calculator",
+    component: DutchingCalculator,
+    seo: {
+      title: "Dutching Calculator | Matched Betting Calculators",
+      description:
+        "Calculate optimal stake distribution for a fixed target profit or liability across multiple outcomes with the Dutching Calculator.",
+    },
+    use: {
+      title: "Dutching Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: false,
+    },
+    sidebar: {
+      category: "Lay Calculators",
+      icon: <GalleryHorizontalEnd size={24} color="#fff" />,
+      label: "Dutch",
+      sub: "",
+    },
+    instructions: createInstructions(
+      <div>
+        <p>
+          Use the Dutching Calculator to distribute your stake across multiple outcomes to lock in a profit.
+        </p>
+        <p>
+          Enter your target total stake or target stake for the first outcome and the odds for each outcome.
+        </p>
+      </div>
+    ),
+  },
+
 
   unwantedLayCalculator: {
     route: "/unwanted-lay-calculator",

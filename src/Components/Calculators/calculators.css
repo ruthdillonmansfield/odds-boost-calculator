@@ -95,6 +95,10 @@
   margin-bottom: 16px;
 }
 
+.dutching-calculator .inline-fields {
+  flex-wrap: nowrap;
+}
+
 .input-group-inline {
   flex: 1 1 calc(50% - 8px);
   text-align: left;
@@ -200,6 +204,10 @@ button:hover {
   background: #0088cc;
 }
 
+.inactive-button {
+  background: #888;
+}
+
 .frozen {
   background: #888;
 }
@@ -250,6 +258,10 @@ button:hover {
   padding: 16px;
   font-size: 18px;
   color: white;
+}
+
+.dutching-calculator .profit-box {
+  min-width: 105px;
 }
 
 .profit-box.profit-box-inline {
@@ -734,7 +746,8 @@ button:hover {
   color: #fff;
 }
 
-.overlay-content .best-selections-grid {
+.overlay-content .best-selections-grid,
+.dutching-calculator .best-selections-grid {
   display: grid;
   grid-template-columns: 1.5fr 1fr 1fr; 
   margin-bottom: 24px; 
@@ -746,7 +759,11 @@ button:hover {
 .m-20 {
   margin: 20px;
 }
-.overlay-content .best-selections-grid > div {
+.mt-14 {
+  margin-top: 14px;
+}
+.overlay-content .best-selections-grid > div 
+.dutching-calculator .best-selections-grid > div {
   padding: 12px 8px;
   font-size: 16px;
   background: #2a2a2a;
@@ -756,18 +773,21 @@ button:hover {
   justify-content: center;
 }
 
-.overlay-content .best-selections-grid .grid-header {
+.overlay-content .best-selections-grid .grid-header,
+.dutching-calculator .best-selections-grid .grid-header {
   background: #333;
   font-weight: bold;
   justify-content: center;
 }
 
-.overlay-content .best-selections-grid .first-col {
+.overlay-content .best-selections-grid .first-col,
+.dutching-calculator .best-selections-grid .first-col {
   justify-content: flex-start; 
   padding-left: 16px;
 }
 
-.overlay-content .best-selections-grid > div:last-of-type {
+.overlay-content .best-selections-grid > div:last-of-type 
+.dutching-calculator .best-selections-grid > div:last-of-type{
   border-bottom: none;
 }
 
@@ -806,11 +826,15 @@ button:hover {
   .overlay-content {
     padding: 16px; 
   }
-  .overlay-content .best-selections-grid > div {
+  .overlay-content .best-selections-grid > div
+  .dutching-calculator .best-selections-grid > div {
     font-size: 14px; 
   }
 }
 
+.dutching-calculator .best-selections-grid div {
+  padding: 6px;
+}
 .highlight-box {
   background-color: #2c2c2c; /* or a lighter shade for more contrast */
   border: 1px solid #444;   /* subtle border */
@@ -863,4 +887,8 @@ button:hover {
 
 .negative {
   color: #ff5555; /* or your chosen negative color */
+}
+
+.flex-start {
+  align-items: flex-start !important;
 }

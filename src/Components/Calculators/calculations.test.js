@@ -7,7 +7,8 @@ import {
     calcMinProfit,
     getIdealLayStake,
     calcRiskFreeProfit,
-    calcUnwantedLayAdjustment
+    calcUnwantedLayAdjustment,
+    dutchingCalc
   } from "./calculations.js";
   
 describe("computeBackMatched", () => {
@@ -763,3 +764,174 @@ describe('calcUnwantedLayAdjustment', () => {
     expect(result.breakdown.layWins.total).to.be.closeTo(expected.breakdown.layWins.total, 0.01);
   });
 });
+
+describe('Dutching Calculator', function () {
+
+  it('should calculate correct stakes, profits, and minimum profit for back mode with target profit', function () {
+    const options = {
+      mode: 'back',
+      targetType: 'profit',
+      targetValue: 50,
+      prices: [2.5, 3.0, 4.0],
+      round: false
+    };
+
+    const expectedBook = (100 / 2.5) + (100 / 3.0) + (100 / 4.0);
+    const expectedPayout = (50 * 100) / (100 - expectedBook);
+    const expectedStakes = [
+      expectedPayout / 2.5,
+      expectedPayout / 3.0,
+      expectedPayout / 4.0
+    ];
+    const totalOutlay = expectedStakes.reduce((sum, stake) => sum + stake, 0);
+    const expectedProfits = expectedStakes.map((stake, i) => (stake * options.prices[i]) - totalOutlay);
+    const expectedMinProfit = Math.min(...expectedProfits);
+
+    const result = dutchingCalc(options);
+    expect(result.book).to.be.closeTo(expectedBook, 0.001);
+    expect(result.payout).to.be.closeTo(expectedPayout, 0.001);
+    expect(result.stakes.length).to.equal(options.prices.length);
+    result.stakes.forEach((stake, i) => {
+      expect(stake).to.be.closeTo(expectedStakes[i], 0.001);
+    });
+    result.profits.forEach((profit, i) => {
+      expect(profit).to.be.closeTo(expectedProfits[i], 0.001);
+    });
+    expect(result.minProfit).to.be.closeTo(expectedMinProfit, 0.001);
+  });
+
+  it('should calculate correct stakes when using target liability for back mode', function () {
+    const options = {
+      mode: 'back',
+      targetType: 'liability',
+      targetValue: 50,
+      prices: [2.5, 3.0, 4.0],
+      round: false
+    };
+
+    const expectedBook = (100 / 2.5) + (100 / 3.0) + (100 / 4.0);
+    const expectedPayout = (50 * 100) / expectedBook;
+    const expectedStakes = [
+      expectedPayout / 2.5,
+      expectedPayout / 3.0,
+      expectedPayout / 4.0
+    ];
+    const totalOutlay = expectedStakes.reduce((sum, stake) => sum + stake, 0);
+    const expectedProfits = expectedStakes.map((stake, i) => (stake * options.prices[i]) - totalOutlay);
+    const expectedMinProfit = Math.min(...expectedProfits);
+
+    const result = dutchingCalc(options);
+    expect(result.book).to.be.closeTo(expectedBook, 0.001);
+    expect(result.payout).to.be.closeTo(expectedPayout, 0.001);
+    expect(result.stakes.length).to.equal(options.prices.length);
+    result.stakes.forEach((stake, i) => {
+      expect(stake).to.be.closeTo(expectedStakes[i], 0.001);
+    });
+    result.profits.forEach((profit, i) => {
+      expect(profit).to.be.closeTo(expectedProfits[i], 0.001);
+    });
+    expect(result.minProfit).to.be.closeTo(expectedMinProfit, 0.001);
+  });
+
+  it('should calculate correct stakes and profits for lay mode with target profit', function () {
+    const options = {
+      mode: 'lay',
+      targetType: 'profit',
+      targetValue: 50,
+      prices: [2.5, 3.0, 4.0],
+      round: false
+    };
+
+    const expectedBook = (100 / 2.5) + (100 / 3.0) + (100 / 4.0);
+    const expectedPayout = (50 * 100) / expectedBook;
+    const expectedStakes = options.prices.map(price => expectedPayout / price);
+    const totalOutlay = expectedStakes.reduce((sum, stake) => sum + stake, 0);
+    const expectedProfits = expectedStakes.map((stake, i) => (stake * options.prices[i]) - totalOutlay);
+    const expectedMinProfit = Math.min(...expectedProfits);
+
+    const result = dutchingCalc(options);
+    expect(result.book).to.be.closeTo(expectedBook, 0.001);
+    expect(result.payout).to.be.closeTo(expectedPayout, 0.001);
+    expect(result.stakes.length).to.equal(options.prices.length);
+    result.stakes.forEach((stake, i) => {
+      expect(stake).to.be.closeTo(expectedStakes[i], 0.001);
+    });
+    result.profits.forEach((profit, i) => {
+      expect(profit).to.be.closeTo(expectedProfits[i], 0.001);
+    });
+    expect(result.minProfit).to.be.closeTo(expectedMinProfit, 0.001);
+  });
+
+  it('should calculate correct stakes for lay mode with target liability', function () {
+    const options = {
+      mode: 'lay',
+      targetType: 'liability',
+      targetValue: 50,
+      prices: [2.5, 3.0, 4.0],
+      round: false
+    };
+
+    const expectedBook = (100 / 2.5) + (100 / 3.0) + (100 / 4.0);
+    const expectedPayout = (50 * 100) / (100 - expectedBook);
+    const expectedStakes = options.prices.map(price => expectedPayout / price);
+    const totalOutlay = expectedStakes.reduce((sum, stake) => sum + stake, 0);
+    const expectedProfits = expectedStakes.map((stake, i) => (stake * options.prices[i]) - totalOutlay);
+    const expectedMinProfit = Math.min(...expectedProfits);
+
+    const result = dutchingCalc(options);
+    expect(result.book).to.be.closeTo(expectedBook, 0.001);
+    expect(result.payout).to.be.closeTo(expectedPayout, 0.001);
+    expect(result.stakes.length).to.equal(options.prices.length);
+    result.stakes.forEach((stake, i) => {
+      expect(stake).to.be.closeTo(expectedStakes[i], 0.001);
+    });
+    result.profits.forEach((profit, i) => {
+      expect(profit).to.be.closeTo(expectedProfits[i], 0.001);
+    });
+    expect(result.minProfit).to.be.closeTo(expectedMinProfit, 0.001);
+  });
+
+  it('should throw an error for back mode target profit when back_book >= 100', function () {
+    const options = {
+      mode: 'back',
+      targetType: 'profit',
+      targetValue: 50,
+      prices: [1.5, 1.5],
+      round: false
+    };
+
+    expect(() => dutchingCalc(options)).to.throw('Not profitable for back dutching; back_book must be less than 100.');
+  });
+
+  it('should throw an error for lay mode target liability when lay_book >= 100', function () {
+    const options = {
+      mode: 'lay',
+      targetType: 'liability',
+      targetValue: 50,
+      prices: [1.5, 1.5],
+      round: false
+    };
+
+    expect(() => dutchingCalc(options)).to.throw('For lay dutching with liability, the lay_book must be less than 100.');
+  });
+
+  it('should round the stakes when the round option is true', function () {
+    const options = {
+      mode: 'back',
+      targetType: 'profit',
+      targetValue: 50,
+      prices: [2.5, 3.0, 4.0],
+      round: true
+    };
+
+    const result = dutchingCalc(options);
+    result.stakes.forEach(stake => {
+      expect(stake % 1).to.equal(0);
+    });
+  });
+});
+
+
+
+
+
