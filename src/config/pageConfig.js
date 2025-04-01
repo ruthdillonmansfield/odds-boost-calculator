@@ -12,6 +12,8 @@ import {
   ZoomIn,
   Combine,
   Plus,
+  TrendingUp,
+  Ban
 } from "lucide-react";
 
 import OddsBoostCalculator from "../Components/Calculators/OddsBoostCalculator.jsx";
@@ -28,6 +30,7 @@ import OddsBoostCalculatorAdv from "../Components/Calculators/OddsBoostCalculato
 import LayStakeCalculator from "../Components/Calculators/LayStakeCalculator.jsx";
 import RiskFreeCalculator from "../Components/Calculators/RiskFreeCalculator.jsx";
 import UnwantedLayCalculator from "../Components/Calculators/UnwantedLayCalculator.jsx";
+import ArbCalculator from "../Components/Calculators/ArbCalculator.jsx";
 
 
 const createInstructions = (jsx) => jsx;
@@ -151,6 +154,36 @@ const pageConfig = {
         </p>
         <p>
           This calculator helps you work out how much more to lay at the available odds.
+        </p>
+      </div>
+    ),
+  },
+
+  arbCalculator: {
+    route: "/arb-calculator",
+    component: ArbCalculator,
+    seo: {
+      title: "Arb Calculator | Matched Betting Calculators",
+      description:
+        "Calculate arbitrage opportunities and find guaranteed profit scenarios in matched betting. Free online matched betting calculators.",
+    },
+    use: {
+      title: "Arb Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
+    sidebar: {
+      category: "Lay Calculators",
+      icon: <TrendingUp size={24} color="#fff" />,
+      label: "Arbitrage",
+      sub: "",
+    },
+    instructions: createInstructions(
+      <div>
+        <p>
+          Use the Arb Calculator to compute arbitrage opportunities and secure risk-free profits from your matched bets.
         </p>
       </div>
     ),
@@ -503,7 +536,7 @@ const pageConfig = {
     },
     sidebar: {
       category: "Lay Calculators",
-      icon: <Calculator size={24} color="#fff" />,
+      icon: <Ban size={24} color="#fff" />,
       label: "Unwanted Lay",
       sub: "",
     },

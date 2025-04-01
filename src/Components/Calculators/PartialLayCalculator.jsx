@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import "./calculators.css";
-import { calculateAdditionalLayNew, calculateOverallProfit, computeBackMatched,calcMinProfit } from "./calculations.js";
+import { calculateAdditionalLayNew, computeBackMatched, calcMinProfit } from "./calculations.js";
 import Seo from "../Seo.jsx";
 import pageConfig from "../../config/pageConfig.js";
 
