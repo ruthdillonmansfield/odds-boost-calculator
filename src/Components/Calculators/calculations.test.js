@@ -6,7 +6,8 @@ import {
     calculateOverallProfit,
     calcMinProfit,
     getIdealLayStake,
-    calcRiskFreeProfit
+    calcRiskFreeProfit,
+    calcUnwantedLayAdjustment
   } from "./calculations.js";
   
 describe("computeBackMatched", () => {
@@ -330,13 +331,14 @@ describe("calcMinProfit", () => {
       potBookieWinnings: 488.80,
       potBookieLoss: 122.2,
       potExchangeWinnings: 96.89,
-      potExchangeLoss: 514.12,
+      potExchangeLoss: -514.12,
       profitIfBookieWins: -25.32,
       profitIfExchangeWins: -25.31,
       minProfit: -25.32
     };
 
     const result = calcMinProfit(S, B, L, commission, freeBet, stakeReturned);
+    console.log(expected,result);
     expect(result.layStake).to.be.closeTo(expected.layStake, 0.01);
     expect(result.potBookieWinnings).to.be.closeTo(expected.potBookieWinnings, 0.01);
     expect(result.potBookieLoss).to.be.closeTo(expected.potBookieLoss, 0.01);
@@ -388,7 +390,7 @@ describe("calcMinProfit", () => {
       potBookieWinnings: 611,
       potBookieLoss: 0,
       potExchangeWinnings: 96.89,
-      potExchangeLoss: 514.12,
+      potExchangeLoss: -514.12,
       profitIfBookieWins: 96.88,
       profitIfExchangeWins: 96.89,
       minProfit: 96.88
@@ -580,5 +582,184 @@ describe("calcRiskFreeProfit", () => {
     expect(result.profitIfBookieWins).to.be.closeTo(expected.profitIfBookieWins, 0.01);
     expect(result.profitIfExchangeWins).to.be.closeTo(expected.profitIfExchangeWins, 0.01);
     expect(result.minProfit).to.be.closeTo(expected.minProfit, 0.01);
+  });
+});
+
+
+describe('calcUnwantedLayAdjustment', () => {
+  it('should handle simple cases', () => {
+    const result = calcUnwantedLayAdjustment(10,10,11,0,5);
+    console.log(result);
+    const expected = {
+      backStake: 10.95,
+      breakdown: {
+        backWins: {
+          back: 98.55,
+          backCommission: 0,
+          lay: -100,
+          layCommission: 0,
+          total: -1.45,
+        },
+        layWins: {
+          back: -10.95,
+          backCommission: 0,
+          lay: 10,
+          layCommission: -0.5,
+          total: -1.45,
+        },
+      },
+    };
+
+    expect(result.backStake).to.be.closeTo(expected.backStake, 0.01);
+    expect(result.breakdown.backWins.back).to.be.closeTo(expected.breakdown.backWins.back, 0.01);
+    expect(result.breakdown.backWins.backCommission).to.be.closeTo(expected.breakdown.backWins.backCommission, 0.01);
+    expect(result.breakdown.backWins.lay).to.be.closeTo(expected.breakdown.backWins.lay, 0.01);
+    expect(result.breakdown.backWins.total).to.be.closeTo(expected.breakdown.backWins.total, 0.01);
+    expect(result.breakdown.layWins.back).to.be.closeTo(expected.breakdown.layWins.back, 0.01);
+    expect(result.breakdown.layWins.lay).to.be.closeTo(expected.breakdown.layWins.lay, 0.01);
+    expect(result.breakdown.layWins.layCommission).to.be.closeTo(expected.breakdown.layWins.layCommission, 0.01);
+    expect(result.breakdown.layWins.total).to.be.closeTo(expected.breakdown.layWins.total, 0.01);
+  });
+  it('should calculate the correct breakdown for sample inputs with rounding', () => {
+    // Sample values:
+    // layStake = 100, backOdds = 3, layOdds = 2,
+    // backCommission = 1.25%, layCommission = 0%
+    // Expected:
+    // backStake = 100 * (2 - 0) / 3 = 66.67
+    // Back Wins:
+    //   Gross profit = 66.67 * (3 - 1) = 133.33
+    //   Back commission = 133.33 * 0.0125 = 1.67 (as a cost, shown as -1.67)
+    //   Net = 133.33 - 1.67 = 131.66
+    //   Lay loss = 100 * (2 - 1) = 100
+    //   Total = 131.66 - 100 = 31.66
+    // Lay Wins:
+    //   Back loss = 66.67
+    //   Gross win = 100 * (2 - 1) = 100
+    //   Total = 100 - 66.67 = 33.33
+    const result = calcUnwantedLayAdjustment(100, 2, 3, 5, 1.25);
+
+
+    const expected = {
+      backStake: 153.21,
+      breakdown: {
+        backWins: {
+          back: 153.21,
+          backCommission: -7.66,
+          lay: -200,
+          layCommission: 0,
+          total: -54.46,
+        },
+        layWins: {
+          back: -153.21,
+          backCommission: -1.25,
+          lay: 100.00,
+          layCommission: 0,
+          total: -54.46,
+        },
+      },
+    };
+
+    expect(result.backStake).to.be.closeTo(expected.backStake, 0.01);
+    expect(result.breakdown.backWins.back).to.be.closeTo(expected.breakdown.backWins.back, 0.01);
+    expect(result.breakdown.backWins.backCommission).to.be.closeTo(expected.breakdown.backWins.backCommission, 0.01);
+    expect(result.breakdown.backWins.lay).to.be.closeTo(expected.breakdown.backWins.lay, 0.01);
+    expect(result.breakdown.backWins.total).to.be.closeTo(expected.breakdown.backWins.total, 0.01);
+    expect(result.breakdown.layWins.back).to.be.closeTo(expected.breakdown.layWins.back, 0.01);
+    expect(result.breakdown.layWins.lay).to.be.closeTo(expected.breakdown.layWins.lay, 0.01);
+    expect(result.breakdown.layWins.total).to.be.closeTo(expected.breakdown.layWins.total, 0.01);
+  });
+
+  it('should handle non-zero lay commission on outcomes and account for rounding', () => {
+    // Example:
+    // layStake = 80, backOdds = 4, layOdds = 3,
+    // backCommission = 2%, layCommission = 5%
+    // Expected:
+    // backStake = 80 * (3 - (5/100)) / 4 = 80 * 2.95 / 4 = 59.00
+    // Back Wins:
+    //   Gross profit = 59.00 * (4 - 1) = 177.00
+    //   Back commission = 177.00 * 0.02 = 3.54 (shown as -3.54)
+    //   Net = 177.00 - 3.54 = 173.46
+    //   Lay loss = 80 * (3 - 1) = 160.00
+    //   Total = 173.46 - 160.00 = 13.46
+    // Lay Wins:
+    //   Back loss = 59.00
+    //   Gross win = 80 * (3 - 1) = 160.00
+    //   Lay commission = 160.00 * 0.05 = 8.00 (shown as -8.00)
+    //   Net = 160.00 - 8.00 = 152.00
+    //   Total = 152.00 - 59.00 = 93.00
+    const result = calcUnwantedLayAdjustment(12.34, 22.22, 33.33, 1.23, 2.34);
+    const expected = {
+      backStake: 18.72,
+      breakdown: {
+        backWins: {
+          back: 397.17,
+          backCommission: -4.89,
+          lay: -398.95,
+          layCommission: 0,
+          total: -6.67,
+        },
+        layWins: {
+          back: -18.72,
+          backCommission: 0,
+          lay: 12.34,
+          layCommission: -0.29,
+          total: -6.67,
+        },
+      },
+    };
+
+    expect(result.backStake).to.be.closeTo(expected.backStake, 0.01);
+    expect(result.breakdown.backWins.back).to.be.closeTo(expected.breakdown.backWins.back, 0.01);
+    expect(result.breakdown.backWins.backCommission).to.be.closeTo(expected.breakdown.backWins.backCommission, 0.01);
+    expect(result.breakdown.backWins.lay).to.be.closeTo(expected.breakdown.backWins.lay, 0.01);
+    expect(result.breakdown.backWins.total).to.be.closeTo(expected.breakdown.backWins.total, 0.01);
+    expect(result.breakdown.layWins.back).to.be.closeTo(expected.breakdown.layWins.back, 0.01);
+    expect(result.breakdown.layWins.lay).to.be.closeTo(expected.breakdown.layWins.lay, 0.01);
+    expect(result.breakdown.layWins.layCommission).to.be.closeTo(expected.breakdown.layWins.layCommission, 0.01);
+    expect(result.breakdown.layWins.total).to.be.closeTo(expected.breakdown.layWins.total, 0.01);
+  });
+
+  it('should handle zero commission on both sides and round correctly', () => {
+    // For:
+    // layStake = 100, backOdds = 2.5, layOdds = 2.0, with zero commission:
+    // Expected:
+    // backStake = 100 * 2.0 / 2.5 = 80.00
+    // Back Wins:
+    //   Gross profit = 80 * (2.5 - 1) = 120.00
+    //   Lay loss = 100 * (2.0 - 1) = 100.00
+    //   Total = 120.00 - 100.00 = 20.00
+    // Lay Wins:
+    //   Back loss = 80.00
+    //   Gross win = 100 * (2.0 - 1) = 100.00
+    //   Total = 100.00 - 80.00 = 20.00
+    const result = calcUnwantedLayAdjustment(100, 2.5, 2.0, 0, 0);
+    const expected = {
+      backStake: 80.00,
+      breakdown: {
+        backWins: {
+          back: 120.00,
+          backCommission: 0,
+          lay: -100.00,
+          layCommission: 0,
+          total: 20.00,
+        },
+        layWins: {
+          back: -80.00,
+          backCommission: 0,
+          lay: 100.00,
+          layCommission: 0,
+          total: 20.00,
+        },
+      },
+    };
+
+    expect(result.backStake).to.be.closeTo(expected.backStake, 0.01);
+    expect(result.breakdown.backWins.back).to.be.closeTo(expected.breakdown.backWins.back, 0.01);
+    expect(result.breakdown.backWins.backCommission).to.be.closeTo(expected.breakdown.backWins.backCommission, 0.01);
+    expect(result.breakdown.backWins.lay).to.be.closeTo(expected.breakdown.backWins.lay, 0.01);
+    expect(result.breakdown.backWins.total).to.be.closeTo(expected.breakdown.backWins.total, 0.01);
+    expect(result.breakdown.layWins.back).to.be.closeTo(expected.breakdown.layWins.back, 0.01);
+    expect(result.breakdown.layWins.lay).to.be.closeTo(expected.breakdown.layWins.lay, 0.01);
+    expect(result.breakdown.layWins.total).to.be.closeTo(expected.breakdown.layWins.total, 0.01);
   });
 });

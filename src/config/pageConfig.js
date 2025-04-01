@@ -27,6 +27,8 @@ import ExtraPlaceMatcherCalculator from "../Components/Calculators/ExtraPlaceMat
 import OddsBoostCalculatorAdv from "../Components/Calculators/OddsBoostCalculatorAdv.jsx";
 import LayStakeCalculator from "../Components/Calculators/LayStakeCalculator.jsx";
 import RiskFreeCalculator from "../Components/Calculators/RiskFreeCalculator.jsx";
+import UnwantedLayCalculator from "../Components/Calculators/UnwantedLayCalculator.jsx";
+
 
 const createInstructions = (jsx) => jsx;
 
@@ -483,6 +485,41 @@ const pageConfig = {
       </div>
     ),
   },
+
+  unwantedLayCalculator: {
+    route: "/unwanted-lay-calculator",
+    component: UnwantedLayCalculator,
+    seo: {
+      title: "Unwanted Lay Calculator | Matched Betting Calculators",
+      description:
+        "Calculate the required back stake to adjust your unwanted lay bet and minimize your losses. Free online matched betting calculator.",
+    },
+    use: {
+      title: "Unwanted Lay Calculator",
+      matched: true,
+      advantage: false,
+      experimental: false,
+      copyable: true,
+    },
+    sidebar: {
+      category: "Lay Calculators",
+      icon: <Calculator size={24} color="#fff" />,
+      label: "Unwanted Lay",
+      sub: "",
+    },
+    instructions: createInstructions(
+      <div>
+        <p>
+          Use this calculator to determine the back stake required to adjust your unwanted lay bet.
+        </p>
+        <p>
+          You can either enter the unwanted lay amount directly or calculate it from your total lay bet and intended lay bet.
+        </p>
+      </div>
+    ),
+  },
 };
+
+
 
 export default pageConfig;

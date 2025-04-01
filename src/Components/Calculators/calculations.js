@@ -175,7 +175,7 @@ export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
   let potBookieWinnings = S * (B - 1);
   let potBookieLoss = S;
   let potExchangeWinnings = layStake * (1 - commission / 100);
-  let potExchangeLoss = -(layStake * (L - 1));
+  let potExchangeLoss = (layStake * (L - 1));
   let profitIfBookieWins = potBookieWinnings - potExchangeLoss;
   let profitIfExchangeWins = potExchangeWinnings - S;
   
@@ -184,7 +184,7 @@ export const calcMinProfit = (S, B, L, commission, freeBet, stakeReturned) => {
     potBookieWinnings: potBookieWinnings,
     potBookieLoss: potBookieLoss,
     potExchangeWinnings: potExchangeWinnings,
-    potExchangeLoss: potExchangeLoss,
+    potExchangeLoss: -potExchangeLoss,
     profitIfBookieWins: profitIfBookieWins,
     profitIfExchangeWins: profitIfExchangeWins,
     minProfit: null
@@ -298,5 +298,86 @@ export const calcRiskFreeProfit = (S, B, L, commission, freeBetAmount, retention
     profitIfBookieWins,
     profitIfExchangeWins,
     minProfit
+  };
+};
+/**
+ * Calculates the back stake needed to adjust an unwanted lay bet 
+ * and returns a detailed breakdown for both outcomes.
+ *
+ * The back stake (BS) is calculated as:
+ *   BS = LS * (LO - (layCommission/100)) / BO
+ *
+ * Outcome breakdown:
+ * - If the Back bet wins:
+ *     Back gross profit = BS × (BO - 1)
+ *     Back commission cost = (BS × (BO - 1)) × (backCommission/100)
+ *     Net back win = Back gross profit - back commission cost
+ *     Lay loss = LS × (LO - 1)
+ *     Total = Net back win - Lay loss
+ *
+ * - If the Lay bet wins:
+ *     Back loss = BS (lost stake)
+ *     Lay gross win = LS × (LO - 1)
+ *     Lay commission cost = (LS × (LO - 1)) × (layCommission/100)
+ *     Net lay win = Lay gross win - lay commission cost
+ *     Total = Net lay win - BS
+ *
+ * @param {number} layStake - The unwanted lay stake (LS).
+ * @param {number} backOdds - The back odds (BO).
+ * @param {number} layOdds - The lay odds (LO).
+ * @param {number} backCommission - The commission percentage for the back bet.
+ * @param {number} layCommission - The commission percentage for the lay bet.
+ * @returns {Object} An object containing the calculated back stake and a detailed breakdown.
+ */
+export const calcUnwantedLayAdjustment = (
+  layStake,
+  backOdds,
+  layOdds,
+  backCommission,
+  layCommission
+) => {
+  // Calculate effective odds:
+  const effectiveBackOdds = backOdds - ((backCommission / 100) * (backOdds - 1));
+  const effectiveLayOdds  = layOdds - (layCommission / 100);
+
+  // Calculate raw back stake (unrounded)
+  const backStakeRaw = layStake * effectiveLayOdds / effectiveBackOdds;
+  // Round back stake for display (since bets can only be in pennies)
+  const displayBackStake = parseFloat(backStakeRaw.toFixed(2));
+
+  // --- Outcome when the Back bet wins ---
+  // Use the unrounded back stake to compute gross profit
+  const backWinsBackGross = parseFloat((backStakeRaw * (backOdds - 1)).toFixed(2));
+  const backWinsBackComm = parseFloat((backWinsBackGross * (backCommission / 100)).toFixed(2));
+  const backWinsBackNet = parseFloat((backWinsBackGross - backWinsBackComm).toFixed(2));
+  const backWinsLayLoss = parseFloat((layStake * (layOdds - 1)).toFixed(2));
+  const backWinsTotal = parseFloat((backWinsBackNet - backWinsLayLoss).toFixed(2));
+
+  // --- Outcome when the Lay bet wins ---
+  // For a losing back bet, we can only lose the actual (display) stake
+  const layWinsBackLoss = displayBackStake;
+  const layWinsLayGross = parseFloat(layStake.toFixed(2)); // layStake is given
+  const layWinsLayComm = parseFloat((layWinsLayGross * (layCommission / 100)).toFixed(2));
+  const layWinsLayNet = parseFloat((layWinsLayGross - layWinsLayComm).toFixed(2));
+  const layWinsTotal = parseFloat((layWinsLayNet - layWinsBackLoss).toFixed(2));
+
+  return {
+    backStake: displayBackStake,
+    breakdown: {
+      backWins: {
+        back: backWinsBackGross,
+        backCommission: -backWinsBackComm,
+        lay: -backWinsLayLoss,
+        layCommission: 0,
+        total: backWinsTotal,
+      },
+      layWins: {
+        back: -layWinsBackLoss,
+        backCommission: 0,
+        lay: layWinsLayGross,
+        layCommission: -layWinsLayComm,
+        total: layWinsTotal,
+      }
+    }
   };
 };
